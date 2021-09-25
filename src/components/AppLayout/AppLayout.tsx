@@ -1,15 +1,13 @@
 import React from 'react';
-import { Page, Grid, Text, useTheme } from '@geist-ui/react';
+import { Page, Grid, Text } from '@geist-ui/react';
 import Masthead from '../Masthead/Masthead';
 
 const AppLayout = () => {
-  const theme = useTheme();
-
   return (
     <>
-      <div className="w-screen h-screen" style={{ background: theme.palette.accents_1 }}>
+      <div className="w-screen h-screen">
         <div className="container mx-auto">
-          <Page style={{ width: '100%', background: theme.palette.background }}>
+          <Page style={{ width: '100%' }}>
             <Page.Header>
               <Masthead />
             </Page.Header>
