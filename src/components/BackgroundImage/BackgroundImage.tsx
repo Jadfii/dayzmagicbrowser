@@ -11,7 +11,7 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
     <>
       <div className="background-image">
         <div />
-        <Image src={src} />
+        <Image src={src} height="100%" style={{ objectFit: 'cover' }} />
       </div>
     </>
   );

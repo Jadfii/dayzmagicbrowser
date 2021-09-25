@@ -8,3 +8,9 @@
     -ms-user-select: none;
   }
 }
+
+.container {
+  & > * {
+    @apply px-8;
+  }
+}
