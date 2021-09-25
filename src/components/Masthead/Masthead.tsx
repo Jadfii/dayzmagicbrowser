@@ -8,8 +8,10 @@ const Masthead: React.FC = () => {
   const { refreshServers } = useContext(ServersContext);
 
   return (
-    <div className="flex items-center justify-center py-6">
-      <ServersSearch />
+    <div className="flex items-center justify-center py-4">
+      <div style={{ width: '40%' }}>
+        <ServersSearch />
+      </div>
 
       <Spacer w={1} />
 
