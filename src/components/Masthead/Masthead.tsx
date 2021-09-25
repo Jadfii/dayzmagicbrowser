@@ -21,7 +21,7 @@ const Masthead: React.FC = () => {
 
       <Spacer w={1} />
 
-      <Button onClick={() => refreshServers()} icon={<RefreshCw />} loading={isLoadingServers} marginLeft="auto">
+      <Button onClick={() => refreshServers()} icon={<RefreshCw />} loading={isLoadingServers} style={{ marginLeft: 'auto' }}>
         Refresh servers
       </Button>
     </div>
