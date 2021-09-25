@@ -1,28 +1,29 @@
 import React from 'react';
-import { Page, Grid, Text } from '@geist-ui/react';
+import './app-layout.scss';
+import { Page, Grid, Text, useTheme } from '@geist-ui/react';
 import Masthead from '../Masthead/Masthead';
+import Routes from '../../routes/Routes';
 
 const AppLayout = () => {
+  const theme = useTheme();
+
   return (
     <>
-      <div className="w-screen h-screen">
-        <div className="container mx-auto">
-          <Page style={{ width: '100%' }}>
-            <Page.Header>
-              <Masthead />
-            </Page.Header>
-            <Page.Content>
-              <Grid.Container gap={2} justify="center">
-                <Grid xs={24} className="flex-col">
-                  <Text h2>Hello, World</Text>
-                  <Text p>DayZ Magic Browser</Text>
-                </Grid>
-              </Grid.Container>
-            </Page.Content>
-            <Page.Footer>
-              <h2>Footer</h2>
-            </Page.Footer>
-          </Page>
+      <div className="w-screen h-full">
+        <div className="container mx-auto" style={{ background: theme.palette.background }}>
+          <div className="w-full h-full">
+            <Page className="flex flex-col" width="100%">
+              <Page.Header>
+                <Masthead />
+              </Page.Header>
+              <Page.Content className="relative flex-1">
+                <Routes />
+              </Page.Content>
+              <Page.Footer style={{ position: 'initial' }}>
+                <h2>Footer</h2>
+              </Page.Footer>
+            </Page>
+          </div>
         </div>
       </div>
     </>

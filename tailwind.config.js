@@ -14,6 +14,9 @@ module.exports = {
         yellow: colors.yellow,
       },
     },
+    container: {
+      center: true,
+    },
   },
   plugins: [],
 };
