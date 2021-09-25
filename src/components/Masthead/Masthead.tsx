@@ -5,7 +5,7 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import ServersSearch from '../ServersSearch/SeversSearch';
 
 const Masthead: React.FC = () => {
-  const { refreshServers } = useContext(ServersContext);
+  const { refreshServers, isLoadingServers } = useContext(ServersContext);
 
   return (
     <div className="flex items-center justify-center py-4">
@@ -15,7 +15,7 @@ const Masthead: React.FC = () => {
 
       <Spacer w={1} />
 
-      <Button onClick={() => refreshServers()} icon={<RefreshCw />}>
+      <Button onClick={() => refreshServers()} icon={<RefreshCw />} loading={isLoadingServers}>
         Refresh servers
       </Button>
     </div>

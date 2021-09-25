@@ -5,19 +5,24 @@ import { Server } from '../types/Types';
 type ContextProps = {
   servers: Server[];
   refreshServers: () => void;
+  isLoadingServers: boolean;
 };
 
 export const ServersContext = React.createContext<ContextProps>({
   servers: [],
   refreshServers: () => undefined,
+  isLoadingServers: false,
 });
 
 const ServersProvider: React.FC = ({ children }) => {
   const { getServers } = useServersAPI();
   const [servers, setServers] = useState<Server[]>([]);
+  const [isLoadingServers, setIsLoadingServers] = useState<boolean>(false);
 
   async function refreshServers() {
+    setIsLoadingServers(true);
     setServers(await getServers());
+    setIsLoadingServers(false);
   }
 
   useEffect(() => {
@@ -29,6 +34,7 @@ const ServersProvider: React.FC = ({ children }) => {
       value={{
         servers,
         refreshServers,
+        isLoadingServers,
       }}
     >
       {children}
