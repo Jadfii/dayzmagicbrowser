@@ -38,8 +38,6 @@ const ServersSearch: React.FC = () => {
       includeScore: true,
     }).search(debouncedSearchValue);
 
-    console.log(fuseSearch);
-
     // Search results, sort by players, map to option component, limit to top 100 results
     const optionsResult = fuseSearch
       .filter((result) => result?.item)
