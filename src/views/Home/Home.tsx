@@ -23,7 +23,7 @@ const Home: React.FC = () => {
           <Text p margin={0}>
             Browse & refine a full list of DayZ servers and connect directly into the game.
             <br />
-            All from your browser.
+            All from your browser. No downloads required.
           </Text>
 
           <div className="mt-6" style={{ width: '75%' }}>
