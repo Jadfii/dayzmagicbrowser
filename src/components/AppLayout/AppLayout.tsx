@@ -17,7 +17,7 @@ const AppLayout = () => {
             <Routes />
           </div>
 
-          <div>
+          <div className="flex">
             <Footer />
           </div>
         </div>
