@@ -5,15 +5,18 @@ import '@fontsource/inter';
 import AppLayout from '../AppLayout/AppLayout';
 import './app.css';
 import ServersProvider from '../../contexts/ServersProvider';
+import IslandsProvider from '../../contexts/IslandsProvider';
 
 const App = () => {
   return (
     <Router>
       <GeistProvider themeType={'dark'}>
         <CssBaseline />
-        <ServersProvider>
-          <AppLayout />
-        </ServersProvider>
+        <IslandsProvider>
+          <ServersProvider>
+            <AppLayout />
+          </ServersProvider>
+        </IslandsProvider>
       </GeistProvider>
     </Router>
   );
