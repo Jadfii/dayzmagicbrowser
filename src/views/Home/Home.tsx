@@ -16,7 +16,7 @@ const Home: React.FC = () => {
         <Grid xs={2}></Grid>
 
         <Grid xs={10} className="relative flex-col">
-          <Text h1 margin={'0 0 1rem 0'} style={{ lineHeight: '1.4' }}>
+          <Text h1 margin={'0 0 1rem 0'} style={{ lineHeight: '1.25' }}>
             Find your next favourite DayZ server
           </Text>
 
