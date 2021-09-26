@@ -9,9 +9,9 @@ interface Props {
 const BackgroundImage: React.FC<Props> = ({ src }) => {
   return (
     <>
-      <div className="background-image">
+      <div className="background-image w-full h-full overflow-hidden">
         <div />
-        <Image src={src} height="100%" style={{ objectFit: 'cover' }} />
+        <Image src={src} width="100%" height="auto" style={{ objectFit: 'cover' }} />
       </div>
     </>
   );
