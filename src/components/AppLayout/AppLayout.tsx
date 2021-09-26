@@ -12,11 +12,14 @@ const AppLayout = () => {
     <>
       <div className="w-screen h-full">
         <div className="container relative flex flex-col w-full min-h-screen" style={{ background: theme.palette.accents_1 }}>
-          <Masthead />
+          <div className="flex flex-col h-screen">
+            <Masthead />
+            <Routes />
+          </div>
 
-          <Routes />
-
-          <Footer />
+          <div>
+            <Footer />
+          </div>
         </div>
       </div>
     </>

@@ -10,7 +10,7 @@
 }
 
 .container {
-  & > * {
+  & > div > div {
     @apply px-8;
   }
 }
