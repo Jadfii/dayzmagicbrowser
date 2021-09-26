@@ -28,7 +28,7 @@ const Footer: React.FC = () => {
       <div className="ml-auto">
         <Text small>
           Made by{' '}
-          <Link href="//github.com/Jadfii" target="_blank">
+          <Link href="//github.com/Jadfii" target="_blank" underline>
             Jad
           </Link>
         </Text>
