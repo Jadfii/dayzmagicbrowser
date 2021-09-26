@@ -1,15 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Island } from '../types/Types';
 import useIslandsAPI from '../data/useIslandsAPI';
 
 type ContextProps = {
   islands: Island[];
   refreshIslands: () => void;
+  getIslandByTerrain: (island: string) => Island | undefined;
 };
 
 export const IslandsContext = React.createContext<ContextProps>({
   islands: [],
   refreshIslands: () => undefined,
+  getIslandByTerrain: (island: string) => undefined,
 });
 
 const IslandsProvider: React.FC = ({ children }) => {
@@ -30,11 +32,14 @@ const IslandsProvider: React.FC = ({ children }) => {
     setIslands(await getIslands());
   }
 
+  const getIslandByTerrain = useCallback((island: string) => islands.find((i) => i.terrainId === island), [islands]);
+
   return (
     <IslandsContext.Provider
       value={{
         islands,
         refreshIslands,
+        getIslandByTerrain,
       }}
     >
       {children}
