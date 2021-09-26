@@ -26,8 +26,8 @@ const Home: React.FC = () => {
             All from your browser. No downloads required.
           </Text>
 
-          <div className="mt-6" style={{ width: '75%' }}>
-            <Button onClick={() => history.push('/servers')} type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
+          <div className="mt-10" style={{ width: '75%' }}>
+            <Button onClick={() => history.push('/servers')} type="success-light" iconRight={<ArrowRight />} scale={6 / 3} width="100%">
               Browse servers
             </Button>
           </div>
