@@ -33,3 +33,13 @@ export interface ServerModResponse {
   id: string;
   name: string;
 }
+
+export interface IslandResponse {
+  _id: string;
+  terrain: string;
+  name: string;
+  description?: string;
+  thumbnail: string;
+  workshop_id?: string;
+  official: boolean;
+}

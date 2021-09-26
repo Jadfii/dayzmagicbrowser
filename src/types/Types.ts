@@ -49,3 +49,12 @@ export interface ServerSearchOption extends Server {
   label: string;
   value: string;
 }
+
+export interface Island {
+  id: string;
+  terrainId: string;
+  name: string;
+  description?: string;
+  workshopId?: string;
+  imageURL: string;
+}

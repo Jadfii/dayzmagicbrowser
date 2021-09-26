@@ -1,5 +1,6 @@
-import { ServerObjectResponse } from '../types/ResponseTypes';
-import { Server, ServerTimeAcceleration } from '../types/Types';
+import { IMAGE_BUCKET } from '../constants/links.constant';
+import { IslandResponse, ServerObjectResponse } from '../types/ResponseTypes';
+import { Island, Server, ServerTimeAcceleration } from '../types/Types';
 import { getServerTimeDuration } from '../utils/time.util';
 
 export const getServerTimeAcceleration = (acceleration: string): ServerTimeAcceleration => {
@@ -37,4 +38,13 @@ export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   isPublicHive: server.public_hive,
   isOffline: server.offline,
   mods: server.mods.map((mod) => ({ steamId: mod.id, name: mod.name })),
+});
+
+export const mapIslandResponse = (island: IslandResponse): Island => ({
+  id: island._id,
+  terrainId: island.terrain,
+  name: island.name,
+  description: island.description,
+  imageURL: `${IMAGE_BUCKET}${island.thumbnail}.jpg`,
+  workshopId: island.workshop_id,
 });
