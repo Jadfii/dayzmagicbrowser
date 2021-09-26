@@ -11,8 +11,8 @@ const AppLayout = () => {
   return (
     <>
       <div className="w-screen h-full">
-        <div className="container relative flex flex-col w-full min-h-screen" style={{ background: theme.palette.accents_1 }}>
-          <div className="flex flex-col h-screen">
+        <div className="container relative flex flex-col w-full h-full min-h-screen" style={{ background: theme.palette.accents_1 }}>
+          <div className="flex flex-col">
             <Masthead />
             <Routes />
           </div>

@@ -9,7 +9,7 @@ const Home: React.FC = () => {
   const history = useHistory();
 
   return (
-    <div className="relative flex items-center flex-1">
+    <div className="relative flex items-center flex-auto" style={{ height: '80vh' }}>
       <BackgroundImage src="https://dayz-magic-launcher.s3.eu-west-2.amazonaws.com/images/home.jpg" />
 
       <Grid.Container gap={2} className="my-auto">
