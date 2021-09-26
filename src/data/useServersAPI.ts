@@ -6,7 +6,7 @@ import { mapServerResponse } from './Mapper';
 const useServersAPI = () => {
   async function getServers(): Promise<Server[]> {
     try {
-      const res = await get('servers', { limit: 10000 });
+      const res = await get('servers', { limit: 10000, sortBy: 'players:desc' });
 
       if (res?.results) {
         console.log(`Loaded ${res?.results.length} servers.`);
