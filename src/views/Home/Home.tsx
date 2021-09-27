@@ -83,7 +83,7 @@ const Home: React.FC = () => {
           <Text h3 margin={0}>
             Popular servers
           </Text>
-          <Text p type="secondary" marginTop={0} className="mb-4">
+          <Text p type="secondary" className="mb-4 mt-0">
             What people are playing at the moment
           </Text>
         </div>
