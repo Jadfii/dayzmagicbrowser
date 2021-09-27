@@ -49,7 +49,7 @@ const ServersSearch: React.FC = () => {
       .sort((a, b) => {
         return b?.item.players + b?.item.queue - (a?.item.players + a?.item.queue);
       })
-      .map((result) => <ServerOption server={result?.item} />)
+      .map((result) => <ServerOption result={result} />)
       .slice(0, RESULTS_LIMIT);
     setOptions(optionsResult);
 
