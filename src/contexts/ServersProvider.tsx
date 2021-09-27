@@ -21,7 +21,8 @@ const ServersProvider: React.FC = ({ children }) => {
 
   async function refreshServers() {
     setIsLoadingServers(true);
-    setServers(await getServers());
+    const serversResult = await getServers();
+    setServers(serversResult.sort((a, b) => b.players + b.queue - (a.players + a.queue)));
     setIsLoadingServers(false);
   }
 
