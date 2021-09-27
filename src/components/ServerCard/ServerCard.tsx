@@ -1,4 +1,4 @@
-import { Card, Image, Spacer, Text } from '@geist-ui/react';
+import { Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Lock } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
@@ -31,7 +31,9 @@ const ServerCard: React.FC<Props> = ({ server }) => {
           {server.hasPassword && (
             <>
               <Spacer w={1 / 3} inline />
-              <Lock size={20} />
+              <Tooltip text="Locked">
+                <Lock size={20} />
+              </Tooltip>
             </>
           )}
         </div>
