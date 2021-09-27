@@ -33,7 +33,7 @@ const IslandsProvider: React.FC = ({ children }) => {
   }
 
   const getIslandByTerrain = useCallback(
-    (terrainId: string) => islands.find((island) => terrainId.localeCompare(island.terrainId, undefined, { sensitivity: 'accent' }) === 0),
+    (terrainId: string) => islands.find((island) => terrainId.toLowerCase().includes(island.terrainId.toLowerCase())),
     [islands]
   );
 
