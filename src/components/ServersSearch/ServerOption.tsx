@@ -63,7 +63,7 @@ const ServerOption: React.FC<Props> = ({ result }) => {
         <Grid xs={12} className="justify-end space-x-4" style={{ marginLeft: 'auto' }}>
           {matchedName && <Badge type="success">Name</Badge>}
 
-          {matchedIp && <Badge type="success">IP</Badge>}
+          {matchedIp && <Badge type="success">IP address</Badge>}
 
           {(matchedMods || []).length > 0 && (
             <Badge type="success" className="truncate">
