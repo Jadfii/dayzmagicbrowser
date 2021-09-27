@@ -5,13 +5,13 @@ import useIslandsAPI from '../data/useIslandsAPI';
 type ContextProps = {
   islands: Island[];
   refreshIslands: () => void;
-  getIslandByTerrain: (island: string) => Island | undefined;
+  getIslandByTerrain: (terrainId: string) => Island | undefined;
 };
 
 export const IslandsContext = React.createContext<ContextProps>({
   islands: [],
   refreshIslands: () => undefined,
-  getIslandByTerrain: (island: string) => undefined,
+  getIslandByTerrain: (terrainId: string) => undefined,
 });
 
 const IslandsProvider: React.FC = ({ children }) => {
@@ -32,7 +32,10 @@ const IslandsProvider: React.FC = ({ children }) => {
     setIslands(await getIslands());
   }
 
-  const getIslandByTerrain = useCallback((island: string) => islands.find((i) => i.terrainId === island), [islands]);
+  const getIslandByTerrain = useCallback(
+    (terrainId: string) => islands.find((island) => terrainId.localeCompare(island.terrainId, undefined, { sensitivity: 'accent' }) === 0),
+    [islands]
+  );
 
   return (
     <IslandsContext.Provider
