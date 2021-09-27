@@ -54,13 +54,13 @@ const ServerOption: React.FC<Props> = ({ result }) => {
           <div className="flex items-center">
             <Map size={16} />
             <Spacer w={1 / 3} />
-            <Text p margin={0}>
-              {serverIsland?.name}
+            <Text p margin={0} className="truncate">
+              {serverIsland?.name || server.island}
             </Text>
           </div>
         </Grid>
 
-        <Grid xs={13} className="justify-end space-x-4">
+        <Grid xs={12} className="justify-end space-x-4" style={{ marginLeft: 'auto' }}>
           {matchedName && <Badge type="success">Name</Badge>}
 
           {matchedIp && <Badge type="success">IP</Badge>}
