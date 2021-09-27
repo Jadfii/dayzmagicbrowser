@@ -27,7 +27,7 @@ const Home: React.FC = () => {
               Find your next favourite DayZ server
             </Text>
 
-            <Text p type="secondary" margin={0}>
+            <Text p margin={0}>
               Browse & refine a full list of DayZ servers and connect directly into the game.
               <br />
               All from your browser. No downloads required.
