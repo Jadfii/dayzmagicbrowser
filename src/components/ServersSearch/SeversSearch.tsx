@@ -81,7 +81,7 @@ const ServersSearch: React.FC = () => {
 
     ReactDOM.render(<Search />, iconElement);
 
-    rightIconElement.remove();
+    //rightIconElement.remove();
     setHasInsertedIcon(true);
   }, []);
 
@@ -96,6 +96,7 @@ const ServersSearch: React.FC = () => {
         scale={4 / 3}
         width="100%"
         searching={isSearching}
+        clearable
         id={ELEMENT_ID}
       />
     </>
