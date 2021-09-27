@@ -1,22 +1,35 @@
 import React, { useContext, useMemo } from 'react';
 import './home.scss';
-import { Button, Grid, Loading, Text } from '@geist-ui/react';
+import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import { useHistory } from 'react-router-dom';
 import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
+import { IslandsContext } from '../../contexts/IslandsProvider';
 
 const Home: React.FC = () => {
   const history = useHistory();
   const { servers } = useContext(ServersContext);
+  const { getIslandByTerrain } = useContext(IslandsContext);
 
-  const popularServers = useMemo(() => servers.sort((a, b) => b.players + b.queue - (a.players + a.queue)).slice(0, 4), [servers]);
+  const popularServers = useMemo(() => servers.slice(0, 4), [servers]);
+  const sampleServers = useMemo(
+    () =>
+      servers
+        .filter(
+          (server, i, arr) =>
+            getIslandByTerrain(server?.island || '') &&
+            arr.findIndex((s) => s['island'] === server['island'] && /^[-a-zA-Z0-9$@$!%*?&#^-_. +]+$/i.test(s.name)) === i
+        )
+        .slice(0, 4),
+    [servers]
+  );
 
   return (
     <>
-      <div className="relative flex items-center flex-auto" style={{ height: '70vh' }}>
+      <div className="relative flex items-center flex-auto" style={{ height: '60vh' }}>
         <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
 
         <Grid.Container gap={2} className="my-auto">
@@ -41,6 +54,29 @@ const Home: React.FC = () => {
           </Grid>
         </Grid.Container>
       </div>
+
+      <div className="relative flex-auto py-10">
+        <div>
+          <Text h3 margin={0}>
+            Sample servers
+          </Text>
+          <Text p type="secondary" className="mb-4 mt-0">
+            A sample of servers selected randomly
+          </Text>
+        </div>
+
+        {sampleServers.length > 0 ? (
+          <div className="grid grid-cols-4 grid-flow-row gap-6">
+            {sampleServers.map((server, i) => (
+              <ServerCard server={server} key={i} />
+            ))}
+          </div>
+        ) : (
+          <Loading>Loading servers</Loading>
+        )}
+      </div>
+
+      <Divider />
 
       <div className="relative flex-auto py-10">
         <div>
