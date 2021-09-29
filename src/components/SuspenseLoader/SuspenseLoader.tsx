@@ -3,8 +3,8 @@ import React from 'react';
 
 const SuspenseLoader: React.FC = () => {
   return (
-    <div className="flex items-center justify-center w-full h-full">
-      <Loading></Loading>
+    <div className="flex items-center justify-center flex-auto w-full h-full">
+      <Loading scale={3}></Loading>
     </div>
   );
 };
