@@ -5,12 +5,15 @@ import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Fuse from 'fuse.js';
+import { useHistory } from 'react-router-dom';
 
 interface Props {
   result: Fuse.FuseResult<Server>;
+  handleClick?: () => void;
 }
 
-const ServerOption: React.FC<Props> = ({ result }) => {
+const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
+  const history = useHistory();
   const { getIslandByTerrain } = useContext(IslandsContext);
 
   const server = useMemo(() => result?.item, [result]);
@@ -26,9 +29,16 @@ const ServerOption: React.FC<Props> = ({ result }) => {
   const matchedIp = useMemo(() => getMatchedValue('ip'), [getMatchedValue]);
   const matchedMods = useMemo(() => getMatchedValues('mods.name'), [getMatchedValues]);
 
+  function onClick(e) {
+    if (!server?.ip) return;
+
+    if (handleClick) handleClick();
+    history.push(`/server/${server.ip}/${server.queryPort}`);
+  }
+
   return server ? (
-    <AutoComplete.Option value={server.id}>
-      <Grid.Container className="py-4">
+    <AutoComplete.Item value={server.id}>
+      <Grid.Container className="py-4" onClick={onClick}>
         <Grid xs={24} className="items-center">
           <Text span b font="1.2rem" className="truncate">
             {server.name}
@@ -72,7 +82,7 @@ const ServerOption: React.FC<Props> = ({ result }) => {
           )}
         </Grid>
       </Grid.Container>
-    </AutoComplete.Option>
+    </AutoComplete.Item>
   ) : null;
 };
 

@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AutoComplete } from '@geist-ui/react';
 import Fuse from 'fuse.js';
@@ -6,13 +6,11 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
-import { useHistory } from 'react-router-dom';
 
 const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
-  const history = useHistory();
   const { servers } = useContext(ServersContext);
 
   const [options, setOptions] = useState<React.ReactElement[]>([]);
@@ -27,15 +25,16 @@ const ServersSearch: React.FC = () => {
     setSearchValue(value);
   }
 
-  const selectHandler = useCallback(
-    (value: string) => {
-      const server = servers.find((server) => server.id === value);
-      if (!server?.ip) return;
+  function handleOptionClick() {
+    // A little delay is required because the AutoComplete component
+    // has some weird behaviour
+    setTimeout(() => {
+      setSearchValue('');
 
-      history.push(`/server/${server.ip}/${server.queryPort}`);
-    },
-    [servers]
-  );
+      const inputEl = document.getElementById(ELEMENT_ID);
+      inputEl?.blur();
+    }, 50);
+  }
 
   useEffect(() => {
     if (!debouncedSearchValue) return setOptions([]);
@@ -54,7 +53,7 @@ const ServersSearch: React.FC = () => {
       .sort((a, b) => {
         return b?.item.players + b?.item.queue - (a?.item.players + a?.item.queue);
       })
-      .map((result) => <ServerOption result={result} />)
+      .map((result) => <ServerOption result={result} handleClick={handleOptionClick} />)
       .slice(0, RESULTS_LIMIT);
     setOptions(optionsResult);
 
@@ -97,7 +96,6 @@ const ServersSearch: React.FC = () => {
         options={options}
         value={searchValue}
         onSearch={searchHandler}
-        onSelect={selectHandler}
         scale={4 / 3}
         width="100%"
         searching={isSearching}
