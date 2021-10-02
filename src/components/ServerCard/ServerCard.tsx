@@ -1,6 +1,7 @@
 import { Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Lock } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
+import { useHistory } from 'react-router-dom';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
@@ -11,6 +12,7 @@ interface Props {
 }
 
 const ServerCard: React.FC<Props> = ({ server }) => {
+  const history = useHistory();
   const { getIslandByTerrain } = useContext(IslandsContext);
 
   const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
@@ -19,8 +21,14 @@ const ServerCard: React.FC<Props> = ({ server }) => {
     return `${IMAGE_BUCKET}${serverIsland?.terrainId}.jpg`;
   }, [serverIsland]);
 
+  function onClick() {
+    if (!server?.ip) return;
+
+    history.push(`/server/${server.ip}/${server.queryPort}`);
+  }
+
   return (
-    <Card onClick={() => console.log(server)} hoverable className="cursor-pointer">
+    <Card onClick={onClick} hoverable className="cursor-pointer">
       <Image height="150px" src={islandSrc} style={{ objectFit: 'cover', opacity: 0.4 }} />
 
       <div className="flex flex-col">

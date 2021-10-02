@@ -6,11 +6,13 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
+import { useHistory } from 'react-router-dom';
 
 const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
+  const history = useHistory();
   const { servers } = useContext(ServersContext);
 
   const [options, setOptions] = useState<React.ReactElement[]>([]);
@@ -27,7 +29,10 @@ const ServersSearch: React.FC = () => {
 
   const selectHandler = useCallback(
     (value: string) => {
-      console.log(servers.find((server) => server.id === value));
+      const server = servers.find((server) => server.id === value);
+      if (!server?.ip) return;
+
+      history.push(`/server/${server.ip}/${server.queryPort}`);
     },
     [servers]
   );
