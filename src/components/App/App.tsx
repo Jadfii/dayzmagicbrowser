@@ -6,6 +6,7 @@ import AppLayout from '../AppLayout/AppLayout';
 import './app.css';
 import ServersProvider from '../../contexts/ServersProvider';
 import IslandsProvider from '../../contexts/IslandsProvider';
+import GameProvider from '../../contexts/GameProvider';
 
 const App = () => {
   return (
@@ -14,7 +15,9 @@ const App = () => {
         <CssBaseline />
         <IslandsProvider>
           <ServersProvider>
-            <AppLayout />
+            <GameProvider>
+              <AppLayout />
+            </GameProvider>
           </ServersProvider>
         </IslandsProvider>
       </GeistProvider>

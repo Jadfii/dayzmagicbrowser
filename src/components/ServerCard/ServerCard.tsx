@@ -1,8 +1,9 @@
-import { Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
-import { Lock } from '@geist-ui/react-icons';
+import { Button, Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Lock, Play } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
+import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
@@ -14,6 +15,7 @@ interface Props {
 const ServerCard: React.FC<Props> = ({ server }) => {
   const history = useHistory();
   const { getIslandByTerrain } = useContext(IslandsContext);
+  const { joinServer } = useContext(GameContext);
 
   const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
 
@@ -25,6 +27,13 @@ const ServerCard: React.FC<Props> = ({ server }) => {
     if (!server?.ip) return;
 
     history.push(`/server/${server.ip}/${server.queryPort}`);
+  }
+
+  function onPlayClick(e) {
+    e.stopPropagation();
+    if (!server?.ip) return;
+
+    joinServer(server);
   }
 
   return (
@@ -53,8 +62,12 @@ const ServerCard: React.FC<Props> = ({ server }) => {
 
         <Spacer h={2} />
 
-        <div className="mt-auto">
+        <div className="flex justify-between mt-auto">
           <PlayerCount server={server} type="h5" />
+
+          <Button onClick={onPlayClick} icon={<Play />} scale={3 / 4} auto>
+            Play
+          </Button>
         </div>
       </div>
     </Card>
