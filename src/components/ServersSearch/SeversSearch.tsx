@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AutoComplete } from '@geist-ui/react';
 import Fuse from 'fuse.js';

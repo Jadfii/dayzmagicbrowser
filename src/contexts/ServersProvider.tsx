@@ -9,12 +9,7 @@ type ContextProps = {
   findServerByIpPort: (ip: string, port: number, allowGamePort?: boolean) => Server | undefined;
 };
 
-export const ServersContext = React.createContext<ContextProps>({
-  servers: [],
-  refreshServers: () => undefined,
-  isLoadingServers: false,
-  findServerByIpPort: (ip: string, port: number, allowGamePort?: boolean) => undefined,
-});
+export const ServersContext = React.createContext<ContextProps>({} as ContextProps);
 
 const ServersProvider: React.FC = ({ children }) => {
   const { getServers } = useServersAPI();

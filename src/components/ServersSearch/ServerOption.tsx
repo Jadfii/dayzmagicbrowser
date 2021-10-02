@@ -29,7 +29,7 @@ const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
   const matchedIp = useMemo(() => getMatchedValue('ip'), [getMatchedValue]);
   const matchedMods = useMemo(() => getMatchedValues('mods.name'), [getMatchedValues]);
 
-  function onClick(e) {
+  function onClick() {
     if (!server?.ip) return;
 
     if (handleClick) handleClick();

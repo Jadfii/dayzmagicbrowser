@@ -5,7 +5,7 @@ const generateParams = (params: string[]): string => params.join(' ');
 
 const openSteamGame = (appId: number, params: string[]): boolean => {
   const finalParams: string = generateParams(params);
-  const connectURI: string = `steam://run/${appId}//${finalParams}/`;
+  const connectURI = `steam://run/${appId}//${finalParams}/`;
 
   try {
     window.open(connectURI, '_blank');

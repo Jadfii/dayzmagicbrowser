@@ -8,11 +8,7 @@ type ContextProps = {
   getIslandByTerrain: (terrainId: string) => Island | undefined;
 };
 
-export const IslandsContext = React.createContext<ContextProps>({
-  islands: [],
-  refreshIslands: () => undefined,
-  getIslandByTerrain: (terrainId: string) => undefined,
-});
+export const IslandsContext = React.createContext<ContextProps>({} as ContextProps);
 
 const IslandsProvider: React.FC = ({ children }) => {
   const { getIslands } = useIslandsAPI();
