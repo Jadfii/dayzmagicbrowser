@@ -41,6 +41,9 @@ const ServerPage: React.FC = () => {
   }
 
   useEffect(() => {
+    // For development, mods shouldn't be queried if already set
+    if (import.meta.env.DEV && serverMods.length > 0) return;
+
     loadMods();
   }, [server?.mods]);
 
