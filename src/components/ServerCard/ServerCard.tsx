@@ -6,12 +6,14 @@ import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
+import './server-card.scss';
 
 interface Props {
   server: Server;
+  imageHeight?: number;
 }
 
-const ServerCard: React.FC<Props> = ({ server }) => {
+const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const history = useHistory();
   const { getIslandByTerrain } = useContext(IslandsContext);
   const { joinServer } = useContext(GameContext);
@@ -32,8 +34,8 @@ const ServerCard: React.FC<Props> = ({ server }) => {
   }
 
   return (
-    <Card onClick={onClick} hoverable className="cursor-pointer">
-      <Image height="150px" src={serverIsland?.imageURL || ''} style={{ objectFit: 'cover', opacity: 0.4 }} />
+    <Card onClick={onClick} hoverable className="server-card cursor-pointer">
+      <Image height={`${imageHeight}px`} src={serverIsland?.imageURL || ''} style={{ objectFit: 'cover', opacity: 0.4 }} />
 
       <div className="flex flex-col">
         <div className="flex items-center">
