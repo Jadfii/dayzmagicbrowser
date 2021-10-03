@@ -8,7 +8,7 @@ interface Props {
   type?: BadgeTypes;
 }
 
-const AttributeBadge: React.FC<Props> = ({ icon, label, type = 'default' }) => {
+const FeatureBadge: React.FC<Props> = ({ icon, label, type = 'default' }) => {
   return (
     <Badge type={type}>
       <div className="flex items-center">
@@ -22,4 +22,4 @@ const AttributeBadge: React.FC<Props> = ({ icon, label, type = 'default' }) => {
   );
 };
 
-export default AttributeBadge;
+export default FeatureBadge;

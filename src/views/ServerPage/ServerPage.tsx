@@ -9,7 +9,7 @@ import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
 import useWorkshopAPI from '../../data/useWorkshopAPI';
 import { Island, Server, WorkshopMod } from '../../types/Types';
-import AttributeBadge from './AttributeBadge';
+import FeatureBadge from './FeatureBadge';
 import InfoCard from './InfoCard';
 
 const ServerPage: React.FC = () => {
@@ -63,8 +63,8 @@ const ServerPage: React.FC = () => {
               {server.name}
             </Text>
 
-            {server.isFirstPerson && <AttributeBadge label="First person" icon={<User />} />}
-            {server.hasPassword && <AttributeBadge label="Passworded" icon={<Lock />} />}
+            {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
+            {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
           </Grid>
         </Grid.Container>
       </div>
