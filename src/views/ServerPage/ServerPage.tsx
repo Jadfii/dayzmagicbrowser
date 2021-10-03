@@ -1,5 +1,5 @@
 import { Grid, Loading, Text } from '@geist-ui/react';
-import { Clock, Lock, Map, User, Users } from '@geist-ui/react-icons';
+import { Clock, Lock, Map, Shield, ShieldOff, User, Users } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
@@ -63,8 +63,15 @@ const ServerPage: React.FC = () => {
               {server.name}
             </Text>
 
-            {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
-            {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
+            <div className="flex space-x-2">
+              {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
+              {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
+              {server.isBattleEye ? (
+                <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
+              ) : (
+                <FeatureBadge type="error" label="Unprotected (BattlEye)" icon={<ShieldOff />} />
+              )}
+            </div>
           </Grid>
         </Grid.Container>
       </div>
