@@ -31,7 +31,12 @@ const ServerPage: React.FC = () => {
     if (!server?.mods?.length) return setIsLoadingMods(false);
 
     setIsLoadingMods(true);
-    setServerMods(await getWorkshopMods(server.mods.map((mod) => mod.steamId)));
+    const workshopMods = await getWorkshopMods(server.mods.map((mod) => mod.steamId));
+    setServerMods(
+      workshopMods
+        .map((mod) => (!mod?.name ? { ...mod, name: server?.mods?.find((m) => m.steamId === mod.id)?.name || '' } : mod))
+        .filter((mod) => mod?.name)
+    );
     setIsLoadingMods(false);
   }
 

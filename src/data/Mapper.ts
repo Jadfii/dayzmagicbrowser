@@ -37,7 +37,7 @@ export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   isVac: server.vac,
   isPublicHive: server.public_hive,
   isOffline: server.offline,
-  mods: server.mods.map((mod) => ({ steamId: mod.id, name: mod.name })),
+  mods: server.mods.map((mod) => ({ steamId: mod.id.toString(), name: mod.name })),
 });
 
 export const mapIslandResponse = (island: IslandResponse): Island => ({
@@ -61,7 +61,7 @@ export const mapWorkshopModResponse = (mod: WorkshopModResponse): WorkshopMod =>
   subscriptions: mod.subscriptions,
   previewURL: mod.preview_url,
   success: mod.result === 1,
-  tags: mod.tags.map((t) => t.tag),
+  tags: mod.tags?.length ? mod.tags.map((t) => t.tag) : [],
   views: mod.views,
   visibility: mod.visibility,
 });

@@ -10,8 +10,12 @@ interface Props {
 const ModCard: React.FC<Props> = ({ mod }) => {
   return (
     <Card hoverable onClick={() => window.open(`${STEAM_WORKSHOP_ITEM}${mod.id}`, '_blank')} className="cursor-pointer">
-      <Text h6>{mod.name}</Text>
-      <Text small>{mod.subscriptions.toLocaleString()} subscribers</Text>
+      {mod.name && (
+        <Text h6 margin={0}>
+          {mod.name}
+        </Text>
+      )}
+      {mod.subscriptions && <Text small>{mod.subscriptions.toLocaleString()} subscribers</Text>}
     </Card>
   );
 };
