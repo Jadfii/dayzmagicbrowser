@@ -1,4 +1,4 @@
-import { Card, Grid, Loading, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Grid, Loading, Text } from '@geist-ui/react';
 import { Clock, Lock, Map, User, Users } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -9,28 +9,8 @@ import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
 import useWorkshopAPI from '../../data/useWorkshopAPI';
 import { Island, Server, WorkshopMod } from '../../types/Types';
-
-const ICON_SIZE = 48;
-
-interface InfoCardProps {
-  icon: React.ReactElement;
-  iconDescription: string;
-  item: React.ReactNode;
-}
-
-const InfoCard: React.FC<InfoCardProps> = ({ icon, iconDescription, item }) => {
-  return (
-    <Card className="self-start">
-      <div className="flex items-center h-16">
-        <Tooltip text={iconDescription}>{React.cloneElement(icon, { size: 40 })}</Tooltip>
-
-        <Spacer w={1} />
-
-        {item}
-      </div>
-    </Card>
-  );
-};
+import AttributeBadge from './AttributeBadge';
+import InfoCard from './InfoCard';
 
 const ServerPage: React.FC = () => {
   const { serverIp, serverPort } = useParams<{ serverIp: string; serverPort: string }>();
@@ -78,18 +58,13 @@ const ServerPage: React.FC = () => {
         <BackgroundImage src={serverIsland?.imageURL || ''} />
 
         <Grid.Container>
-          <Grid xs={22} className="items-center">
+          <Grid xs={24} className="flex flex-col items-start">
             <Text h1 margin={0} className="truncate">
               {server.name}
             </Text>
-          </Grid>
 
-          <Grid xs={2} className="px-2 items-center">
-            {server.hasPassword && <Lock size={ICON_SIZE} />}
-
-            <Spacer w={1 / 2} />
-
-            {server.isFirstPerson && <User size={ICON_SIZE} />}
+            {server.isFirstPerson && <AttributeBadge label="First person" icon={<User />} />}
+            {server.hasPassword && <AttributeBadge label="Passworded" icon={<Lock />} />}
           </Grid>
         </Grid.Container>
       </div>
