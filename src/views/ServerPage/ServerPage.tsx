@@ -38,15 +38,12 @@ const ServerPage: React.FC = () => {
   const { servers, findServerByIpPort } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
 
+  const [server, setServer] = useState<Server | undefined>(undefined);
+
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
   const [serverMods, setServerMods] = useState<WorkshopMod[]>([]);
   const [isLoadingMods, setIsLoadingMods] = useState<boolean>(true);
-
-  const server: Server | undefined = useMemo(
-    () => (servers.length > 0 ? findServerByIpPort(serverIp, Number(serverPort), true) : undefined),
-    [servers, serverIp, serverPort]
-  );
 
   const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island]);
 
@@ -65,6 +62,15 @@ const ServerPage: React.FC = () => {
   useEffect(() => {
     if (server?.name) setIsLoadingServer(false);
   }, [server?.name]);
+
+  useEffect(() => {
+    if (servers.length === 0) return;
+
+    const foundServer = findServerByIpPort(serverIp, Number(serverPort), true);
+    setServer(foundServer);
+
+    setIsLoadingServer(false);
+  }, [servers, serverIp, serverPort]);
 
   return server?.name ? (
     <>
