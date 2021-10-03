@@ -1,4 +1,4 @@
-import { Card, Grid, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Card, Grid, Loading, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Clock, Lock, Map, User, Users } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
@@ -38,6 +38,8 @@ const ServerPage: React.FC = () => {
   const { servers, findServerByIpPort } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
 
+  const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
+
   const [serverMods, setServerMods] = useState<WorkshopMod[]>([]);
   const [isLoadingMods, setIsLoadingMods] = useState<boolean>(true);
 
@@ -59,6 +61,10 @@ const ServerPage: React.FC = () => {
   useEffect(() => {
     loadMods();
   }, [server?.mods]);
+
+  useEffect(() => {
+    if (server?.name) setIsLoadingServer(false);
+  }, [server?.name]);
 
   return server?.name ? (
     <>
@@ -116,7 +122,11 @@ const ServerPage: React.FC = () => {
         </div>
       </div>
     </>
-  ) : null;
+  ) : (
+    <div className="flex flex-auto items-center justify-center">
+      {isLoadingServer ? <Loading scale={4 / 3}>Loading server...</Loading> : <Text h3>Server not found.</Text>}
+    </div>
+  );
 };
 
 export default ServerPage;
