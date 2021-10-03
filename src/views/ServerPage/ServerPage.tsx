@@ -54,7 +54,7 @@ const ServerPage: React.FC = () => {
 
   return server?.name ? (
     <>
-      <div className="relative flex items-end h-48 py-4">
+      <div className="relative flex items-end h-40 py-4">
         <BackgroundImage src={serverIsland?.imageURL || ''} />
 
         <Grid.Container>
