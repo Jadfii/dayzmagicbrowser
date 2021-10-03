@@ -2,7 +2,6 @@ import { Badge, Button, Card, Image, Spacer, Text, Tooltip } from '@geist-ui/rea
 import { Lock, Play } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
-import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
@@ -16,7 +15,6 @@ interface Props {
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const history = useHistory();
   const { getIslandByTerrain } = useContext(IslandsContext);
-  const { joinServer } = useContext(GameContext);
 
   const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
 
@@ -30,7 +28,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
     e.stopPropagation();
     if (!server?.ip) return;
 
-    joinServer(server);
+    history.push(`/play/${server.ip}/${server.queryPort}`);
   }
 
   return (

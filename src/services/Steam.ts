@@ -18,4 +18,5 @@ const openSteamGame = (appId: number, params: string[]): boolean => {
 
 export const openDayzGame = (params: string[]): boolean => openSteamGame(DAYZ_APPID, params);
 
-export const generateServerParams = (server: Server): string[] => [`+connect ${server.ip}:${server.gamePort}`];
+export const generateConnectParam = (ip: string, port: number) => `+connect ${ip}:${port}`;
+export const generateServerParams = (server: Server): string[] => [generateConnectParam(server.ip, server.gamePort)];
