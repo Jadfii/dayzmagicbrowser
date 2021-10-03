@@ -19,7 +19,9 @@ const ServersProvider: React.FC = ({ children }) => {
   async function refreshServers() {
     setIsLoadingServers(true);
     const serversResult = await getServers();
-    setServers(serversResult.sort((a, b) => b.players + b.queue - (a.players + a.queue)));
+    setServers(
+      serversResult.filter((server) => server.queryPort === server.gamePort + 1).sort((a, b) => b.players + b.queue - (a.players + a.queue))
+    );
     setIsLoadingServers(false);
   }
 
