@@ -1,4 +1,4 @@
-import { Button, Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Badge, Button, Card, Image, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Lock, Play } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
@@ -42,6 +42,8 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
           <Text h5 className="truncate my-0">
             {server.name}
           </Text>
+
+          {import.meta.env.DEV && server.queryPort === server.gamePort + 1 && <Badge type="success">Playable</Badge>}
 
           {server.hasPassword && (
             <>
