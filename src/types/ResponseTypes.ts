@@ -43,3 +43,34 @@ export interface IslandResponse {
   workshop_id?: string;
   official: boolean;
 }
+
+export interface WorkshopModTagResponse {
+  tag: string;
+}
+
+export interface WorkshopModResponse {
+  ban_reason: string;
+  banned: number;
+  consumer_app_id: number;
+  creator: string;
+  creator_app_id: number;
+  description: string;
+  favorited: number;
+  file_size: number;
+  file_url: string;
+  filename: string;
+  hcontent_file: string;
+  hcontent_preview: string;
+  lifetime_favorited: number;
+  lifetime_subscriptions: number;
+  preview_url: string;
+  publishedfileid: string;
+  result: number;
+  subscriptions: number;
+  tags: WorkshopModTagResponse[];
+  time_created: number;
+  time_updated: number;
+  title: string;
+  views: number;
+  visibility: number;
+}

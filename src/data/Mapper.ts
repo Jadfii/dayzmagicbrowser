@@ -1,6 +1,6 @@
 import { IMAGE_BUCKET } from '../constants/links.constant';
-import { IslandResponse, ServerObjectResponse } from '../types/ResponseTypes';
-import { Island, Server, ServerTimeAcceleration } from '../types/Types';
+import { IslandResponse, ServerObjectResponse, WorkshopModResponse } from '../types/ResponseTypes';
+import { Island, Server, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 import { getServerTimeDuration } from '../utils/time.util';
 
 export const getServerTimeAcceleration = (acceleration: string): ServerTimeAcceleration => {
@@ -47,4 +47,21 @@ export const mapIslandResponse = (island: IslandResponse): Island => ({
   description: island.description,
   imageURL: `${IMAGE_BUCKET}${island.thumbnail}.jpg`,
   workshopId: island.workshop_id,
+});
+
+export const mapWorkshopModResponse = (mod: WorkshopModResponse): WorkshopMod => ({
+  id: mod.publishedfileid,
+  name: mod.title,
+  banned: mod.banned === 1,
+  appId: mod.consumer_app_id,
+  creatorSteamId: mod.creator,
+  description: mod.description,
+  favourited: mod.favorited,
+  fileSize: mod.file_size,
+  subscriptions: mod.subscriptions,
+  previewURL: mod.preview_url,
+  success: mod.result === 1,
+  tags: mod.tags.map((t) => t.tag),
+  views: mod.views,
+  visibility: mod.visibility,
 });
