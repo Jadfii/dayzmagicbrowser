@@ -1,5 +1,5 @@
 import { Grid, Loading, Text } from '@geist-ui/react';
-import { Check, Clock, Lock, Map, Shield, ShieldOff, User, Users } from '@geist-ui/react-icons';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
@@ -11,6 +11,7 @@ import useWorkshopAPI from '../../data/useWorkshopAPI';
 import { Island, Server, WorkshopMod } from '../../types/Types';
 import FeatureBadge from './FeatureBadge';
 import InfoCard from './InfoCard';
+import ServerTimeCard from './ServerTimeCard';
 
 const ServerPage: React.FC = () => {
   const { serverIp, serverPort } = useParams<{ serverIp: string; serverPort: string }>();
@@ -90,7 +91,7 @@ const ServerPage: React.FC = () => {
           <Text h3>Server details</Text>
 
           <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
-            <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h2" />} />
+            <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
 
             <InfoCard
               iconDescription="Map"
@@ -103,14 +104,16 @@ const ServerPage: React.FC = () => {
             />
 
             <InfoCard
-              iconDescription="Server time"
-              icon={<Clock />}
+              iconDescription="Version"
+              icon={<Tag />}
               item={
                 <Text h3 margin={0}>
-                  {server.time}
+                  {server.version}
                 </Text>
               }
             />
+
+            <ServerTimeCard server={server} />
           </div>
         </div>
 
