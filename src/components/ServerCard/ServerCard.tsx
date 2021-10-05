@@ -41,7 +41,12 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
             {server.name}
           </Text>
 
-          {import.meta.env.DEV && server.queryPort === server.gamePort + 1 && <Badge type="success">Playable</Badge>}
+          {import.meta.env.DEV && server.queryPort === server.gamePort + 1 && (
+            <>
+              <Spacer w={1 / 2} />
+              <Badge type="success">Playable</Badge>
+            </>
+          )}
 
           {server.hasPassword && (
             <>
