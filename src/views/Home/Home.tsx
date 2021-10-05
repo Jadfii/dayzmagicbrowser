@@ -26,6 +26,7 @@ const Home: React.FC = () => {
         .slice(0, 4),
     [servers]
   );
+  const officialServers = useMemo(() => servers.filter((server) => server.isPublicHive).slice(0, 4), [servers]);
 
   return (
     <>
@@ -91,6 +92,29 @@ const Home: React.FC = () => {
         {popularServers.length > 0 ? (
           <div className="grid grid-cols-4 grid-flow-row gap-6">
             {popularServers.map((server, i) => (
+              <ServerCard server={server} key={i} />
+            ))}
+          </div>
+        ) : (
+          <Loading>Loading servers</Loading>
+        )}
+      </div>
+
+      <Divider />
+
+      <div className="relative flex-auto py-10">
+        <div>
+          <Text h3 margin={0}>
+            Official servers
+          </Text>
+          <Text p type="secondary" className="mb-4 mt-0">
+            The most popular official servers
+          </Text>
+        </div>
+
+        {officialServers.length > 0 ? (
+          <div className="grid grid-cols-4 grid-flow-row gap-6">
+            {officialServers.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
           </div>
