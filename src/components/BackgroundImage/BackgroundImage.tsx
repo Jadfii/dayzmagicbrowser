@@ -1,6 +1,6 @@
 import React from 'react';
+import Image from '../Image/Image';
 import './background-image.scss';
-import { Image } from '@geist-ui/react';
 
 interface Props {
   src: string;
