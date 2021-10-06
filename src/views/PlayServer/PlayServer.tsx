@@ -9,7 +9,7 @@ const PlayServer: React.FC = () => {
   const { joinServer } = useContext(GameContext);
   const { findServerByIpPort } = useContext(ServersContext);
 
-  const server = useMemo(() => findServerByIpPort(serverIp, Number(serverPort)), [findServerByIpPort, serverIp, serverPort]);
+  const server = useMemo(() => findServerByIpPort(serverIp, Number(serverPort), true), [findServerByIpPort, serverIp, serverPort]);
 
   useEffect(() => {
     if (!server?.name) return;
