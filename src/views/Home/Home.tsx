@@ -8,6 +8,7 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { IslandsContext } from '../../contexts/IslandsProvider';
+import { DAYZ_EXP_APPID } from '../../constants/game.constant';
 
 const Home: React.FC = () => {
   const history = useHistory();
@@ -27,6 +28,7 @@ const Home: React.FC = () => {
     [servers]
   );
   const officialServers = useMemo(() => servers.filter((server) => server.isPublicHive).slice(0, 4), [servers]);
+  const expServers = useMemo(() => servers.filter((server) => server.appId === DAYZ_EXP_APPID).slice(0, 4), [servers]);
 
   return (
     <>
@@ -115,6 +117,27 @@ const Home: React.FC = () => {
         {officialServers.length > 0 ? (
           <div className="grid grid-cols-4 grid-flow-row gap-6">
             {officialServers.map((server, i) => (
+              <ServerCard server={server} key={i} />
+            ))}
+          </div>
+        ) : (
+          <Loading>Loading servers</Loading>
+        )}
+      </div>
+
+      <div className="relative flex-auto py-10">
+        <div>
+          <Text h3 margin={0}>
+            Experimental servers
+          </Text>
+          <Text p type="secondary" className="mb-4 mt-0">
+            The most popular experimental branch servers
+          </Text>
+        </div>
+
+        {expServers.length > 0 ? (
+          <div className="grid grid-cols-4 grid-flow-row gap-6">
+            {expServers.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
           </div>
