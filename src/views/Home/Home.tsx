@@ -125,6 +125,8 @@ const Home: React.FC = () => {
         )}
       </div>
 
+      <Divider />
+
       <div className="relative flex-auto py-10">
         <div>
           <Text h3 margin={0}>
