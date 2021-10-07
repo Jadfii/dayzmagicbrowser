@@ -1,4 +1,4 @@
-import { DAYZ_APPID } from '../constants/game.constant';
+import { ALLOWED_APPIDS } from '../constants/game.constant';
 import { Server } from '../types/Types';
 
 const generateParams = (params: string[]): string => params.join(' ');
@@ -16,7 +16,10 @@ const openSteamGame = (appId: number, params: string[]): boolean => {
   }
 };
 
-export const openDayzGame = (params: string[]): boolean => openSteamGame(DAYZ_APPID, params);
+export const openDayzGame = (appId: number, params: string[]): boolean => {
+  if (!ALLOWED_APPIDS.includes(appId)) return false;
+  return openSteamGame(appId, params);
+};
 
 export const generateConnectParam = (ip: string, port: number) => `+connect ${ip}:${port}`;
 export const generateServerParams = (server: Server): string[] => [generateConnectParam(server.ip, server.gamePort)];

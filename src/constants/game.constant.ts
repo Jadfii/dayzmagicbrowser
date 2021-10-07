@@ -1,1 +1,3 @@
 export const DAYZ_APPID = 221100;
+export const DAYZ_EXP_APPID = 1024020;
+export const ALLOWED_APPIDS = [DAYZ_APPID, DAYZ_EXP_APPID];
