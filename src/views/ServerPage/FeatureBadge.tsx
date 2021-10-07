@@ -6,11 +6,12 @@ interface Props {
   icon: React.ReactElement;
   label: string;
   type?: BadgeTypes;
+  backgroundColor?: string;
 }
 
-const FeatureBadge: React.FC<Props> = ({ icon, label, type = 'default' }) => {
+const FeatureBadge: React.FC<Props> = ({ icon, label, type = 'default', backgroundColor }) => {
   return (
-    <Badge type={type}>
+    <Badge type={type} style={{ ...(backgroundColor ? { backgroundColor } : {}) }}>
       <div className="flex items-center">
         {React.cloneElement(icon, { size: 20 })}
 
