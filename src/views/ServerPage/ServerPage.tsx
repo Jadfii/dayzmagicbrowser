@@ -1,10 +1,11 @@
-import { Grid, Loading, Text } from '@geist-ui/react';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag } from '@geist-ui/react-icons';
+import { Button, Grid, Loading, Spacer, Text, useTheme } from '@geist-ui/react';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useHistory } from 'react-router-dom';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../components/ServerModList/ServerModList';
+import { DAYZ_EXP_APPID } from '../../constants/game.constant';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
 import useWorkshopAPI from '../../data/useWorkshopAPI';
@@ -14,6 +15,8 @@ import InfoCard from './InfoCard';
 import ServerTimeCard from './ServerTimeCard';
 
 const ServerPage: React.FC = () => {
+  const history = useHistory();
+  const theme = useTheme();
   const { serverIp, serverPort } = useParams<{ serverIp: string; serverPort: string }>();
   const { getWorkshopMods } = useWorkshopAPI();
   const { servers, findServerByIpPort } = useContext(ServersContext);
@@ -41,6 +44,12 @@ const ServerPage: React.FC = () => {
     setIsLoadingMods(false);
   }
 
+  function onPlay() {
+    if (!server?.ip) return;
+
+    history.push(`/play/${server.ip}/${server.gamePort}`);
+  }
+
   useEffect(() => {
     // For development, mods shouldn't be queried if already set
     if (import.meta.env.DEV && serverMods.length > 0) return;
@@ -57,6 +66,8 @@ const ServerPage: React.FC = () => {
 
     const foundServer = findServerByIpPort(serverIp, Number(serverPort), true);
     setServer(foundServer);
+
+    if (foundServer) console.log(foundServer);
 
     setIsLoadingServer(false);
   }, [servers, serverIp, serverPort]);
@@ -76,6 +87,7 @@ const ServerPage: React.FC = () => {
               {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
               {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
               {server.isPublicHive && <FeatureBadge type="default" label="Official server" icon={<Check />} />}
+              {server.appId === DAYZ_EXP_APPID && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental server" icon={<Tool />} />}
               {server.isBattleEye ? (
                 <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
               ) : (
@@ -86,39 +98,51 @@ const ServerPage: React.FC = () => {
         </Grid.Container>
       </div>
 
-      <div className="relative flex flex-auto py-10">
-        <div className="flex-auto mr-6">
-          <Text h3>Server details</Text>
-
-          <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
-            <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
-
-            <InfoCard
-              iconDescription="Map"
-              icon={<Map />}
-              item={
-                <Text h3 margin={0}>
-                  {serverIsland?.name || server.island}
-                </Text>
-              }
-            />
-
-            <InfoCard
-              iconDescription="Version"
-              icon={<Tag />}
-              item={
-                <Text h3 margin={0}>
-                  {server.version}
-                </Text>
-              }
-            />
-
-            <ServerTimeCard server={server} />
+      <div className="relative flex flex-auto py-8">
+        <div className="flex flex-col flex-auto">
+          <div className="flex items-start">
+            <Button onClick={onPlay} icon={<Play />} scale={4 / 3}>
+              Play
+            </Button>
           </div>
-        </div>
 
-        <div className="flex flex-auto w-3/12">
-          <ServerModList mods={serverMods.sort((a, b) => b.subscriptions - a.subscriptions)} isLoading={isLoadingMods} />
+          <Spacer h={1} />
+
+          <div className="flex flex-auto space-x-6">
+            <div className="flex flex-col flex-auto">
+              <Text h3>Server details</Text>
+
+              <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
+                <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
+
+                <InfoCard
+                  iconDescription="Map"
+                  icon={<Map />}
+                  item={
+                    <Text h3 margin={0}>
+                      {serverIsland?.name || server.island}
+                    </Text>
+                  }
+                />
+
+                <InfoCard
+                  iconDescription="Version"
+                  icon={<Tag />}
+                  item={
+                    <Text h3 margin={0}>
+                      {server.version}
+                    </Text>
+                  }
+                />
+
+                <ServerTimeCard server={server} />
+              </div>
+            </div>
+
+            <div className="flex flex-auto w-3/12">
+              <ServerModList mods={serverMods.sort((a, b) => b.subscriptions - a.subscriptions)} isLoading={isLoadingMods} />
+            </div>
+          </div>
         </div>
       </div>
     </>
