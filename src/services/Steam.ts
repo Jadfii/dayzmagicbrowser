@@ -1,7 +1,7 @@
 import { ALLOWED_APPIDS } from '../constants/game.constant';
 import { Server } from '../types/Types';
 
-const generateParams = (params: string[]): string => params.join(' ');
+const generateParams = (params: string[]): string => encodeURIComponent(params.join(' '));
 
 const openSteamGame = (appId: number, params: string[]): boolean => {
   const finalParams: string = generateParams(params);
