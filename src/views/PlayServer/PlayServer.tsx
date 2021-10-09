@@ -14,7 +14,7 @@ const PlayServer: React.FC = () => {
   useEffect(() => {
     if (!server?.name) return;
 
-    joinServer(server);
+    if (joinServer) joinServer(server);
   }, [server]);
 
   return (
