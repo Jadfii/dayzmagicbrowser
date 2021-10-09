@@ -1,5 +1,6 @@
 import { useToasts } from '@geist-ui/react';
-import React, { useContext, useMemo, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import useGameAPI from '../data/useGameAPI';
 import { generateConnectParam, generateServerParams, openDayzGame } from '../services/Steam';
 import { Server } from '../types/Types';
 import { ServersContext } from './ServersProvider';
@@ -7,16 +8,37 @@ import { ServersContext } from './ServersProvider';
 type ContextProps = {
   joinServer: (server: Server) => boolean;
   joinServerByIpPort: (serverIp: string, serverPort: number) => boolean;
+  isLatestGameVersion: (version: string) => boolean;
+  latestGameVersion: string;
 };
 
 export const GameContext = React.createContext<ContextProps>({} as ContextProps);
 
 const GameProvider: React.FC = ({ children }) => {
   const [, setToast] = useToasts();
+  const { getLatestGameVersion } = useGameAPI();
   const { findServerByIpPort } = useContext(ServersContext);
+  const [latestGameVersion, setLatestGameVersion] = useState<string>('');
   const [inGameNickname] = useState<string>('');
 
+  async function init() {
+    getGameVersion();
+  }
+
+  useEffect(() => {
+    init();
+  }, []);
+
   // Other methods below
+
+  const getGameVersion = async () => {
+    setLatestGameVersion(await getLatestGameVersion());
+  };
+
+  const isLatestGameVersion = useCallback(
+    (version: string) => version.replaceAll('.', '') === latestGameVersion.replaceAll('.', ''),
+    [latestGameVersion]
+  );
 
   const nameParam: string[] = useMemo(() => (inGameNickname ? [`-name=${inGameNickname}`] : []), [inGameNickname]);
 
@@ -47,6 +69,8 @@ const GameProvider: React.FC = ({ children }) => {
       value={{
         joinServer,
         joinServerByIpPort,
+        isLatestGameVersion,
+        latestGameVersion,
       }}
     >
       {children}

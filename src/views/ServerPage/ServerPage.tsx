@@ -1,4 +1,4 @@
-import { Button, Grid, Loading, Spacer, Text, useTheme } from '@geist-ui/react';
+import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useParams, useHistory } from 'react-router-dom';
@@ -6,6 +6,7 @@ import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
+import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
 import useWorkshopAPI from '../../data/useWorkshopAPI';
@@ -21,6 +22,7 @@ const ServerPage: React.FC = () => {
   const { getWorkshopMods } = useWorkshopAPI();
   const { servers, findServerByIpPort } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
+  const { isLatestGameVersion } = useContext(GameContext);
 
   const [server, setServer] = useState<Server | undefined>(undefined);
 
@@ -129,9 +131,19 @@ const ServerPage: React.FC = () => {
                   iconDescription="Version"
                   icon={<Tag />}
                   item={
-                    <Text h3 margin={0}>
-                      {server.version}
-                    </Text>
+                    <div className="flex items-center">
+                      <Text h3 margin={0}>
+                        {server.version}
+                      </Text>
+
+                      <Spacer w={1 / 2} />
+
+                      {isLatestGameVersion(server.version) && (
+                        <Tooltip text="This server is running the latest version of DayZ">
+                          <Check color={theme.palette.success} />
+                        </Tooltip>
+                      )}
+                    </div>
                   }
                 />
 
