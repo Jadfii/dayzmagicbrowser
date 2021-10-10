@@ -106,7 +106,7 @@ const ServerPage: React.FC = () => {
       <div className="relative flex flex-auto py-8">
         <div className="flex flex-col flex-auto">
           <div className="flex items-start">
-            <Button onClick={onPlay} icon={<Play />} scale={4 / 3}>
+            <Button onClick={onPlay} type="success-light" icon={<Play />} scale={4 / 3}>
               Play
             </Button>
           </div>
