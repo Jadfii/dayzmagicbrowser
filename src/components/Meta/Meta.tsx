@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { TITLE_PREFIX } from '../../constants/meta.constant';
 
@@ -7,10 +7,15 @@ interface Props {
 }
 
 const Meta: React.FC<Props> = ({ title }) => {
+  const metaTitle = useMemo(() => `${TITLE_PREFIX}${title ? `- ${title}` : ''}`, [title]);
+
   return (
     <>
       <Helmet>
-        <title>{`${TITLE_PREFIX}${title ? `- ${title}` : ''}`}</title>
+        <html lang="en" />
+        <title>{metaTitle}</title>
+        <meta property="og:title" content={metaTitle} />
+        <link rel="canonical" href={window.location.href} />
       </Helmet>
     </>
   );
