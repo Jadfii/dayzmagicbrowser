@@ -39,9 +39,11 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
       <Card.Content>
         <div className="flex flex-col">
           <div className="flex items-center">
-            <Text h5 className="truncate my-0">
-              {server.name}
-            </Text>
+            <Tooltip text={server.name} className="truncate">
+              <Text h5 width="100%" className="truncate my-0">
+                {server.name}
+              </Text>
+            </Tooltip>
 
             {import.meta.env.DEV && server.queryPort === server.gamePort + 1 && (
               <>
