@@ -45,7 +45,7 @@ export const mapIslandResponse = (island: IslandResponse): Island => ({
   terrainId: island.terrain,
   name: island.name,
   description: island.description,
-  imageURL: `${IMAGE_BUCKET}${island.thumbnail}.jpg`,
+  imageURL: `${IMAGE_BUCKET}${island.thumbnail}`,
   workshopId: island.workshop_id,
 });
 
