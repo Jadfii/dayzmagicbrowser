@@ -1,5 +1,5 @@
 import React from 'react';
-import { Helmet, HelmetProvider } from 'react-helmet-async';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { GeistProvider, CssBaseline } from '@geist-ui/react';
 import '@fontsource/inter';
@@ -8,15 +8,13 @@ import './app.css';
 import ServersProvider from '../../contexts/ServersProvider';
 import IslandsProvider from '../../contexts/IslandsProvider';
 import GameProvider from '../../contexts/GameProvider';
-import { TITLE_PREFIX } from '../../constants/meta.constant';
+import Meta from '../Meta/Meta';
 
 const App = () => {
   return (
     <Router>
       <HelmetProvider>
-        <Helmet>
-          <title>{TITLE_PREFIX}</title>
-        </Helmet>
+        <Meta />
 
         <GeistProvider themeType={'dark'}>
           <CssBaseline />
