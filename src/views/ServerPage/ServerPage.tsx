@@ -84,7 +84,7 @@ const ServerPage: React.FC = () => {
 
         <Grid.Container>
           <Grid xs={24} className="flex flex-col items-start">
-            <Text h1 margin={0} className="truncate">
+            <Text h1 margin={0} width="100%" className="leading-tight">
               {server.name}
             </Text>
 
