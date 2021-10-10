@@ -34,6 +34,8 @@ const ServerPage: React.FC = () => {
 
   const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island]);
 
+  const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
+
   async function loadMods() {
     if (!server?.mods?.length) return setIsLoadingMods(false);
 
@@ -89,7 +91,7 @@ const ServerPage: React.FC = () => {
               {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
               {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
               {server.isPublicHive && <FeatureBadge type="default" label="Official" icon={<Check />} />}
-              {server.appId === DAYZ_EXP_APPID && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
+              {isExperimental && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
               {server.isBattleEye ? (
                 <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
               ) : (
@@ -138,8 +140,8 @@ const ServerPage: React.FC = () => {
 
                       <Spacer w={1 / 2} />
 
-                      {isLatestGameVersion && isLatestGameVersion(server.version) && (
-                        <Tooltip text="This server is running the latest version of DayZ">
+                      {isLatestGameVersion && isLatestGameVersion(server.version, isExperimental) && (
+                        <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
                           <Check color={theme.palette.success} />
                         </Tooltip>
                       )}

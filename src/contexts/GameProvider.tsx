@@ -8,8 +8,9 @@ import { ServersContext } from './ServersProvider';
 type ContextProps = {
   joinServer: (server: Server) => boolean;
   joinServerByIpPort: (serverIp: string, serverPort: number) => boolean;
-  isLatestGameVersion: (version: string) => boolean;
+  isLatestGameVersion: (version: string, experimental?: boolean) => boolean;
   latestGameVersion: string;
+  latestExpGameVersion: string;
 };
 
 export const GameContext = React.createContext<ContextProps>({} as ContextProps);
@@ -19,6 +20,7 @@ const GameProvider: React.FC = ({ children }) => {
   const { getLatestGameVersion } = useGameAPI();
   const { findServerByIpPort } = useContext(ServersContext);
   const [latestGameVersion, setLatestGameVersion] = useState<string>('');
+  const [latestExpGameVersion, setLatestExpGameVersion] = useState<string>('');
   const [inGameNickname] = useState<string>('');
 
   async function init() {
@@ -32,12 +34,15 @@ const GameProvider: React.FC = ({ children }) => {
   // Other methods below
 
   const getGameVersion = async () => {
-    setLatestGameVersion(await getLatestGameVersion());
+    const versions = await getLatestGameVersion();
+    setLatestGameVersion(versions?.stable || '');
+    setLatestExpGameVersion(versions?.exp || '');
   };
 
   const isLatestGameVersion = useCallback(
-    (version: string) => version.replaceAll('.', '') === latestGameVersion.replaceAll('.', ''),
-    [latestGameVersion]
+    (version: string, experimental?: boolean) =>
+      version.replaceAll('.', '') === (experimental ? latestExpGameVersion : latestGameVersion).replaceAll('.', ''),
+    [latestGameVersion, latestExpGameVersion]
   );
 
   const nameParam: string[] = useMemo(() => (inGameNickname ? [`-name=${inGameNickname}`] : []), [inGameNickname]);
@@ -71,6 +76,7 @@ const GameProvider: React.FC = ({ children }) => {
         joinServerByIpPort,
         isLatestGameVersion,
         latestGameVersion,
+        latestExpGameVersion,
       }}
     >
       {children}

@@ -74,3 +74,8 @@ export interface WorkshopModResponse {
   views: number;
   visibility: number;
 }
+
+export interface VersionResponse {
+  stable: string;
+  exp: string;
+}
