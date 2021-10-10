@@ -91,8 +91,8 @@ const ServerPage: React.FC = () => {
             <div className="flex space-x-2">
               {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
               {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
-              {server.isPublicHive && <FeatureBadge type="default" label="Official server" icon={<Check />} />}
-              {server.appId === DAYZ_EXP_APPID && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental server" icon={<Tool />} />}
+              {server.isPublicHive && <FeatureBadge type="default" label="Official" icon={<Check />} />}
+              {server.appId === DAYZ_EXP_APPID && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
               {server.isBattleEye ? (
                 <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
               ) : (
