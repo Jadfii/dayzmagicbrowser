@@ -1,11 +1,13 @@
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 import { useParams, useHistory } from 'react-router-dom';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
+import { TITLE_PREFIX } from '../../constants/meta.constant';
 import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
@@ -76,6 +78,12 @@ const ServerPage: React.FC = () => {
 
   return server?.name ? (
     <>
+      <Helmet>
+        <title>
+          {TITLE_PREFIX} - {server.name}
+        </title>
+      </Helmet>
+
       <div className="relative flex items-end h-40 py-4">
         <BackgroundImage src={serverIsland?.imageURL || ''} />
 
