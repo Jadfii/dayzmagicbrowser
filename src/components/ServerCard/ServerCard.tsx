@@ -34,7 +34,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
 
   return (
     <Card onClick={onClick} hoverable className="server-card cursor-pointer">
-      <Image height={`${imageHeight}px`} src={serverIsland?.imageURL || ''} style={{ objectFit: 'cover', opacity: 0.4 }} />
+      <Image height={`${imageHeight}px`} src={serverIsland?.imageURL || ''} style={{ objectFit: 'cover' }} />
 
       <Card.Content>
         <div className="flex flex-col">
