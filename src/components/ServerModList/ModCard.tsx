@@ -1,5 +1,6 @@
 import { Card, Text } from '@geist-ui/react';
 import { ArrowRight } from '@geist-ui/react-icons';
+import prettyBytes from 'pretty-bytes';
 import React from 'react';
 import { STEAM_WORKSHOP_ITEM } from '../../constants/links.constant';
 import { WorkshopMod } from '../../types/Types';
@@ -18,7 +19,11 @@ const ModCard: React.FC<Props> = ({ mod }) => {
               {mod.name}
             </Text>
           )}
-          {mod.subscriptions && <Text small>{mod.subscriptions.toLocaleString()} subscribers</Text>}
+
+          <div className="flex flex-col">
+            {mod.fileSize && <Text small>{prettyBytes(mod.fileSize)}</Text>}
+            {mod.subscriptions && <Text small>{mod.subscriptions.toLocaleString()} subscribers</Text>}
+          </div>
         </div>
 
         <ArrowRight className="ml-auto" />
