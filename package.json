@@ -5,7 +5,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "lint": "npx eslint . --ext .js,.jsx,.ts,.tsx --ignore-path .gitignore",
-    "serve": "vite preview",
+    "serve": "vite preview --port 3040",
     "test": "jest"
   },
   "dependencies": {
