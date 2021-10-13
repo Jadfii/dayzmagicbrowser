@@ -53,12 +53,12 @@ const ServersSearch: React.FC = () => {
       .sort((a, b) => {
         return b?.item.players + b?.item.queue - (a?.item.players + a?.item.queue);
       })
-      .map((result) => <ServerOption result={result} handleClick={handleOptionClick} />)
+      .map((result, i) => <ServerOption key={i} result={result} handleClick={handleOptionClick} />)
       .slice(0, RESULTS_LIMIT);
     setOptions(optionsResult);
 
     setIsSearching(false);
-  }, [debouncedSearchValue]);
+  }, [servers, debouncedSearchValue]);
 
   // Inject the custom icon
   // Workaround since AutoComplete doesn't accept an icon ??
@@ -87,7 +87,7 @@ const ServersSearch: React.FC = () => {
 
     //rightIconElement.remove();
     setHasInsertedIcon(true);
-  }, []);
+  }, [hasInsertedIcon]);
 
   return (
     <>

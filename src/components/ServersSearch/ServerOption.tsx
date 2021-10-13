@@ -5,7 +5,7 @@ import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Fuse from 'fuse.js';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 
 interface Props {
   result: Fuse.FuseResult<Server>;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
-  const history = useHistory();
+  const router = useRouter();
   const { getIslandByTerrain } = useContext(IslandsContext);
 
   const server = useMemo(() => result?.item, [result]);
@@ -33,7 +33,7 @@ const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
     if (!server?.ip) return;
 
     if (handleClick) handleClick();
-    history.push(`/server/${server.ip}/${server.queryPort}`);
+    router.push(`/server/${server.ip}/${server.queryPort}`);
   }
 
   return server ? (

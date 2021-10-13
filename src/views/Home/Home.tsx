@@ -1,17 +1,17 @@
 import React, { useContext, useMemo } from 'react';
-import './home.scss';
 import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
-import { useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
+import Meta from '../../components/Meta/Meta';
 
 const Home: React.FC = () => {
-  const history = useHistory();
+  const router = useRouter();
   const { servers } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
 
@@ -32,6 +32,7 @@ const Home: React.FC = () => {
 
   return (
     <>
+      <Meta />
       <div className="relative flex items-center flex-auto" style={{ height: '60vh' }}>
         <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
 
@@ -50,7 +51,7 @@ const Home: React.FC = () => {
             </Text>
 
             <div className="mt-10" style={{ width: '75%' }}>
-              <Button onClick={() => history.push('/servers')} type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
+              <Button onClick={() => router.push('/servers')} type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
                 Browse servers
               </Button>
             </div>

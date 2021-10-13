@@ -1,6 +1,5 @@
 import React from 'react';
-import Image from '../Image/Image';
-import './background-image.scss';
+import Image from 'next/image';
 
 interface Props {
   src: string;
@@ -9,9 +8,11 @@ interface Props {
 const BackgroundImage: React.FC<Props> = ({ src }) => {
   return (
     <>
-      <div className="background-image w-full h-full overflow-hidden">
+      <div className="absolute w-full h-full overflow-hidden" style={{ top: 0, left: 0 }}>
         <div />
-        <Image src={src} width="100%" height="100%" style={{ objectFit: 'cover' }} />
+        <div className="relative w-full h-full">
+          <Image alt="Background image" src={src} layout="fill" loading="eager" className="object-cover opacity-25 rounded-none z-0" />
+        </div>
       </div>
     </>
   );

@@ -1,24 +1,6 @@
 {
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "eslint-plugin-prettier"],
-  "parserOptions": {
-    "sourceType": "module",
-    "ecmaFeatures": {
-      "modules": true,
-      "jsx": true
-    },
-    "useJSXTextNode": true,
-    "project": "./tsconfig.json"
-  },
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "plugin:react-hooks/recommended", "eslint-config-prettier"],
+  "extends": ["eslint:recommended", "next", "prettier"],
   "rules": {
-    "no-shadow": "off",
-    "@typescript-eslint/no-shadow": ["error"],
-    "@typescript-eslint/no-explicit-any": 0,
-    "@typescript-eslint/explicit-function-return-type": 0,
-    "@typescript-eslint/no-var-requires": 0,
-    "@typescript-eslint/explicit-module-boundary-types": 0,
-    "react-hooks/exhaustive-deps": 0
+    "@next/next/no-document-import-in-page": "off"
   }
 }

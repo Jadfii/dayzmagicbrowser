@@ -1,7 +1,7 @@
 import { Button, Divider, Spacer } from '@geist-ui/react';
 import { RefreshCw } from '@geist-ui/react-icons';
 import React, { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import { ServersContext } from '../../contexts/ServersProvider';
 import Logo from '../Logo/Logo';
 import ServersSearch from '../ServersSearch/SeversSearch';
@@ -12,8 +12,10 @@ const Masthead: React.FC = () => {
   return (
     <>
       <div className="flex items-center py-4">
-        <Link to="/" style={{ color: '#fff' }}>
-          <Logo />
+        <Link href="/">
+          <a>
+            <Logo style={{ color: '#fff' }} />
+          </a>
         </Link>
 
         <div className="ml-6" style={{ width: '40%' }}>

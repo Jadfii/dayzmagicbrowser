@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Helmet } from 'react-helmet-async';
+import Head from 'next/head';
 import { TITLE_PREFIX } from '../../constants/meta.constant';
 
 interface Props {
@@ -11,12 +11,12 @@ const Meta: React.FC<Props> = ({ title }) => {
 
   return (
     <>
-      <Helmet>
-        <html lang="en" />
+      <Head>
         <title>{metaTitle}</title>
         <meta property="og:title" content={metaTitle} />
-        <link rel="canonical" href={window.location.href} />
-      </Helmet>
+
+        <link rel="icon" href="/favicon.png" />
+      </Head>
     </>
   );
 };

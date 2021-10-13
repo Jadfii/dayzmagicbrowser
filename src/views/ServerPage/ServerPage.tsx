@@ -1,7 +1,7 @@
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useParams, useHistory } from 'react-router-dom';
+import { useRouter } from 'next/router';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import Meta from '../../components/Meta/Meta';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
@@ -17,9 +17,9 @@ import InfoCard from './InfoCard';
 import ServerTimeCard from './ServerTimeCard';
 
 const ServerPage: React.FC = () => {
-  const history = useHistory();
+  const router = useRouter();
   const theme = useTheme();
-  const { serverIp, serverPort } = useParams<{ serverIp: string; serverPort: string }>();
+  const { serverIp, serverPort } = router.query;
   const { getWorkshopMods } = useWorkshopAPI();
   const { servers, findServerByIpPort } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
@@ -52,7 +52,7 @@ const ServerPage: React.FC = () => {
   function onPlay() {
     if (!server?.ip) return;
 
-    history.push(`/play/${server.ip}/${server.gamePort}`);
+    router.push(`/play/${server.ip}/${server.gamePort}`);
   }
 
   useEffect(() => {
@@ -64,9 +64,9 @@ const ServerPage: React.FC = () => {
   }, [server?.name]);
 
   useEffect(() => {
-    if (servers.length === 0) return;
+    if (!serverIp || !serverPort || servers.length === 0) return;
 
-    const foundServer = findServerByIpPort(serverIp, Number(serverPort), true);
+    const foundServer = findServerByIpPort(serverIp as string, Number(serverPort as string), true);
     setServer(foundServer);
 
     if (foundServer) console.log(foundServer);
@@ -81,7 +81,7 @@ const ServerPage: React.FC = () => {
       <div className="relative flex items-end h-40 py-4">
         <BackgroundImage src={serverIsland?.imageURL || ''} />
 
-        <Grid.Container>
+        <Grid.Container className="z-10">
           <Grid xs={24} className="flex flex-col items-start">
             <Text h1 margin={0} width="100%" className="leading-tight">
               {server.name}

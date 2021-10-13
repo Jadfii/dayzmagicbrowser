@@ -1,7 +1,7 @@
 import ky, { SearchParamsOption } from 'ky';
 
 const config = {
-  prefixUrl: import.meta.env.DEV ? `http://localhost:5000` : `https://api.dayzmagiclauncher.com`,
+  prefixUrl: process.env.NODE_ENV === 'development' ? `http://localhost:5000` : `https://browser-api.dayzmagiclauncher.com`,
 };
 
 const instance = ky.create({
