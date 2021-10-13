@@ -9,13 +9,13 @@ export const getStaticPaths = async () => {
   const servers: ServerObjectResponse[] = res?.results || [];
 
   return {
-    paths: servers?.map((server: ServerObjectResponse) => ({ params: { serverIp: server?.ip, serverPort: server?.query_port } })),
-    fallback: true,
+    paths: servers?.map((server: ServerObjectResponse) => ({ params: { serverIp: `${server?.ip}`, serverPort: `${server?.query_port}` } })),
+    fallback: false,
   };
 };
 
 export const getStaticProps = async () => {
   return {
-    props: { serverIp: '', serverPort: '' },
+    props: { serverIp: '1', serverPort: '2' },
   };
 };
