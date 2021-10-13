@@ -12,3 +12,9 @@ export const getStaticPaths = async () => {
     fallback: true,
   };
 };
+
+export const getStaticProps = async () => {
+  return {
+    props: { server: undefined },
+  };
+};
