@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import Head from 'next/head';
 import { DOMAIN, META_DESCRIPTION, TITLE_PREFIX } from '../../constants/meta.constant';
-import { IMAGE_BUCKET } from 'constants/links.constant';
+import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { useRouter } from 'next/router';
 
 interface Props {
