@@ -60,7 +60,7 @@ const GameProvider: React.FC = ({ children }) => {
   const joinServerByIpPort = (serverIp: string, serverPort: number) => {
     const server = findServerByIpPort(serverIp, serverPort, true);
     if (!server?.ip) throw new Error('Server not found');
-    const result = openDayzGame(server.appId, [...generateConnectParam(server.ip, server.gamePort), ...nameParam]);
+    const result = openDayzGame(server.appId, [generateConnectParam(server.ip, server.gamePort), ...nameParam]);
 
     if (result) {
       setToast({ text: `Joining server ${serverIp}:${serverPort}`, type: 'success' });

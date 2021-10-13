@@ -24,7 +24,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
     router.push(`/server/${server.ip}/${server.queryPort}`);
   }
 
-  function onPlayClick(e) {
+  function onPlayClick(e: React.MouseEvent<HTMLElement>) {
     e.stopPropagation();
     if (!server?.ip) return;
 
@@ -39,6 +39,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
             <Image
               alt={`${server?.name} map preview`}
               layout="fill"
+              loader={({ src }) => src}
               src={serverIsland?.imageURL}
               loading="eager"
               className="object-cover opacity-40 hover:opacity-70 transition-opacity duration-300"
