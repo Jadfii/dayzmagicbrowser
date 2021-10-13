@@ -16,6 +16,7 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
             alt="Background image"
             src={src}
             layout="fill"
+            unoptimized
             loading="eager"
             className="object-cover opacity-25 rounded-none z-0"
           />

@@ -42,6 +42,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
               loader={({ src }) => src}
               src={serverIsland?.imageURL}
               loading="eager"
+              unoptimized
               className="object-cover opacity-40 hover:opacity-70 transition-opacity duration-300"
             />
           </div>

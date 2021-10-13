@@ -6,27 +6,14 @@ import { useRouter } from 'next/router';
 import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
-import { IslandsContext } from '../../contexts/IslandsProvider';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
 import Meta from '../../components/Meta/Meta';
 
 const Home: React.FC = () => {
   const router = useRouter();
   const { servers } = useContext(ServersContext);
-  const { getIslandByTerrain } = useContext(IslandsContext);
 
   const popularServers = useMemo(() => servers.slice(0, 4), [servers]);
-  const sampleServers = useMemo(
-    () =>
-      servers
-        .filter(
-          (server, i, arr) =>
-            getIslandByTerrain(server?.island || '') &&
-            arr.findIndex((s) => s['island'] === server['island'] && /^[-a-zA-Z0-9$@$!%*?&#^-_. +]+$/i.test(s.name)) === i
-        )
-        .slice(0, 4),
-    [servers]
-  );
   const officialServers = useMemo(() => servers.filter((server) => server.isPublicHive).slice(0, 4), [servers]);
   const expServers = useMemo(() => servers.filter((server) => server.appId === DAYZ_EXP_APPID).slice(0, 4), [servers]);
 
@@ -59,28 +46,7 @@ const Home: React.FC = () => {
         </Grid.Container>
       </div>
 
-      <div className="relative flex-auto py-10">
-        <div>
-          <Text h3 margin={0}>
-            Sample servers
-          </Text>
-          <Text p type="secondary" className="mb-4 mt-0">
-            A sample of servers selected randomly
-          </Text>
-        </div>
-
-        {sampleServers.length > 0 ? (
-          <div className="grid grid-cols-4 grid-flow-row gap-6">
-            {sampleServers.map((server, i) => (
-              <ServerCard server={server} key={i} />
-            ))}
-          </div>
-        ) : (
-          <Loading>Loading servers</Loading>
-        )}
-      </div>
-
-      <Divider />
+      <Divider my={0} />
 
       <div className="relative flex-auto py-10">
         <div>
