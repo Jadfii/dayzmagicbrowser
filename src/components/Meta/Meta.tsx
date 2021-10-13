@@ -10,7 +10,7 @@ interface Props {
 
 const Meta: React.FC<Props> = ({ title }) => {
   const router = useRouter();
-  const metaTitle = useMemo(() => `${TITLE_PREFIX}${title ? `- ${title}` : ''}`, [title]);
+  const metaTitle = useMemo(() => `${TITLE_PREFIX}${title ? ` - ${title}` : ''}`, [title]);
 
   return (
     <>
