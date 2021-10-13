@@ -11,6 +11,6 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps = async () => {
   return {
-    props: { server: undefined },
+    props: { serverIp: '', serverPort: '' },
   };
 };
