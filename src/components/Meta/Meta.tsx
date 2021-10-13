@@ -30,7 +30,7 @@ const Meta: React.FC<Props> = ({ title }) => {
 
         <meta property="og:url" content={`${DOMAIN}${router?.pathname}`} key="ogurl" />
 
-        <link rel="icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/assets/favicon.png" key="favicon" />
       </Head>
     </>
   );
