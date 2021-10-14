@@ -25,7 +25,6 @@ const securityHeaders = [
 
 module.exports = {
   reactStrictMode: true,
-  trailingSlash: true,
   images: {
     loader: 'custom',
     domains: ['dayz-magic-launcher.s3.eu-west-2.amazonaws.com'],
