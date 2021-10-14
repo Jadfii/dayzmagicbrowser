@@ -7,7 +7,6 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
-import Meta from '../../components/Meta/Meta';
 
 const Home: React.FC = () => {
   const router = useRouter();
@@ -19,7 +18,6 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <Meta />
       <div className="relative flex items-center flex-auto" style={{ height: '60vh' }}>
         <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
 

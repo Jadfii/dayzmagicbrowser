@@ -1,12 +1,12 @@
 import { Text } from '@geist-ui/react';
 import React from 'react';
-import Meta from '../../components/Meta/Meta';
 import ServerList from '../../components/ServerList/ServerList';
+import { NextSeo } from 'next-seo';
 
 const Servers: React.FC = () => {
   return (
     <>
-      <Meta title="Servers" />
+      <NextSeo title="Servers" />
 
       <div className="relative flex flex-col flex-1 py-10">
         <Text h2>Servers</Text>

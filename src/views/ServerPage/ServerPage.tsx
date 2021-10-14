@@ -2,8 +2,8 @@ import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-u
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
+import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
-import Meta from '../../components/Meta/Meta';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
@@ -32,7 +32,7 @@ const ServerPage: React.FC = () => {
   const [serverMods, setServerMods] = useState<WorkshopMod[]>([]);
   const [isLoadingMods, setIsLoadingMods] = useState<boolean>(true);
 
-  const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island]);
+  const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island, getIslandByTerrain]);
 
   const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
 
@@ -72,11 +72,11 @@ const ServerPage: React.FC = () => {
     if (foundServer) console.log(foundServer);
 
     setIsLoadingServer(false);
-  }, [servers, serverIp, serverPort]);
+  }, [findServerByIpPort, servers, serverIp, serverPort]);
 
   return server?.name ? (
     <>
-      <Meta title={server.name} />
+      <NextSeo title={server.name} description={`View information about server "${server?.name}".`} />
 
       <div className="relative flex items-end h-40 py-4">
         <BackgroundImage src={serverIsland?.imageURL || ''} />
