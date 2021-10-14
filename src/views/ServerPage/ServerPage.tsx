@@ -74,96 +74,100 @@ const ServerPage: React.FC = () => {
     setIsLoadingServer(false);
   }, [findServerByIpPort, servers, serverIp, serverPort]);
 
-  return server?.name ? (
+  return (
     <>
-      <NextSeo title={server.name} description={`View information about server "${server?.name}".`} />
+      <NextSeo title={server?.name} description={`View information about server "${server?.name}".`} />
 
-      <div className="relative flex items-end h-40 py-4">
-        <BackgroundImage src={serverIsland?.imageURL || ''} />
+      {server?.name ? (
+        <>
+          <div className="relative flex items-end h-40 py-4">
+            <BackgroundImage src={serverIsland?.imageURL || ''} />
 
-        <Grid.Container className="z-10">
-          <Grid xs={24} className="flex flex-col items-start">
-            <Text h1 margin={0} width="100%" className="leading-tight">
-              {server.name}
-            </Text>
+            <Grid.Container className="z-10">
+              <Grid xs={24} className="flex flex-col items-start">
+                <Text h1 margin={0} width="100%" className="leading-tight">
+                  {server.name}
+                </Text>
 
-            <div className="flex space-x-2">
-              {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
-              {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
-              {server.isPublicHive && <FeatureBadge type="default" label="Official" icon={<Check />} />}
-              {isExperimental && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
-              {server.isBattleEye ? (
-                <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
-              ) : (
-                <FeatureBadge type="error" label="Unprotected (BattlEye)" icon={<ShieldOff />} />
-              )}
-            </div>
-          </Grid>
-        </Grid.Container>
-      </div>
-
-      <div className="relative flex flex-auto py-8">
-        <div className="flex flex-col flex-auto">
-          <div className="flex items-start">
-            <Button onClick={onPlay} type="success-light" icon={<Play />} scale={4 / 3}>
-              Play
-            </Button>
+                <div className="flex space-x-2">
+                  {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
+                  {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
+                  {server.isPublicHive && <FeatureBadge type="default" label="Official" icon={<Check />} />}
+                  {isExperimental && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
+                  {server.isBattleEye ? (
+                    <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
+                  ) : (
+                    <FeatureBadge type="error" label="Unprotected (BattlEye)" icon={<ShieldOff />} />
+                  )}
+                </div>
+              </Grid>
+            </Grid.Container>
           </div>
 
-          <Spacer h={1} />
-
-          <div className="flex flex-auto space-x-6">
+          <div className="relative flex flex-auto py-8">
             <div className="flex flex-col flex-auto">
-              <Text h3>Server details</Text>
+              <div className="flex items-start">
+                <Button onClick={onPlay} type="success-light" icon={<Play />} scale={4 / 3}>
+                  Play
+                </Button>
+              </div>
 
-              <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
-                <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
+              <Spacer h={1} />
 
-                <InfoCard
-                  iconDescription="Map"
-                  icon={<Map />}
-                  item={
-                    <Text h3 margin={0}>
-                      {serverIsland?.name || server.island}
-                    </Text>
-                  }
-                />
+              <div className="flex flex-auto space-x-6">
+                <div className="flex flex-col flex-auto">
+                  <Text h3>Server details</Text>
 
-                <InfoCard
-                  iconDescription="Version"
-                  icon={<Tag />}
-                  item={
-                    <div className="flex items-center">
-                      <Text h3 margin={0}>
-                        {server.version}
-                      </Text>
+                  <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
+                    <InfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
 
-                      <Spacer w={1 / 2} />
+                    <InfoCard
+                      iconDescription="Map"
+                      icon={<Map />}
+                      item={
+                        <Text h3 margin={0}>
+                          {serverIsland?.name || server.island}
+                        </Text>
+                      }
+                    />
 
-                      {isLatestGameVersion && isLatestGameVersion(server.version, isExperimental) && (
-                        <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
-                          <Check color={theme.palette.success} />
-                        </Tooltip>
-                      )}
-                    </div>
-                  }
-                />
+                    <InfoCard
+                      iconDescription="Version"
+                      icon={<Tag />}
+                      item={
+                        <div className="flex items-center">
+                          <Text h3 margin={0}>
+                            {server.version}
+                          </Text>
 
-                <ServerTimeCard server={server} />
+                          <Spacer w={1 / 2} />
+
+                          {isLatestGameVersion && isLatestGameVersion(server.version, isExperimental) && (
+                            <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
+                              <Check color={theme.palette.success} />
+                            </Tooltip>
+                          )}
+                        </div>
+                      }
+                    />
+
+                    <ServerTimeCard server={server} />
+                  </div>
+                </div>
+
+                <div className="flex flex-auto w-3/12">
+                  <ServerModList mods={serverMods.sort((a, b) => b.subscriptions - a.subscriptions)} isLoading={isLoadingMods} />
+                </div>
               </div>
             </div>
-
-            <div className="flex flex-auto w-3/12">
-              <ServerModList mods={serverMods.sort((a, b) => b.subscriptions - a.subscriptions)} isLoading={isLoadingMods} />
-            </div>
           </div>
+        </>
+      ) : (
+        <div className="flex flex-auto items-center justify-center">
+          {isLoadingServer ? <Loading scale={4 / 3}>Loading server...</Loading> : <Text h3>Server not found.</Text>}
         </div>
-      </div>
+      )}
     </>
-  ) : (
-    <div className="flex flex-auto items-center justify-center">
-      {isLoadingServer ? <Loading scale={4 / 3}>Loading server...</Loading> : <Text h3>Server not found.</Text>}
-    </div>
   );
 };
 
