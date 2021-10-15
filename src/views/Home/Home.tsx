@@ -21,10 +21,8 @@ const Home: React.FC = () => {
       <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>
         <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
 
-        <Grid.Container gap={2} className="my-auto">
-          <Grid xs={2}></Grid>
-
-          <Grid xs={10} className="relative flex-col">
+        <Grid.Container className="px-8 my-auto">
+          <Grid sm={24} md={18} lg={10} className="relative flex-col">
             <Text h1 margin={'0 0 1rem 0'} style={{ lineHeight: '1.25' }}>
               Find your next favourite DayZ server
             </Text>
@@ -57,7 +55,7 @@ const Home: React.FC = () => {
         </div>
 
         {popularServers.length > 0 ? (
-          <div className="grid grid-cols-4 grid-flow-row gap-6">
+          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
             {popularServers.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
@@ -80,7 +78,7 @@ const Home: React.FC = () => {
         </div>
 
         {officialServers.length > 0 ? (
-          <div className="grid grid-cols-4 grid-flow-row gap-6">
+          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
             {officialServers.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
@@ -103,7 +101,7 @@ const Home: React.FC = () => {
         </div>
 
         {expServers.length > 0 ? (
-          <div className="grid grid-cols-4 grid-flow-row gap-6">
+          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
             {expServers.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
