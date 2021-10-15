@@ -1,11 +1,11 @@
-import { AutoComplete, Badge, Grid, Spacer, Text } from '@geist-ui/react';
+import { AutoComplete, Badge, Grid, Spacer, Text, useTheme } from '@geist-ui/react';
 import { Lock, Map, Users } from '@geist-ui/react-icons';
 import React, { useCallback, useContext, useMemo } from 'react';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Fuse from 'fuse.js';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface Props {
   result: Fuse.FuseResult<Server>;
@@ -13,7 +13,7 @@ interface Props {
 }
 
 const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
-  const router = useRouter();
+  const theme = useTheme();
   const { getIslandByTerrain } = useContext(IslandsContext);
 
   const server = useMemo(() => result?.item, [result]);
@@ -33,56 +33,68 @@ const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
     if (!server?.ip) return;
 
     if (handleClick) handleClick();
-    router.push(`/server/${server.ip}/${server.queryPort}`);
   }
 
   return server ? (
-    <AutoComplete.Item value={server.id}>
-      <Grid.Container className="py-4" onClick={onClick}>
-        <Grid xs={24} className="items-center">
-          <Text span b font="1.2rem" className="truncate">
-            {server.name}
-          </Text>
+    <>
+      <AutoComplete.Item value={server.id}>
+        <Link href={`/server/${server.ip}/${server.queryPort}`}>
+          <a className="server-option">
+            <Grid.Container className="py-4" onClick={onClick}>
+              <Grid xs={24} className="items-center">
+                <Text h4 className="truncate">
+                  {server.name}
+                </Text>
 
-          {server.hasPassword && (
-            <>
-              <Spacer w={1 / 3} />
-              <Lock size={20} />
-            </>
-          )}
-        </Grid>
+                {server.hasPassword && (
+                  <>
+                    <Spacer w={1 / 3} />
+                    <Lock size={20} />
+                  </>
+                )}
+              </Grid>
 
-        <Grid xs={6}>
-          <div className="flex items-center">
-            <Users size={16} />
-            <Spacer w={1 / 3} />
-            <PlayerCount server={server} type="p" hideTooltip />
-          </div>
-        </Grid>
+              <Grid xs={6}>
+                <div className="flex items-center">
+                  <Users size={16} />
+                  <Spacer w={1 / 3} />
+                  <PlayerCount server={server} type="p" hideTooltip />
+                </div>
+              </Grid>
 
-        <Grid xs={5}>
-          <div className="flex items-center">
-            <Map size={16} />
-            <Spacer w={1 / 3} />
-            <Text p margin={0} className="truncate">
-              {serverIsland?.name || server.island}
-            </Text>
-          </div>
-        </Grid>
+              <Grid xs={5}>
+                <div className="flex items-center">
+                  <Map size={16} />
+                  <Spacer w={1 / 3} />
+                  <Text p margin={0} className="truncate">
+                    {serverIsland?.name || server.island}
+                  </Text>
+                </div>
+              </Grid>
 
-        <Grid xs={12} className="justify-end space-x-4" style={{ marginLeft: 'auto' }}>
-          {matchedName && <Badge type="success">Name</Badge>}
+              <Grid xs={12} className="justify-end space-x-4" style={{ marginLeft: 'auto' }}>
+                {matchedName && <Badge type="success">Name</Badge>}
 
-          {matchedIp && <Badge type="success">IP address</Badge>}
+                {matchedIp && <Badge type="success">IP address</Badge>}
 
-          {(matchedMods || []).length > 0 && (
-            <Badge type="success" className="truncate">
-              Mod(s): {matchedMods?.join(', ')}
-            </Badge>
-          )}
-        </Grid>
-      </Grid.Container>
-    </AutoComplete.Item>
+                {(matchedMods || []).length > 0 && (
+                  <Badge type="success" className="truncate">
+                    Mod(s): {matchedMods?.join(', ')}
+                  </Badge>
+                )}
+              </Grid>
+            </Grid.Container>
+          </a>
+        </Link>
+      </AutoComplete.Item>
+
+      <style jsx>{`
+        .server-option {
+          width: 100%;
+          color: ${theme.palette.foreground};
+        }
+      `}</style>
+    </>
   ) : null;
 };
 
