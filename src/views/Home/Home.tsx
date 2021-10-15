@@ -18,7 +18,7 @@ const Home: React.FC = () => {
 
   return (
     <>
-      <div className="relative flex items-center flex-auto" style={{ height: '60vh' }}>
+      <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>
         <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
 
         <Grid.Container gap={2} className="my-auto">
