@@ -45,6 +45,11 @@ const ServerPage: React.FC = () => {
       workshopMods
         .map((mod) => (!mod?.name ? { ...mod, name: server?.mods?.find((m) => m.steamId === mod.id)?.name || '' } : mod))
         .filter((mod) => mod?.name)
+        .sort((a, b) => {
+          if (!a?.subscriptions) return 1;
+          if (!b?.subscriptions) return -1;
+          return b?.subscriptions - a?.subscriptions;
+        })
     );
     setIsLoadingMods(false);
   }
@@ -156,7 +161,7 @@ const ServerPage: React.FC = () => {
                 </div>
 
                 <div className="flex flex-auto w-3/12">
-                  <ServerModList mods={serverMods.sort((a, b) => b.subscriptions - a.subscriptions)} isLoading={isLoadingMods} />
+                  <ServerModList mods={serverMods} isLoading={isLoadingMods} />
                 </div>
               </div>
             </div>
