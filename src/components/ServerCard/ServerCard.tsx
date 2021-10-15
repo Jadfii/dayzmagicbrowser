@@ -5,6 +5,7 @@ import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 
 interface Props {
@@ -13,9 +14,17 @@ interface Props {
 }
 
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
+  const router = useRouter();
   const { getIslandByTerrain } = useContext(IslandsContext);
 
   const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
+
+  function onPlayClick(e: React.MouseEvent<HTMLElement>) {
+    e.stopPropagation();
+    if (!server?.ip) return;
+
+    router.push(`/play/${server.ip}/${server.queryPort}`);
+  }
 
   return (
     <>
@@ -71,13 +80,9 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <div className="flex justify-between mt-auto">
                   <PlayerCount server={server} type="h5" />
 
-                  <Link href={`/play/${server.ip}/${server.queryPort}`}>
-                    <a>
-                      <Button icon={<Play />} scale={3 / 4} auto>
-                        Play
-                      </Button>
-                    </a>
-                  </Link>
+                  <Button onClick={onPlayClick} icon={<Play />} scale={3 / 4} auto>
+                    Play
+                  </Button>
                 </div>
               </div>
             </Card.Content>
