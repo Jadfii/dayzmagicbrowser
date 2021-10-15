@@ -33,7 +33,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
 
   return (
     <>
-      <Card onClick={onClick} hoverable className="server-card cursor-pointer">
+      <Card onClick={onClick} hoverable className="server-card group cursor-pointer">
         {serverIsland?.imageURL && (
           <div className="relative w-full" style={{ height: imageHeight }}>
             <Image
@@ -43,7 +43,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
               src={serverIsland?.imageURL}
               loading="eager"
               unoptimized
-              className="object-cover opacity-40 hover:opacity-70 transition-opacity duration-300"
+              className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
             />
           </div>
         )}
