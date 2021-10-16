@@ -1,4 +1,4 @@
-import { Card, Text } from '@geist-ui/react';
+import { Card, Spacer, Tag, Text } from '@geist-ui/react';
 import { ArrowRight } from '@geist-ui/react-icons';
 import prettyBytes from 'pretty-bytes';
 import React from 'react';
@@ -14,8 +14,18 @@ const ModCard: React.FC<Props> = ({ mod }) => {
     <Card hoverable onClick={() => window.open(`${STEAM_WORKSHOP_ITEM}${mod.id}`, '_blank')} className="cursor-pointer">
       <Card.Content className="flex items-center">
         <div>
+          {!mod?.success && (
+            <>
+              <Tag type="warning" className="flex-shrink-0">
+                Unknown mod
+              </Tag>
+
+              <Spacer h={1 / 4} />
+            </>
+          )}
+
           {mod.name && (
-            <Text h6 margin={0}>
+            <Text h6 margin={0} className="flex-shrink-1">
               {mod.name}
             </Text>
           )}
@@ -26,7 +36,7 @@ const ModCard: React.FC<Props> = ({ mod }) => {
           </div>
         </div>
 
-        <ArrowRight className="ml-auto" />
+        <ArrowRight className="flex-shrink-0 ml-auto" />
       </Card.Content>
     </Card>
   );
