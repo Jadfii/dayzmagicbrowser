@@ -41,8 +41,9 @@ const ServersSearch: React.FC = () => {
 
     setIsSearching(true);
     const fuseSearch = new Fuse(servers, {
-      keys: ['name', 'ip', 'mods.name'],
-      threshold: 0.1,
+      keys: ['name', { name: 'ip', weight: 2 }, { name: 'mods.name', weight: 0.5 }],
+      threshold: 0.2,
+      ignoreLocation: true,
       includeMatches: true,
       includeScore: true,
     }).search(debouncedSearchValue);
@@ -50,9 +51,9 @@ const ServersSearch: React.FC = () => {
     // Search results, sort by players, map to option component, limit to top 100 results
     const optionsResult = fuseSearch
       .filter((result) => result?.item)
-      .sort((a, b) => {
+      /*.sort((a, b) => {
         return b?.item.players + b?.item.queue - (a?.item.players + a?.item.queue);
-      })
+      })*/
       .map((result, i) => <ServerOption key={i} result={result} handleClick={handleOptionClick} />)
       .slice(0, RESULTS_LIMIT);
     setOptions(optionsResult);
