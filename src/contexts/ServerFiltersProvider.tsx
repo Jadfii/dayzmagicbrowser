@@ -11,6 +11,7 @@ const filterServers = (
   serverName: string,
   serverIsland: string,
   serverVersion: string,
+  serverMods: string[],
   isFirstPersonOnly: boolean,
   isOfficial: boolean,
   isExperimental: boolean,
@@ -23,15 +24,19 @@ const filterServers = (
     };
 
     if (serverName) {
-      setShouldInclude(server?.name.includes(serverName));
+      setShouldInclude(server?.name?.toLowerCase().includes(serverName.toLowerCase()));
     }
 
     if (serverIsland) {
-      setShouldInclude(serverIsland.toLowerCase().includes(server?.island?.toLowerCase()));
+      setShouldInclude(server?.island?.toLowerCase().includes(serverIsland.toLowerCase()));
     }
 
     if (serverVersion) {
       setShouldInclude(server?.version === serverVersion);
+    }
+
+    if (serverMods.length > 0) {
+      setShouldInclude(serverMods.every((mod) => server?.mods.find((m) => mod === m.steamId)));
     }
 
     if (isFirstPersonOnly === true) {
@@ -61,6 +66,8 @@ type ContextProps = {
   setServerIsland: Dispatch<React.SetStateAction<string>>;
   serverVersion: string;
   setServerVersion: Dispatch<React.SetStateAction<string>>;
+  serverMods: string[];
+  setServerMods: Dispatch<React.SetStateAction<string[]>>;
   isFirstPersonOnly: boolean;
   setIsFirstPersonOnly: Dispatch<React.SetStateAction<boolean>>;
   isOfficial: boolean;
@@ -85,6 +92,7 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   const [isOfficial, setIsOfficial] = useState<boolean>(false);
   const [isExperimental, setIsExperimental] = useState<boolean>(false);
   const [hasNoQueue, setHasNoQueue] = useState<boolean>(false);
+  const [serverMods, setServerMods] = useState<string[]>([]);
 
   useEffect(() => {
     if (servers?.length === 0) return;
@@ -100,6 +108,7 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
           debouncedServerName,
           serverIsland,
           serverVersion,
+          serverMods,
           isFirstPersonOnly,
           isOfficial,
           isExperimental,
@@ -107,7 +116,18 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
         )
       );
     })();
-  }, [servers, setFilteredServers, debouncedServerName, serverIsland, serverVersion, isFirstPersonOnly, isOfficial, isExperimental, hasNoQueue]);
+  }, [
+    servers,
+    setFilteredServers,
+    debouncedServerName,
+    serverIsland,
+    serverVersion,
+    serverMods,
+    isFirstPersonOnly,
+    isOfficial,
+    isExperimental,
+    hasNoQueue,
+  ]);
 
   return (
     <ServerFiltersContext.Provider
@@ -118,6 +138,8 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
         setServerIsland,
         serverVersion,
         setServerVersion,
+        serverMods,
+        setServerMods,
         isFirstPersonOnly,
         setIsFirstPersonOnly,
         isOfficial,
