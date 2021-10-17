@@ -54,6 +54,8 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
           const island = getIslandByTerrain(curr?.island);
           const option = { label: island?.name || curr?.island, value: island?.terrainId || curr?.island, occurrences: 1 };
 
+          if (!option.label) return acc;
+
           const foundIdx = acc.findIndex((o) => o.value === option.value);
           if (foundIdx === -1) {
             acc.push(option);
