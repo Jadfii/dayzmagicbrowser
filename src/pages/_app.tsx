@@ -4,6 +4,7 @@ import 'tailwindcss/tailwind.css';
 import '../styles/globals.scss';
 import IslandsProvider from '../contexts/IslandsProvider';
 import ServersProvider from '../contexts/ServersProvider';
+import ServerFiltersProvider from '../contexts/ServerFiltersProvider';
 import GameProvider from '../contexts/GameProvider';
 import AppLayout from '../components/AppLayout/AppLayout';
 import type { AppProps /*, AppContext */ } from 'next/app';
@@ -34,11 +35,13 @@ const App = ({ Component, pageProps }: AppProps) => {
         <CssBaseline />
         <IslandsProvider>
           <ServersProvider>
-            <GameProvider>
-              <AppLayout>
-                <Component {...pageProps} />
-              </AppLayout>
-            </GameProvider>
+            <ServerFiltersProvider>
+              <GameProvider>
+                <AppLayout>
+                  <Component {...pageProps} />
+                </AppLayout>
+              </GameProvider>
+            </ServerFiltersProvider>
           </ServersProvider>
         </IslandsProvider>
       </GeistProvider>

@@ -12,6 +12,7 @@
   "dependencies": {
     "@geist-ui/react": "^2.2.0",
     "@geist-ui/react-icons": "^1.0.1",
+    "@koale/useworker": "^4.0.2",
     "dayjs": "^1.10.7",
     "eslint-plugin-prettier": "^4.0.0",
     "fuse.js": "^6.4.6",

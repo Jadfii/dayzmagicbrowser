@@ -1,9 +1,11 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Dispatch, useCallback, useEffect, useState } from 'react';
 import useServersAPI from '../data/useServersAPI';
 import { Server } from '../types/Types';
 
 type ContextProps = {
   servers: Server[];
+  filteredServers: Server[];
+  setFilteredServers: Dispatch<React.SetStateAction<Server[]>>;
   refreshServers: () => void;
   isLoadingServers: boolean;
   findServerByIpPort: (ip: string, port: number, allowGamePort?: boolean) => Server | undefined;
@@ -14,6 +16,7 @@ export const ServersContext = React.createContext<ContextProps>({} as ContextPro
 const ServersProvider: React.FC = ({ children }) => {
   const { getServers } = useServersAPI();
   const [servers, setServers] = useState<Server[]>([]);
+  const [filteredServers, setFilteredServers] = useState<Server[]>([]);
   const [isLoadingServers, setIsLoadingServers] = useState<boolean>(false);
 
   async function refreshServers() {
@@ -38,6 +41,8 @@ const ServersProvider: React.FC = ({ children }) => {
     <ServersContext.Provider
       value={{
         servers,
+        filteredServers,
+        setFilteredServers,
         refreshServers,
         isLoadingServers,
         findServerByIpPort,
