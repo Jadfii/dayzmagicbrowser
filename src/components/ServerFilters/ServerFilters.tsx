@@ -1,8 +1,9 @@
-import { Card, Checkbox, Input, Select, Spacer } from '@geist-ui/react';
+import { Card, Checkbox, Input, Select, Spacer, Tag } from '@geist-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { ServersContext } from '../../contexts/ServersProvider';
+import { GameContext } from '../../contexts/GameProvider';
 
 interface SelectOption {
   label: string;
@@ -11,12 +12,12 @@ interface SelectOption {
 
 interface Props {
   visible: boolean;
-  handleClose?: () => void;
 }
 
-const ServerFilters: React.FC<Props> = ({ visible, handleClose }) => {
+const ServerFilters: React.FC<Props> = ({ visible }) => {
   const { servers } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
+  const { isLatestGameVersion } = useContext(GameContext);
   const { setServerName, setServerIsland, setServerVersion, setIsFirstPersonOnly, setIsOfficial, setIsExperimental, setHasNoQueue } =
     useContext(ServerFiltersContext);
 
@@ -46,10 +47,6 @@ const ServerFilters: React.FC<Props> = ({ visible, handleClose }) => {
     ],
     [servers, getIslandByTerrain]
   );
-
-  function onClose() {
-    if (handleClose) handleClose();
-  }
 
   return (
     <>
@@ -83,7 +80,23 @@ const ServerFilters: React.FC<Props> = ({ visible, handleClose }) => {
                 >
                   {availableVersions.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
-                      {option.label}
+                      <span>{option.label}</span>
+                      {isLatestGameVersion(option.value) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Tag type="success" scale={3 / 4}>
+                            Latest
+                          </Tag>
+                        </>
+                      )}
+                      {isLatestGameVersion(option.value, true) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Tag type="success" scale={3 / 4}>
+                            Latest Exp
+                          </Tag>
+                        </>
+                      )}
                     </Select.Option>
                   ))}
                 </Select>
