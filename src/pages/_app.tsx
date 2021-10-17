@@ -1,5 +1,6 @@
 import React from 'react';
 import { GeistProvider, CssBaseline } from '@geist-ui/react';
+import 'tailwindcss/tailwind.css';
 import '../styles/globals.scss';
 import IslandsProvider from '../contexts/IslandsProvider';
 import ServersProvider from '../contexts/ServersProvider';
