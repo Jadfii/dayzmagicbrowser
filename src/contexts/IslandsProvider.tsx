@@ -29,7 +29,11 @@ const IslandsProvider: React.FC = ({ children }) => {
   }
 
   const getIslandByTerrain = useCallback(
-    (terrainId: string) => islands.find((island) => terrainId.toLowerCase().includes(island.terrainId.toLowerCase())),
+    (terrainId: string) => {
+      if (typeof terrainId !== 'string') return undefined;
+
+      return islands.find((island) => terrainId?.toLowerCase().includes(island.terrainId.toLowerCase()));
+    },
     [islands]
   );
 
