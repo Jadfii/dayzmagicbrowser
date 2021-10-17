@@ -19,6 +19,7 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
             unoptimized
             loading="eager"
             className="object-cover opacity-25 rounded-none z-0"
+            priority
           />
         </div>
       </div>
