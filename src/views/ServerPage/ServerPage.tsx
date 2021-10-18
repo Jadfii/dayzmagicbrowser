@@ -64,10 +64,6 @@ const ServerPage: React.FC<Props> = ({ server }) => {
   }, [server?.mods]);
 
   useEffect(() => {
-    if (server?.name) setIsLoadingServer(false);
-  }, [server?.name]);
-
-  useEffect(() => {
     if (!server?.ip) {
       return;
     }
