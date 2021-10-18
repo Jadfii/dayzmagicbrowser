@@ -4,6 +4,7 @@
   "plugins": ["@typescript-eslint", "eslint-plugin-prettier"],
   "extends": ["eslint:recommended", "plugin:@typescript-eslint/recommended", "next", "prettier"],
   "rules": {
-    "@next/next/no-document-import-in-page": "off"
+    "@next/next/no-document-import-in-page": "off",
+    "react-hooks/exhaustive-deps": 0
   }
 }
