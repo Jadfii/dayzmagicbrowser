@@ -20,6 +20,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
+    e.preventDefault();
     e.stopPropagation();
     if (!server?.ip) return;
 
