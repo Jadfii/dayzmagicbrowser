@@ -19,8 +19,24 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
   const { servers } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
-  const { setServerName, setServerIsland, setServerVersion, setServerMods, setIsFirstPersonOnly, setIsOfficial, setIsExperimental, setHasNoQueue } =
-    useContext(ServerFiltersContext);
+  const {
+    serverName,
+    setServerName,
+    serverIsland,
+    setServerIsland,
+    serverVersion,
+    setServerVersion,
+    serverMods,
+    setServerMods,
+    isFirstPersonOnly,
+    setIsFirstPersonOnly,
+    isOfficial,
+    setIsOfficial,
+    isExperimental,
+    setIsExperimental,
+    hasNoQueue,
+    setHasNoQueue,
+  } = useContext(ServerFiltersContext);
 
   const availableVersions: SelectOption[] = useMemo(
     () => [
@@ -101,11 +117,11 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
           <Card>
             <div className="grid grid-cols-4 gap-6 py-4 items-center">
               <div>
-                <Input placeholder="Server name" clearable onChange={(e) => setServerName(e.target.value)} />
+                <Input placeholder="Server name" clearable value={serverName} onChange={(e) => setServerName(e.target.value)} />
               </div>
 
               <div>
-                <Select placeholder="Map" onChange={(value) => setServerIsland(value as string)}>
+                <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
                   {availableIslands.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
@@ -115,7 +131,7 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Select placeholder="Version" onChange={(value) => setServerVersion(value as string)}>
+                <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
                   {availableVersions.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       <span>
@@ -141,7 +157,7 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Select placeholder="Mods" onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+                <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
                   {availableMods.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
@@ -151,25 +167,25 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Checkbox scale={4 / 3} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+                <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
                   First person only
                 </Checkbox>
               </div>
 
               <div>
-                <Checkbox scale={4 / 3} onChange={(e) => setIsOfficial(e.target.checked)}>
+                <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
                   Official server
                 </Checkbox>
               </div>
 
               <div>
-                <Checkbox scale={4 / 3} onChange={(e) => setIsExperimental(e.target.checked)}>
+                <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
                   Experimental server
                 </Checkbox>
               </div>
 
               <div>
-                <Checkbox scale={4 / 3} onChange={(e) => setHasNoQueue(e.target.checked)}>
+                <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
                   Has no queue
                 </Checkbox>
               </div>
