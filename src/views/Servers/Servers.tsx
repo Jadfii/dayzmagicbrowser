@@ -3,11 +3,13 @@ import React, { useContext, useState } from 'react';
 import ServerList from '../../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../../components/ServerFilters/ServerFilters';
-import { Filter } from '@geist-ui/react-icons';
+import { Delete, Filter } from '@geist-ui/react-icons';
 import { ServersContext } from '../../contexts/ServersProvider';
+import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 
 const Servers: React.FC = () => {
   const { filteredServers } = useContext(ServersContext);
+  const { resetFilters } = useContext(ServerFiltersContext);
   const [isFiltering, setIsFiltering] = useState<boolean>(false);
 
   return (
@@ -19,9 +21,17 @@ const Servers: React.FC = () => {
 
         <div>
           <div className="flex items-center justify-between">
-            <Button onClick={() => setIsFiltering((state) => !state)} icon={<Filter />} auto>
-              Filters
-            </Button>
+            <div className="flex items-center">
+              <Button onClick={() => setIsFiltering((state) => !state)} icon={<Filter />} auto>
+                Filters
+              </Button>
+
+              <Spacer w={1} />
+
+              <Button onClick={() => resetFilters()} icon={<Delete />} auto>
+                Reset filters
+              </Button>
+            </div>
 
             <Text p margin={0}>
               Showing {filteredServers.length} servers

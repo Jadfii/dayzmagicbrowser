@@ -17,49 +17,63 @@ const filterServers = (
   isExperimental: boolean,
   hasNoQueue: boolean
 ) => {
-  return servers.filter((server) => {
-    let shouldInclude = true;
-    const setShouldInclude = (include: boolean) => {
-      shouldInclude = shouldInclude && include;
-    };
+  let filtersActive = 0;
+  return {
+    servers: servers.filter((server) => {
+      let shouldInclude = true;
+      const setShouldInclude = (include: boolean) => {
+        shouldInclude = shouldInclude && include;
+      };
 
-    if (serverName) {
-      setShouldInclude(server?.name?.toLowerCase().includes(serverName.toLowerCase()));
-    }
+      if (serverName) {
+        setShouldInclude(server?.name?.toLowerCase().includes(serverName.toLowerCase()));
+        filtersActive++;
+      }
 
-    if (serverIsland) {
-      setShouldInclude(server?.island?.toLowerCase().includes(serverIsland.toLowerCase()));
-    }
+      if (serverIsland) {
+        setShouldInclude(server?.island?.toLowerCase().includes(serverIsland.toLowerCase()));
+        filtersActive++;
+      }
 
-    if (serverVersion) {
-      setShouldInclude(server?.version === serverVersion);
-    }
+      if (serverVersion) {
+        setShouldInclude(server?.version === serverVersion);
+        filtersActive++;
+      }
 
-    if (serverMods.length > 0) {
-      setShouldInclude(serverMods.every((mod) => server?.mods.find((m) => mod === m.steamId)));
-    }
+      if (serverMods.length > 0) {
+        setShouldInclude(serverMods.every((mod) => server?.mods.find((m) => mod === m.steamId)));
+        filtersActive++;
+      }
 
-    if (isFirstPersonOnly === true) {
-      setShouldInclude(server?.isFirstPerson === isFirstPersonOnly);
-    }
+      if (isFirstPersonOnly === true) {
+        setShouldInclude(server?.isFirstPerson === isFirstPersonOnly);
+        filtersActive++;
+      }
 
-    if (isOfficial === true) {
-      setShouldInclude(server?.isPublicHive === isOfficial);
-    }
+      if (isOfficial === true) {
+        setShouldInclude(server?.isPublicHive === isOfficial);
+        filtersActive++;
+      }
 
-    if (isExperimental === true) {
-      setShouldInclude(server?.appId === expAppId);
-    }
+      if (isExperimental === true) {
+        setShouldInclude(server?.appId === expAppId);
+        filtersActive++;
+      }
 
-    if (hasNoQueue === true) {
-      setShouldInclude(server?.queue === 0);
-    }
+      if (hasNoQueue === true) {
+        setShouldInclude(server?.queue === 0);
+        filtersActive++;
+      }
 
-    return shouldInclude;
-  });
+      return shouldInclude;
+    }),
+    filtersActive,
+  };
 };
 
 type ContextProps = {
+  resetFilters: () => void;
+  filtersActive: number;
   serverName: string;
   setServerName: Dispatch<React.SetStateAction<string>>;
   serverIsland: string;
@@ -84,6 +98,8 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   const [filterWorker, { status: filterStatus, kill: killFilterWorker }] = useWorker(filterServers);
   const { servers, setFilteredServers } = useContext(ServersContext);
 
+  const [filtersActive, setFiltersActive] = useState<number>(0);
+
   const [serverName, setServerName] = useState<string>('');
   const debouncedServerName = useDebounce(serverName, 500);
   const [serverIsland, setServerIsland] = useState<string>('');
@@ -94,6 +110,17 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   const [hasNoQueue, setHasNoQueue] = useState<boolean>(false);
   const [serverMods, setServerMods] = useState<string[]>([]);
 
+  function resetFilters() {
+    setServerName('');
+    setServerIsland('');
+    setServerVersion('');
+    setIsFirstPersonOnly(false);
+    setIsOfficial(false);
+    setIsExperimental(false);
+    setHasNoQueue(false);
+    setServerMods([]);
+  }
+
   useEffect(() => {
     if (servers?.length === 0) return;
 
@@ -101,20 +128,20 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
     if ([WORKER_STATUS.PENDING, WORKER_STATUS.RUNNING].includes(filterStatus)) killFilterWorker();
 
     (async () => {
-      setFilteredServers(
-        await filterWorker(
-          servers,
-          DAYZ_EXP_APPID,
-          debouncedServerName,
-          serverIsland,
-          serverVersion,
-          serverMods,
-          isFirstPersonOnly,
-          isOfficial,
-          isExperimental,
-          hasNoQueue
-        )
+      const filterResult = await filterWorker(
+        servers,
+        DAYZ_EXP_APPID,
+        debouncedServerName,
+        serverIsland,
+        serverVersion,
+        serverMods,
+        isFirstPersonOnly,
+        isOfficial,
+        isExperimental,
+        hasNoQueue
       );
+      setFilteredServers(filterResult.servers);
+      setFiltersActive(filterResult.filtersActive);
     })();
   }, [
     servers,
@@ -132,7 +159,9 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   return (
     <ServerFiltersContext.Provider
       value={{
-        serverName,
+        resetFilters,
+        filtersActive,
+        serverName: debouncedServerName,
         setServerName,
         serverIsland,
         setServerIsland,
