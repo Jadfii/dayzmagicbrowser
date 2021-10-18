@@ -1,5 +1,6 @@
 export interface ServerObjectResponse {
   _id: string;
+  id?: string;
   ip: string;
   query_port: number;
   game_port: number;

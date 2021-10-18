@@ -9,23 +9,22 @@ import ServerModList from '../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../constants/game.constant';
 import { GameContext } from '../../contexts/GameProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
-import { ServersContext } from '../../contexts/ServersProvider';
 import useWorkshopAPI from '../../data/useWorkshopAPI';
 import { Island, Server, WorkshopMod } from '../../types/Types';
 import FeatureBadge from './FeatureBadge';
 import InfoCard from './InfoCard';
 import ServerTimeCard from './ServerTimeCard';
 
-const ServerPage: React.FC = () => {
+interface Props {
+  server: Server;
+}
+
+const ServerPage: React.FC<Props> = ({ server }) => {
   const router = useRouter();
   const theme = useTheme();
-  const { serverIp, serverPort } = router.query;
   const { getWorkshopMods } = useWorkshopAPI();
-  const { servers, findServerByIpPort } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
-
-  const [server, setServer] = useState<Server | undefined>(undefined);
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
@@ -69,15 +68,12 @@ const ServerPage: React.FC = () => {
   }, [server?.name]);
 
   useEffect(() => {
-    if (!serverIp || !serverPort || servers.length === 0) return;
-
-    const foundServer = findServerByIpPort(serverIp as string, Number(serverPort as string), true);
-    setServer(foundServer);
-
-    if (foundServer) console.log(foundServer);
+    if (!server?.ip) {
+      return;
+    }
 
     setIsLoadingServer(false);
-  }, [findServerByIpPort, servers, serverIp, serverPort]);
+  }, [server]);
 
   return (
     <>
@@ -86,7 +82,7 @@ const ServerPage: React.FC = () => {
       {server?.name ? (
         <>
           <div className="relative flex items-end h-40 py-4">
-            <BackgroundImage src={serverIsland?.imageURL || ''} />
+            <BackgroundImage src={serverIsland?.imageURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">

@@ -17,7 +17,7 @@ export const getServerTimeAcceleration = (acceleration: string): ServerTimeAccel
 };
 
 export const mapServerResponse = (server: ServerObjectResponse): Server => ({
-  id: server._id,
+  id: server._id || server.id || '',
   ip: server.ip,
   queryPort: server.query_port,
   gamePort: server.game_port,
