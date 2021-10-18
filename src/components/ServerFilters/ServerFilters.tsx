@@ -122,12 +122,7 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Select
-                  placeholder="Map"
-                  type={serverIsland ? 'success' : 'default'}
-                  value={serverIsland}
-                  onChange={(value) => setServerIsland(value as string)}
-                >
+                <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
                   {availableIslands.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
@@ -137,12 +132,7 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Select
-                  placeholder="Version"
-                  type={serverVersion ? 'success' : 'default'}
-                  value={serverVersion}
-                  onChange={(value) => setServerVersion(value as string)}
-                >
+                <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
                   {availableVersions.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       <span>
@@ -168,14 +158,7 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
               </div>
 
               <div>
-                <Select
-                  placeholder="Mods"
-                  type={serverMods?.length > 0 ? 'success' : 'default'}
-                  value={serverMods}
-                  onChange={(value) => setServerMods(value as string[])}
-                  width="100%"
-                  multiple
-                >
+                <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
                   {availableMods.map((option, i) => (
                     <Select.Option key={i} value={option.value}>
                       {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
