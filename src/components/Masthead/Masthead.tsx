@@ -1,4 +1,4 @@
-import { Button, Divider, Spacer } from '@geist-ui/react';
+import { Button, Divider, Spacer, Tag } from '@geist-ui/react';
 import { RefreshCw } from '@geist-ui/react-icons';
 import React, { useContext } from 'react';
 import Link from 'next/link';
@@ -13,8 +13,12 @@ const Masthead: React.FC = () => {
     <>
       <div className="flex items-center py-4">
         <Link href="/">
-          <a>
+          <a className="flex items-center">
             <Logo style={{ color: '#fff' }} />
+
+            <Spacer w={1 / 2} />
+
+            <Tag type="lite">ALPHA</Tag>
           </a>
         </Link>
 
