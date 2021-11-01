@@ -16,6 +16,8 @@ export const getDuration = (time: number): string => dayjs.duration(time, 'ms').
 export const getDateFromTime = (time: string, isTomorrow?: boolean): Date => new Date(`0${isTomorrow ? '2' : '1'} Jan 1970 ${time}:00 GMT`);
 
 // Gets the server time duration in real time in ms
+// Day & Night are each treated as 12 hours
+// Night acceleration uses the base acceleration multiplied by the night acceleration
 export const getServerTimeDuration = (timeAcceleration: ServerTimeAcceleration): ServerTimeDuration => ({
   day: Math.floor((12 / timeAcceleration.day) * 60000 * 60),
   night: Math.floor((12 / timeAcceleration.day / timeAcceleration.night) * 60000 * 60),
