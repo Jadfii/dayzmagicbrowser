@@ -1,4 +1,4 @@
-import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
+import { Button, Card, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -14,6 +14,7 @@ import { Island, Server, WorkshopMod } from '../../types/Types';
 import FeatureBadge from './FeatureBadge';
 import InfoCard from './InfoCard';
 import ServerTimeCard from './ServerTimeCard';
+import PlayerCountChart from '../../components/PlayerCountChart/PlayerCountChart';
 
 interface Props {
   server: Server;
@@ -149,6 +150,16 @@ const ServerPage: React.FC<Props> = ({ server }) => {
                     />
 
                     <ServerTimeCard server={server} />
+                  </div>
+
+                  <div className="mt-6">
+                    <Card>
+                      <Card.Content className="relative">
+                        <Text h2>Player count</Text>
+
+                        <PlayerCountChart server={server} />
+                      </Card.Content>
+                    </Card>
                   </div>
                 </div>
 

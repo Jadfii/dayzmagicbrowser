@@ -80,3 +80,11 @@ export interface VersionResponse {
   stable: string;
   exp: string;
 }
+
+export interface MetricResponse {
+  serverId: string;
+  offline: boolean;
+  players: number;
+  queue: number;
+  timestamp: string;
+}

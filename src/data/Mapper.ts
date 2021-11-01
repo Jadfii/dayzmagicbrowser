@@ -1,6 +1,6 @@
 import { IMAGE_BUCKET } from '../constants/links.constant';
-import { IslandResponse, ServerObjectResponse, WorkshopModResponse } from '../types/ResponseTypes';
-import { Island, Server, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
+import { IslandResponse, MetricResponse, ServerObjectResponse, WorkshopModResponse } from '../types/ResponseTypes';
+import { Island, Metric, Server, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 import { getServerTimeDuration } from '../utils/time.util';
 
 export const getServerTimeAcceleration = (acceleration: string): ServerTimeAcceleration => {
@@ -64,4 +64,12 @@ export const mapWorkshopModResponse = (mod: WorkshopModResponse): WorkshopMod =>
   tags: mod.tags?.length ? mod.tags.map((t) => t.tag) : [],
   views: mod.views,
   visibility: mod.visibility,
+});
+
+export const mapMetricResponse = (metric: MetricResponse): Metric => ({
+  serverId: metric.serverId,
+  isOffline: metric.offline,
+  players: metric.players,
+  queue: metric.queue,
+  timestamp: new Date(metric.timestamp),
 });

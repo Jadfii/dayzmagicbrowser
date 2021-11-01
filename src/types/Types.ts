@@ -75,3 +75,11 @@ export interface WorkshopMod {
   views: number;
   visibility: number;
 }
+
+export interface Metric {
+  serverId: string;
+  isOffline: boolean;
+  timestamp: Date;
+  players: number;
+  queue: number;
+}
