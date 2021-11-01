@@ -1,7 +1,7 @@
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../components/PlayerCount/PlayerCount';
@@ -20,7 +20,6 @@ interface Props {
 }
 
 const ServerPage: React.FC<Props> = ({ server }) => {
-  const router = useRouter();
   const theme = useTheme();
   const { getWorkshopMods } = useWorkshopAPI();
   const { getIslandByTerrain } = useContext(IslandsContext);
@@ -51,12 +50,6 @@ const ServerPage: React.FC<Props> = ({ server }) => {
         })
     );
     setIsLoadingMods(false);
-  }
-
-  function onPlay() {
-    if (!server?.ip) return;
-
-    router.push(`/play/${server.ip}/${server.gamePort}`);
   }
 
   useEffect(() => {
@@ -104,9 +97,13 @@ const ServerPage: React.FC<Props> = ({ server }) => {
           <div className="relative flex flex-auto py-8">
             <div className="flex flex-col flex-auto">
               <div className="flex items-start">
-                <Button onClick={onPlay} type="success-light" icon={<Play />} scale={4 / 3}>
-                  Play
-                </Button>
+                <Link href={`/play/${server.ip}/${server.gamePort}`}>
+                  <a>
+                    <Button type="success-light" icon={<Play />} scale={4 / 3}>
+                      Play
+                    </Button>
+                  </a>
+                </Link>
               </div>
 
               <Spacer h={1} />
