@@ -36,7 +36,7 @@
     "eslint-config-next": "^11.1.2",
     "eslint-config-prettier": "^8.3.0",
     "eslint-plugin-react-hooks": "^4.2.0",
-    "postcss": "^8.3.9",
+    "postcss": "^8.3.11",
     "sass": "^1.42.1",
     "styled-jsx-plugin-postcss": "^4.0.1",
     "tailwindcss": "^2.2.16",
