@@ -24,12 +24,12 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
     e.stopPropagation();
     if (!server?.ip) return;
 
-    router.push(`/play/${server.ip}/${server.queryPort}`);
+    router.push(`/play/${server.ip}/${server.gamePort}`);
   }
 
   return (
     <>
-      <Link href={`/server/${server.ip}/${server.queryPort}`}>
+      <Link href={`/server/${server.ip}/${server.gamePort}`}>
         <a>
           <Card hoverable className="server-card group">
             {serverIsland?.imageURL && (

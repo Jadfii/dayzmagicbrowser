@@ -70,14 +70,16 @@ const ServerPage: React.FC<Props> = ({ server }) => {
 
       {server?.name ? (
         <>
-          <div className="relative flex items-end h-40 py-4">
+          <div className="relative flex items-end h-48 py-4">
             <BackgroundImage src={serverIsland?.imageURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">
-                <Text h1 margin={0} width="100%" className="leading-tight">
+                <Text h1 margin={0} width="100%" className="leading-tight break-words">
                   {server.name}
                 </Text>
+
+                <Spacer h={1 / 2} inline />
 
                 <div className="flex space-x-2">
                   {server.hasPassword && <FeatureBadge type="warning" label="Passworded" icon={<Lock />} />}

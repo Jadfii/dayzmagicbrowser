@@ -38,7 +38,7 @@ const ServerOption: React.FC<Props> = ({ result, handleClick }) => {
   return server ? (
     <>
       <AutoComplete.Item value={server.id}>
-        <Link href={`/server/${server.ip}/${server.queryPort}`}>
+        <Link href={`/server/${server.ip}/${server.gamePort}`}>
           <a className="server-option">
             <Grid.Container className="py-4" onClick={onClick}>
               <Grid xs={24} className="items-center">
