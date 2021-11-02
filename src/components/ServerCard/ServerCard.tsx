@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
+import CountryFlag from '../CountryFlag/CountryFlag';
 
 interface Props {
   server: Server;
@@ -49,9 +50,17 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
             <Card.Content>
               <div className="flex flex-col">
                 <div className="flex items-center">
+                  <Tooltip text={server.country}>
+                    <div className="relative flex-shrink-0 w-4 h-4">
+                      <CountryFlag countryCode={server.countryCode} country={server.country} />
+                    </div>
+                  </Tooltip>
+
+                  <Spacer w={1 / 2} />
+
                   <Tooltip text={server.name} className="truncate">
                     <Text h5 width="100%" className="truncate my-0">
-                      {server.name}
+                      {server.name.trim()}
                     </Text>
                   </Tooltip>
 
