@@ -68,7 +68,7 @@ const ServerPage: React.FC<Props> = ({ server }) => {
     <>
       <NextSeo title={server?.name} description={`View information about server "${server?.name}".`} />
 
-      {server?.name ? (
+      {server?.name && server?.version ? (
         <>
           <div className="relative flex items-end h-48 py-4">
             <BackgroundImage src={serverIsland?.imageURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} />
