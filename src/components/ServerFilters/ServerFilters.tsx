@@ -135,17 +135,20 @@ const ServerFilters: React.FC = () => {
                     {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
                   </span>
 
-                  {isLatestGameVersion(option.value) && (
+                  {option.value && (
                     <>
-                      <Spacer w={1 / 3} inline />
-                      <Dot type="success" scale={3 / 4}></Dot>
-                    </>
-                  )}
-
-                  {isLatestGameVersion(option.value, true) && (
-                    <>
-                      <Spacer w={1 / 3} inline />
-                      <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
+                      {isLatestGameVersion(option.value) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Dot type="success" scale={3 / 4}></Dot>
+                        </>
+                      )}
+                      {isLatestGameVersion(option.value, true) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
+                        </>
+                      )}
                     </>
                   )}
                 </Select.Option>
