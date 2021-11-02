@@ -8,7 +8,7 @@ import { ServersContext } from '../../contexts/ServersProvider';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 
 const Servers: React.FC = () => {
-  const { filteredServers } = useContext(ServersContext);
+  const { filteredServers, servers } = useContext(ServersContext);
   const { resetFilters } = useContext(ServerFiltersContext);
 
   return (
@@ -31,7 +31,7 @@ const Servers: React.FC = () => {
             </Text>
           </div>
 
-          <ServerFilters />
+          {servers.length > 0 && <ServerFilters />}
         </div>
 
         <Spacer h={1} />

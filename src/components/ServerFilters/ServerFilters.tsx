@@ -118,52 +118,58 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
-              {availableIslands.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                </Select.Option>
-              ))}
-            </Select>
-          </div>
-
-          <div>
-            <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
-              {availableVersions.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  <span>
+            {availableIslands.length > 0 && (
+              <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
+                {availableIslands.map((option, i) => (
+                  <Select.Option key={i} value={option.value}>
                     {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                  </span>
-
-                  {option.value && (
-                    <>
-                      {isLatestGameVersion(option.value) && (
-                        <>
-                          <Spacer w={1 / 3} inline />
-                          <Dot type="success" scale={3 / 4}></Dot>
-                        </>
-                      )}
-                      {isLatestGameVersion(option.value, true) && (
-                        <>
-                          <Spacer w={1 / 3} inline />
-                          <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
-                        </>
-                      )}
-                    </>
-                  )}
-                </Select.Option>
-              ))}
-            </Select>
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </div>
 
           <div>
-            <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
-              {availableMods.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                </Select.Option>
-              ))}
-            </Select>
+            {availableVersions.length > 0 && (
+              <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
+                {availableVersions.map((option, i) => (
+                  <Select.Option key={i} value={option.value}>
+                    <span>
+                      {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                    </span>
+
+                    {option.value && (
+                      <>
+                        {isLatestGameVersion(option.value) && (
+                          <>
+                            <Spacer w={1 / 3} inline />
+                            <Dot type="success" scale={3 / 4}></Dot>
+                          </>
+                        )}
+                        {isLatestGameVersion(option.value, true) && (
+                          <>
+                            <Spacer w={1 / 3} inline />
+                            <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
+          </div>
+
+          <div>
+            {availableMods.length > 0 && (
+              <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+                {availableMods.map((option, i) => (
+                  <Select.Option key={i} value={option.value}>
+                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </div>
 
           <div>
