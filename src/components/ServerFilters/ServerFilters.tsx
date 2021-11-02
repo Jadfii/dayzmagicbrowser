@@ -41,7 +41,7 @@ const ServerFilters: React.FC = () => {
       ...[
         ...new Set(
           servers.reduce<SelectOption[]>((acc, curr) => {
-            if (curr?.version) return acc;
+            if (!curr?.version) return acc;
 
             const option = { label: curr.version, value: curr.version, occurrences: 1 };
 
