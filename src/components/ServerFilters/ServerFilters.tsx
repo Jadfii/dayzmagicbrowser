@@ -41,6 +41,8 @@ const ServerFilters: React.FC = () => {
       ...[
         ...new Set(
           servers.reduce<SelectOption[]>((acc, curr) => {
+            if (curr?.version) return acc;
+
             const option = { label: curr.version, value: curr.version, occurrences: 1 };
 
             const foundIdx = acc.findIndex((o) => o.value === option.value);

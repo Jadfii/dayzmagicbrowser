@@ -41,7 +41,7 @@ const GameProvider: React.FC = ({ children }) => {
 
   const isLatestGameVersion = useCallback(
     (version: string, experimental?: boolean) =>
-      typeof version === 'string' && version.replaceAll('.', '') === (experimental ? latestExpGameVersion : latestGameVersion).replaceAll('.', ''),
+      version.replaceAll('.', '') === (experimental ? latestExpGameVersion : latestGameVersion).replaceAll('.', ''),
     [latestGameVersion, latestExpGameVersion]
   );
 
