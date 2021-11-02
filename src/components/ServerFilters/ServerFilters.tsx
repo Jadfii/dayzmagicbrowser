@@ -11,11 +11,7 @@ interface SelectOption {
   occurrences: number;
 }
 
-interface Props {
-  visible: boolean;
-}
-
-const ServerFilters: React.FC<Props> = ({ visible }) => {
+const ServerFilters: React.FC = () => {
   const { servers } = useContext(ServersContext);
   const { getIslandByTerrain } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
@@ -111,89 +107,85 @@ const ServerFilters: React.FC<Props> = ({ visible }) => {
 
   return (
     <>
-      {visible && (
-        <>
-          <Spacer h={1} />
+      <Spacer h={1} />
 
-          <Card>
-            <div className="grid grid-cols-4 gap-6 py-4 items-center">
-              <div>
-                <Input placeholder="Server name" clearable value={serverName} onChange={(e) => setServerName(e.target.value)} />
-              </div>
+      <Card>
+        <div className="grid grid-cols-4 gap-6 py-4 items-center">
+          <div>
+            <Input placeholder="Server name" clearable value={serverName} onChange={(e) => setServerName(e.target.value)} />
+          </div>
 
-              <div>
-                <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
-                  {availableIslands.map((option, i) => (
-                    <Select.Option key={i} value={option.value}>
-                      {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
+          <div>
+            <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
+              {availableIslands.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
 
-              <div>
-                <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
-                  {availableVersions.map((option, i) => (
-                    <Select.Option key={i} value={option.value}>
-                      <span>
-                        {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                      </span>
+          <div>
+            <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
+              {availableVersions.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  <span>
+                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                  </span>
 
-                      {isLatestGameVersion(option.value) && (
-                        <>
-                          <Spacer w={1 / 3} inline />
-                          <Dot type="success" scale={3 / 4}></Dot>
-                        </>
-                      )}
+                  {isLatestGameVersion(option.value) && (
+                    <>
+                      <Spacer w={1 / 3} inline />
+                      <Dot type="success" scale={3 / 4}></Dot>
+                    </>
+                  )}
 
-                      {isLatestGameVersion(option.value, true) && (
-                        <>
-                          <Spacer w={1 / 3} inline />
-                          <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
-                        </>
-                      )}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
+                  {isLatestGameVersion(option.value, true) && (
+                    <>
+                      <Spacer w={1 / 3} inline />
+                      <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
+                    </>
+                  )}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
 
-              <div>
-                <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
-                  {availableMods.map((option, i) => (
-                    <Select.Option key={i} value={option.value}>
-                      {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </div>
+          <div>
+            <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+              {availableMods.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                </Select.Option>
+              ))}
+            </Select>
+          </div>
 
-              <div>
-                <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
-                  First person only
-                </Checkbox>
-              </div>
+          <div>
+            <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+              First person only
+            </Checkbox>
+          </div>
 
-              <div>
-                <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
-                  Official server
-                </Checkbox>
-              </div>
+          <div>
+            <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
+              Official server
+            </Checkbox>
+          </div>
 
-              <div>
-                <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
-                  Experimental server
-                </Checkbox>
-              </div>
+          <div>
+            <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
+              Experimental server
+            </Checkbox>
+          </div>
 
-              <div>
-                <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
-                  Has no queue
-                </Checkbox>
-              </div>
-            </div>
-          </Card>
-        </>
-      )}
+          <div>
+            <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
+              Has no queue
+            </Checkbox>
+          </div>
+        </div>
+      </Card>
 
       {filtersActive > 0 && (
         <>
