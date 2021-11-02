@@ -8,7 +8,7 @@ const useServersAPI = () => {
     try {
       const res = await get('servers');
 
-      if (res?.results) {
+      if (res?.length) {
         console.log(`Loaded ${res?.length} servers.`);
       }
 
