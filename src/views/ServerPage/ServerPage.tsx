@@ -1,5 +1,5 @@
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool } from '@geist-ui/react-icons';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign } from '@geist-ui/react-icons';
 import React, { useContext, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -86,6 +86,9 @@ const ServerPage: React.FC<Props> = ({ server }) => {
                   {server.isFirstPerson && <FeatureBadge type="success" label="First person" icon={<User />} />}
                   {server.isPublicHive && <FeatureBadge type="default" label="Official" icon={<Check />} />}
                   {isExperimental && <FeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
+                  {server.isMonetized && (
+                    <FeatureBadge type="secondary" backgroundColor={theme.palette.violet} label="Monetized" icon={<DollarSign />} />
+                  )}
                   {server.isBattleEye ? (
                     <FeatureBadge type="secondary" label="Protected (BattlEye)" icon={<Shield />} />
                   ) : (

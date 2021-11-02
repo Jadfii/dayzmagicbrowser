@@ -30,6 +30,10 @@ export interface Server {
   isVac: boolean;
   isPublicHive: boolean;
   isOffline: boolean;
+  isMonetized: boolean;
+  countryCode: string;
+  country: string;
+  isOfficial: boolean;
   mods: ServerMod[];
 }
 

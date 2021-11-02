@@ -37,6 +37,10 @@ export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   isVac: server.vac,
   isPublicHive: server.public_hive,
   isOffline: server.offline,
+  isOfficial: server.official,
+  isMonetized: server.monetized,
+  country: server.country,
+  countryCode: server.country_code,
   mods: server.mods.map((mod) => ({ steamId: mod.id.toString(), name: mod.name })),
 });
 

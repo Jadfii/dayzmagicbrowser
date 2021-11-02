@@ -19,6 +19,10 @@ export interface ServerObjectResponse {
   vac: boolean;
   public_hive: boolean;
   offline: boolean;
+  monetized: boolean;
+  country_code: string;
+  country: string;
+  official: boolean;
   mods: ServerModResponse[];
 }
 
