@@ -141,7 +141,7 @@ const ServerPage: React.FC<Props> = ({ server }) => {
 
                           <Spacer w={1 / 2} />
 
-                          {isLatestGameVersion && isLatestGameVersion(server.version, isExperimental) && (
+                          {isLatestGameVersion && isLatestGameVersion(server.version || '', isExperimental) && (
                             <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
                               <Check color={theme.palette.success} />
                             </Tooltip>
