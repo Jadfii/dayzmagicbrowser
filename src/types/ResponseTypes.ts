@@ -37,6 +37,12 @@ export interface ServerResponse {
   totalResults: number;
 }
 
+export interface HomeServerResponse {
+  popular: ServerObjectResponse[];
+  official: ServerObjectResponse[];
+  experimental: ServerObjectResponse[];
+}
+
 export interface ServerModResponse {
   id: string;
   name: string;

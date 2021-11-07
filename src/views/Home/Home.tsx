@@ -1,20 +1,18 @@
-import React, { useContext, useMemo } from 'react';
+import React from 'react';
 import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
-import { ServersContext } from '../../contexts/ServersProvider';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { IMAGE_BUCKET } from '../../constants/links.constant';
-import { DAYZ_EXP_APPID } from '../../constants/game.constant';
+import { HomeServers } from '../../types/Types';
 
-const Home: React.FC = () => {
+interface Props {
+  homeServers: HomeServers;
+}
+
+const Home: React.FC<Props> = ({ homeServers }) => {
   const router = useRouter();
-  const { servers } = useContext(ServersContext);
-
-  const popularServers = useMemo(() => servers.slice(0, 4), [servers]);
-  const officialServers = useMemo(() => servers.filter((server) => server.isPublicHive).slice(0, 4), [servers]);
-  const expServers = useMemo(() => servers.filter((server) => server.appId === DAYZ_EXP_APPID).slice(0, 4), [servers]);
 
   return (
     <>
@@ -54,9 +52,9 @@ const Home: React.FC = () => {
           </Text>
         </div>
 
-        {popularServers.length > 0 ? (
+        {homeServers?.popular.length > 0 ? (
           <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {popularServers.map((server, i) => (
+            {homeServers?.popular.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
           </div>
@@ -77,9 +75,9 @@ const Home: React.FC = () => {
           </Text>
         </div>
 
-        {officialServers.length > 0 ? (
+        {homeServers?.official.length > 0 ? (
           <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {officialServers.map((server, i) => (
+            {homeServers?.official.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
           </div>
@@ -100,9 +98,9 @@ const Home: React.FC = () => {
           </Text>
         </div>
 
-        {expServers.length > 0 ? (
+        {homeServers?.experimental.length > 0 ? (
           <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {expServers.map((server, i) => (
+            {homeServers?.experimental.map((server, i) => (
               <ServerCard server={server} key={i} />
             ))}
           </div>

@@ -82,3 +82,9 @@ export interface WorkshopMod {
   views: number;
   visibility: number;
 }
+
+export interface HomeServers {
+  popular: Server[];
+  official: Server[];
+  experimental: Server[];
+}

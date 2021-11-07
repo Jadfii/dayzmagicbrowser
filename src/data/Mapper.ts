@@ -3,8 +3,8 @@ import { IslandResponse, ServerGeoDataResponse, ServerObjectResponse, WorkshopMo
 import { Island, Server, ServerGeoData, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 import { getServerTimeDuration } from '../utils/time.util';
 
-export const getServerTimeAcceleration = (acceleration: string): ServerTimeAcceleration => {
-  const splitAcceleration: number[] = acceleration.split(',').map((acc) => Number(acc));
+export const getServerTimeAcceleration = (acceleration?: string): ServerTimeAcceleration => {
+  const splitAcceleration: number[] = acceleration?.split(',').map((acc) => Number(acc)) || [];
 
   if (splitAcceleration.length === 0) {
     return { day: 0, night: 0 };
@@ -44,7 +44,7 @@ export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   isOffline: server.offline,
   isMonetized: server.monetized || false,
   geo: mapServerGeoDataResponse(server.geo),
-  mods: server.mods.map((mod) => ({ steamId: mod.id.toString(), name: mod.name })),
+  mods: server.mods?.map((mod) => ({ steamId: mod.id.toString(), name: mod.name })) || [],
 });
 
 export const mapIslandResponse = (island: IslandResponse): Island => ({
