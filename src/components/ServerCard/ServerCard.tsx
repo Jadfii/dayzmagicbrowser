@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import CountryFlag from '../CountryFlag/CountryFlag';
+import ImagePlaceholder from '../ImagePlaceholder/ImagePlaceholder';
 
 interface Props {
   server: Server;
@@ -33,8 +34,8 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
       <Link href={`/server/${server.ip}/${server.gamePort}`}>
         <a>
           <Card hoverable className="server-card group">
-            {serverIsland?.imageURL && (
-              <div className="relative w-full" style={{ height: imageHeight }}>
+            <div className="relative w-full" style={{ height: imageHeight }}>
+              {serverIsland?.imageURL ? (
                 <Image
                   alt={`${server?.name} map preview`}
                   layout="fill"
@@ -44,8 +45,10 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                   unoptimized
                   className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
                 />
-              </div>
-            )}
+              ) : (
+                <ImagePlaceholder />
+              )}
+            </div>
 
             <Card.Content>
               <div className="flex flex-col">

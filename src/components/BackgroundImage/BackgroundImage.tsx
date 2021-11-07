@@ -1,8 +1,9 @@
 import React from 'react';
 import Image from 'next/image';
+import ImagePlaceholder from '../ImagePlaceholder/ImagePlaceholder';
 
 interface Props {
-  src: string;
+  src?: string;
 }
 
 const BackgroundImage: React.FC<Props> = ({ src }) => {
@@ -11,16 +12,20 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
       <div className="absolute w-full h-full overflow-hidden" style={{ top: 0, left: 0 }}>
         <div />
         <div className="relative w-full h-full">
-          <Image
-            loader={({ src }) => src}
-            alt="Background image"
-            src={src}
-            layout="fill"
-            unoptimized
-            loading="eager"
-            className="object-cover opacity-25 rounded-none z-0"
-            priority
-          />
+          {src ? (
+            <Image
+              loader={({ src }) => src}
+              alt="Background image"
+              src={src}
+              layout="fill"
+              unoptimized
+              loading="eager"
+              className="object-cover opacity-25 rounded-none z-0"
+              priority
+            />
+          ) : (
+            <ImagePlaceholder />
+          )}
         </div>
       </div>
     </>

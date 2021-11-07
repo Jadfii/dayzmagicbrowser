@@ -73,7 +73,7 @@ const ServerPage: React.FC<Props> = ({ server }) => {
       {server?.name && server?.version ? (
         <>
           <div className="relative flex items-end h-48 py-4">
-            <BackgroundImage src={serverIsland?.imageURL || 'data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs='} />
+            <BackgroundImage src={serverIsland?.imageURL} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">
