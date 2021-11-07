@@ -9,6 +9,11 @@ export interface ServerTimeDuration {
   night: number;
 }
 
+export interface ServerGeoData {
+  countryCode?: string;
+  country?: string;
+}
+
 export interface Server {
   id: string;
   ip: string;
@@ -31,9 +36,7 @@ export interface Server {
   isPublicHive: boolean;
   isOffline: boolean;
   isMonetized: boolean;
-  countryCode: string;
-  country: string;
-  isOfficial: boolean;
+  geo: ServerGeoData;
   mods: ServerMod[];
 }
 

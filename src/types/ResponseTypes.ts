@@ -19,11 +19,14 @@ export interface ServerObjectResponse {
   vac: boolean;
   public_hive: boolean;
   offline: boolean;
-  monetized: boolean;
-  country_code: string;
-  country: string;
-  official: boolean;
+  monetized?: boolean;
+  geo: ServerGeoDataResponse;
   mods: ServerModResponse[];
+}
+
+export interface ServerGeoDataResponse {
+  country_code?: string;
+  country?: string;
 }
 
 export interface ServerResponse {

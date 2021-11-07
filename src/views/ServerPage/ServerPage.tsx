@@ -61,6 +61,8 @@ const ServerPage: React.FC<Props> = ({ server }) => {
       return;
     }
 
+    console.log(server);
+
     setIsLoadingServer(false);
   }, [server]);
 

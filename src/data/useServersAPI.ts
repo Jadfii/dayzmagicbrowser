@@ -6,13 +6,13 @@ import { mapServerResponse } from './Mapper';
 const useServersAPI = () => {
   async function getServers(): Promise<Server[]> {
     try {
-      const res = await get('servers');
+      const res = await get('servers', { limit: 2000, sortBy: 'players:desc' });
 
       if (res?.length) {
-        console.log(`Loaded ${res?.length} servers.`);
+        console.log(`Loaded ${res?.results?.length} servers.`);
       }
 
-      return (res || []).map((server: ServerObjectResponse) => mapServerResponse(server));
+      return (res?.results || []).map((server: ServerObjectResponse) => mapServerResponse(server));
     } catch (e) {
       console.error('Failed to get game servers.', e);
       return [];

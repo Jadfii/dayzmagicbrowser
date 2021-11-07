@@ -1,6 +1,6 @@
 import { IMAGE_BUCKET } from '../constants/links.constant';
-import { IslandResponse, ServerObjectResponse, WorkshopModResponse } from '../types/ResponseTypes';
-import { Island, Server, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
+import { IslandResponse, ServerGeoDataResponse, ServerObjectResponse, WorkshopModResponse } from '../types/ResponseTypes';
+import { Island, Server, ServerGeoData, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 import { getServerTimeDuration } from '../utils/time.util';
 
 export const getServerTimeAcceleration = (acceleration: string): ServerTimeAcceleration => {
@@ -15,6 +15,11 @@ export const getServerTimeAcceleration = (acceleration: string): ServerTimeAccel
     night: splitAcceleration[1],
   };
 };
+
+export const mapServerGeoDataResponse = (data: ServerGeoDataResponse): ServerGeoData => ({
+  countryCode: data?.country_code,
+  country: data?.country,
+});
 
 export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   id: server._id || server.id || '',
@@ -37,10 +42,8 @@ export const mapServerResponse = (server: ServerObjectResponse): Server => ({
   isVac: server.vac,
   isPublicHive: server.public_hive,
   isOffline: server.offline,
-  isOfficial: server.official,
-  isMonetized: server.monetized,
-  country: server.country,
-  countryCode: server.country_code,
+  isMonetized: server.monetized || false,
+  geo: mapServerGeoDataResponse(server.geo),
   mods: server.mods.map((mod) => ({ steamId: mod.id.toString(), name: mod.name })),
 });
 

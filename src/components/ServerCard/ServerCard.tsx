@@ -50,11 +50,13 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
             <Card.Content>
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  <Tooltip text={server.country}>
-                    <div className="relative flex-shrink-0 w-4 h-4">
-                      <CountryFlag countryCode={server.countryCode} country={server.country} />
-                    </div>
-                  </Tooltip>
+                  {server.geo.countryCode && (
+                    <Tooltip text={server.geo.country}>
+                      <div className="relative flex-shrink-0 w-4 h-4">
+                        <CountryFlag countryCode={server.geo.countryCode} country={server.geo.country} />
+                      </div>
+                    </Tooltip>
+                  )}
 
                   <Spacer w={1 / 2} />
 
