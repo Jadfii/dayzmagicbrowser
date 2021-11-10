@@ -16,7 +16,7 @@ import InfoCard from './InfoCard';
 import ServerTimeCard from './ServerTimeCard';
 
 interface Props {
-  server: Server;
+  server?: Server;
 }
 
 const ServerPage: React.FC<Props> = ({ server }) => {

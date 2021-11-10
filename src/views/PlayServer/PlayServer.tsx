@@ -1,19 +1,14 @@
 import { Text } from '@geist-ui/react';
-import React, { useContext, useEffect, useMemo } from 'react';
-import { useRouter } from 'next/router';
+import React, { useContext, useEffect } from 'react';
 import { GameContext } from '../../contexts/GameProvider';
-import { ServersContext } from '../../contexts/ServersProvider';
+import { Server } from '../../types/Types';
 
-const PlayServer: React.FC = () => {
-  const router = useRouter();
-  const { serverIp, serverPort } = router.query;
+interface Props {
+  server?: Server;
+}
+
+const PlayServer: React.FC<Props> = ({ server }) => {
   const { joinServer } = useContext(GameContext);
-  const { findServerByIpPort } = useContext(ServersContext);
-
-  const server = useMemo(
-    () => findServerByIpPort(serverIp as string, Number(serverPort as string), true),
-    [findServerByIpPort, serverIp, serverPort]
-  );
 
   useEffect(() => {
     if (!server?.name) return;
