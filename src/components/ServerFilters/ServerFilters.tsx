@@ -1,9 +1,9 @@
-import { Badge, Card, Checkbox, Dot, Input, Select, Spacer, Text } from '@geist-ui/react';
+import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
 import React, { useContext, useMemo } from 'react';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
-import { ServersContext } from '../../contexts/ServersProvider';
 import { GameContext } from '../../contexts/GameProvider';
+import { Server } from '../../types/Types';
 
 interface SelectOption {
   label: string;
@@ -11,12 +11,14 @@ interface SelectOption {
   occurrences: number;
 }
 
-const ServerFilters: React.FC = () => {
-  const { servers } = useContext(ServersContext);
+interface Props {
+  servers: Server[];
+}
+
+const ServerFilters: React.FC<Props> = ({ servers }) => {
   const { getIslandByTerrain } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
   const {
-    filtersActive,
     serverName,
     setServerName,
     serverIsland,
@@ -162,7 +164,7 @@ const ServerFilters: React.FC = () => {
 
           <div>
             {availableMods.length > 0 && (
-              <Select placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+              <Select disabled placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
                 {availableMods.map((option, i) => (
                   <Select.Option key={i} value={option.value}>
                     {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
@@ -173,53 +175,30 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+            <Checkbox disabled scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
+            <Checkbox disabled scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
+            <Checkbox disabled scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
               Experimental server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
+            <Checkbox disabled scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
               Has no queue
             </Checkbox>
           </div>
         </div>
       </Card>
-
-      {filtersActive > 0 && (
-        <>
-          <Spacer h={1} />
-
-          <div className="flex items-center flex-wrap space-x-4">
-            <Text p margin={0}>
-              Showing:{' '}
-            </Text>
-
-            {serverName && <Badge>Server name: {serverName}</Badge>}
-            {serverIsland && <Badge>Map: {availableIslands.find((island) => island.value === serverIsland)?.label || ''}</Badge>}
-            {serverVersion && <Badge>Version: {serverVersion}</Badge>}
-            {serverMods?.length > 0 && (
-              <Badge>Mods: {serverMods.map((modId) => availableMods.find((mod) => mod.value === modId)?.label || '').join(', ')}</Badge>
-            )}
-            {isFirstPersonOnly && <Badge>First person only</Badge>}
-            {isOfficial && <Badge>Official servers</Badge>}
-            {isExperimental && <Badge>Experimental servers</Badge>}
-            {hasNoQueue && <Badge>No queue</Badge>}
-          </div>
-        </>
-      )}
     </>
   );
 };

@@ -1,23 +1,19 @@
 import { Button, Divider, Spacer, Tag } from '@geist-ui/react';
 import { RefreshCw } from '@geist-ui/react-icons';
-import React, { useContext } from 'react';
+import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { ServersContext } from '../../contexts/ServersProvider';
 import Logo from '../Logo/Logo';
 import ServersSearch from '../ServersSearch/SeversSearch';
 
 const Masthead: React.FC = () => {
   const router = useRouter();
   const { serverIp } = router.query;
-  const { refreshServers, isLoadingServers } = useContext(ServersContext);
 
   function onRefreshClicked() {
     if (serverIp) {
       router.replace(router.asPath);
     }
-
-    refreshServers();
   }
 
   return (
@@ -39,7 +35,7 @@ const Masthead: React.FC = () => {
 
         <Spacer w={1} />
 
-        <Button onClick={onRefreshClicked} icon={<RefreshCw />} loading={isLoadingServers} style={{ marginLeft: 'auto' }}>
+        <Button onClick={onRefreshClicked} icon={<RefreshCw />} style={{ marginLeft: 'auto' }}>
           Refresh servers
         </Button>
       </div>

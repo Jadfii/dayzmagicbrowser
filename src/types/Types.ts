@@ -10,8 +10,8 @@ export interface ServerTimeDuration {
 }
 
 export interface ServerGeoData {
-  countryCode?: string;
-  country?: string;
+  countryCode: string | null;
+  country: string | null;
 }
 
 export interface Server {
@@ -87,4 +87,11 @@ export interface HomeServers {
   popular: Server[];
   official: Server[];
   experimental: Server[];
+}
+
+export interface ServerFilters {
+  name?: string;
+  map?: string;
+  version?: string;
+  limit?: number;
 }

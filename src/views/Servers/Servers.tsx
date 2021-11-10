@@ -1,15 +1,22 @@
 import { Button, Spacer, Text } from '@geist-ui/react';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import ServerList from '../../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import { ServersContext } from '../../contexts/ServersProvider';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
+import { Server } from '../../types/Types';
 
-const Servers: React.FC = () => {
-  const { filteredServers, servers } = useContext(ServersContext);
-  const { resetFilters } = useContext(ServerFiltersContext);
+interface Props {
+  servers: Server[];
+}
+
+const Servers: React.FC<Props> = ({ servers }) => {
+  const { resetFilters, filteredServers, setFilteredServers } = useContext(ServerFiltersContext);
+
+  useEffect(() => {
+    setFilteredServers(servers);
+  }, [servers]);
 
   return (
     <>
@@ -27,16 +34,16 @@ const Servers: React.FC = () => {
             </div>
 
             <Text p margin={0}>
-              Showing {filteredServers.length} servers
+              Showing {servers.length} servers
             </Text>
           </div>
 
-          {servers.length > 0 && <ServerFilters />}
+          {servers.length > 0 && <ServerFilters servers={servers} />}
         </div>
 
         <Spacer h={1} />
 
-        <ServerList />
+        <ServerList servers={filteredServers} />
       </div>
     </>
   );

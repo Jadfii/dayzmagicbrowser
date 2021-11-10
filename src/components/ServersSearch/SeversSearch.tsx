@@ -1,17 +1,16 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AutoComplete } from '@geist-ui/react';
-import Fuse from 'fuse.js';
-import { ServersContext } from '../../contexts/ServersProvider';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
+import useServersAPI from '../../data/useServersAPI';
 
 const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
-  const { servers } = useContext(ServersContext);
+  const { getServers } = useServersAPI();
 
   const [options, setOptions] = useState<React.ReactElement[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -39,27 +38,23 @@ const ServersSearch: React.FC = () => {
   useEffect(() => {
     if (!debouncedSearchValue) return setOptions([]);
 
-    setIsSearching(true);
-    const fuseSearch = new Fuse(servers, {
-      keys: ['name', { name: 'ip', weight: 2 }, { name: 'mods.name', weight: 0.5 }],
-      threshold: 0.2,
-      ignoreLocation: true,
-      includeMatches: true,
-      includeScore: true,
-    }).search(debouncedSearchValue);
+    (async () => {
+      setIsSearching(true);
 
-    // Search results, sort by players, map to option component, limit to top 100 results
-    const optionsResult = fuseSearch
-      .filter((result) => result?.item)
-      /*.sort((a, b) => {
-        return b?.item.players + b?.item.queue - (a?.item.players + a?.item.queue);
-      })*/
-      .map((result, i) => <ServerOption key={i} result={result} handleClick={handleOptionClick} />)
-      .slice(0, RESULTS_LIMIT);
-    setOptions(optionsResult);
+      const results = await getServers({ name: debouncedSearchValue, limit: 50 });
 
-    setIsSearching(false);
-  }, [servers, debouncedSearchValue]);
+      // Search results, sort by players, map to option component, limit to top 100 results
+      const optionsResult = results
+        .sort((a, b) => {
+          return b?.players + b?.queue - (a?.players + a?.queue);
+        })
+        .map((server, i) => <ServerOption key={i} server={server} handleClick={handleOptionClick} />)
+        .slice(0, RESULTS_LIMIT);
+      setOptions(optionsResult);
+
+      setIsSearching(false);
+    })();
+  }, [debouncedSearchValue]);
 
   // Inject the custom icon
   // Workaround since AutoComplete doesn't accept an icon ??

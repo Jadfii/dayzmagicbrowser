@@ -17,8 +17,8 @@ export const getServerTimeAcceleration = (acceleration?: string): ServerTimeAcce
 };
 
 export const mapServerGeoDataResponse = (data: ServerGeoDataResponse): ServerGeoData => ({
-  countryCode: data?.country_code,
-  country: data?.country,
+  countryCode: data?.country_code || null,
+  country: data?.country || null,
 });
 
 export const mapServerResponse = (server: ServerObjectResponse): Server => ({
