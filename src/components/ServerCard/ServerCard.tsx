@@ -39,10 +39,8 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <Image
                   alt={`${server?.name} map preview`}
                   layout="fill"
-                  loader={({ src }) => src}
                   src={serverIsland?.imageURL}
-                  loading="eager"
-                  unoptimized
+                  loading="lazy"
                   className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
                 />
               ) : (
