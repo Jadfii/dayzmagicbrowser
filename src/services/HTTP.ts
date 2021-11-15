@@ -1,4 +1,4 @@
-import ky, { SearchParamsOption } from 'ky';
+import ky, { SearchParamsOption } from 'ky-universal';
 
 const config = {
   prefixUrl: process.env.NODE_ENV === 'development' ? `http://localhost:5000` : `https://browser-api.dayzmagiclauncher.com`,
