@@ -42,6 +42,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                   src={serverIsland?.imageURL}
                   loading="lazy"
                   className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
+                  loader={({ src }) => src}
                 />
               ) : (
                 <ImagePlaceholder />

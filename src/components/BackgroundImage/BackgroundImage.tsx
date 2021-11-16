@@ -13,7 +13,15 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
         <div />
         <div className="relative w-full h-full">
           {src ? (
-            <Image alt="Background image" src={src} layout="fill" loading="eager" className="object-cover opacity-25 rounded-none z-0" priority />
+            <Image
+              alt="Background image"
+              src={src}
+              layout="fill"
+              loading="eager"
+              className="object-cover opacity-25 rounded-none z-0"
+              loader={({ src }) => src}
+              priority
+            />
           ) : (
             <ImagePlaceholder />
           )}
