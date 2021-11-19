@@ -21,6 +21,7 @@ const BackgroundImage: React.FC<Props> = ({ src }) => {
               className="object-cover opacity-25 rounded-none z-0"
               loader={({ src }) => src}
               priority
+              unoptimized
             />
           ) : (
             <ImagePlaceholder />

@@ -1,11 +1,9 @@
 import React, { Dispatch, useEffect, useState } from 'react';
-import useServersAPI from '../data/useServersAPI';
 import useDebounce from '../hooks/useDebounce';
-import { Server, ServerFilters } from '../types/Types';
+import { ServerFilters } from '../types/Types';
 
 type ContextProps = {
-  filteredServers: Server[];
-  setFilteredServers: Dispatch<React.SetStateAction<Server[]>>;
+  filter: ServerFilters;
   resetFilters: () => void;
   filtersActive: number;
   serverName: string;
@@ -29,9 +27,7 @@ type ContextProps = {
 export const ServerFiltersContext = React.createContext<ContextProps>({} as ContextProps);
 
 const ServerFiltersProvider: React.FC = ({ children }) => {
-  const { getServers } = useServersAPI();
-
-  const [filteredServers, setFilteredServers] = useState<Server[]>([]);
+  const [filter, setFilter] = useState<ServerFilters>({});
 
   const [filtersActive, setFiltersActive] = useState<number>(0);
   const [serverName, setServerName] = useState<string>('');
@@ -57,21 +53,21 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
 
   useEffect(() => {
     (async () => {
-      const filter: ServerFilters = {};
+      const filterObject: ServerFilters = {};
 
       let activeFiltersCount = 0;
       if (debouncedServerName.length > 0) {
-        filter.name = debouncedServerName;
+        filterObject.name = debouncedServerName;
         activeFiltersCount++;
       }
 
       if (serverIsland.length > 0) {
-        filter.map = serverIsland;
+        filterObject.map = serverIsland;
         activeFiltersCount++;
       }
 
       if (serverVersion.length > 0) {
-        filter.version = serverVersion;
+        filterObject.version = serverVersion;
         activeFiltersCount++;
       }
 
@@ -99,11 +95,7 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
         activeFiltersCount++;
       }
 
-      if (activeFiltersCount > 0 || filtersActive > 0) {
-        const servers = await getServers(filter);
-        setFilteredServers(servers);
-      }
-
+      setFilter(filterObject);
       setFiltersActive(activeFiltersCount);
     })();
   }, [debouncedServerName, serverIsland, serverVersion, serverMods, isFirstPersonOnly, isOfficial, isExperimental, hasNoQueue]);
@@ -111,8 +103,7 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   return (
     <ServerFiltersContext.Provider
       value={{
-        filteredServers,
-        setFilteredServers,
+        filter,
         resetFilters,
         filtersActive,
         serverName,
