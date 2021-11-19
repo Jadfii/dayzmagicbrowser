@@ -12,7 +12,7 @@ const Servers: React.FC = () => {
   const { resetFilters } = useContext(ServerFiltersContext);
 
   useEffect(() => {
-    refreshServers();
+    if (!servers?.length) refreshServers();
   }, []);
 
   return (
@@ -35,7 +35,7 @@ const Servers: React.FC = () => {
             </Text>
           </div>
 
-          {servers.length > 0 && <ServerFilters servers={servers} />}
+          <ServerFilters servers={servers} />
         </div>
 
         <Spacer h={1} />

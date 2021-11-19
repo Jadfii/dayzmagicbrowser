@@ -1,22 +1,17 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
-import React, { useContext, useMemo } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { GameContext } from '../../contexts/GameProvider';
-import { Server } from '../../types/Types';
-
-interface SelectOption {
-  label: string;
-  value: string;
-  occurrences: number;
-}
-
+import { Server, SelectOption } from '../../types/Types';
 interface Props {
   servers: Server[];
 }
 
 const ServerFilters: React.FC<Props> = ({ servers }) => {
-  const { getIslandByTerrain } = useContext(IslandsContext);
+  const workerRef = useRef<Worker>();
+
+  const { islands } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
   const {
     serverName,
@@ -37,77 +32,28 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
     setHasNoQueue,
   } = useContext(ServerFiltersContext);
 
-  const availableVersions: SelectOption[] = useMemo(
-    () => [
-      { label: 'None', value: '', occurrences: 0 },
-      ...[
-        ...new Set(
-          servers.reduce<SelectOption[]>((acc, curr) => {
-            if (!curr?.version) return acc;
+  const [availableVersions, setAvailableVersions] = useState<SelectOption[]>([]);
+  const [availableIslands, setAvailableIslands] = useState<SelectOption[]>([]);
+  const [availableMods, setAvailableMods] = useState<SelectOption[]>([]);
 
-            const option = { label: curr.version, value: curr.version, occurrences: 1 };
+  useEffect(() => {
+    if (!servers?.length || !islands?.length) return;
 
-            const foundIdx = acc.findIndex((o) => o.value === option.value);
-            if (foundIdx === -1) {
-              acc.push(option);
-            } else {
-              acc[foundIdx].occurrences += 1;
-            }
+    workerRef.current?.postMessage({ servers, islands });
+  }, [servers, islands]);
 
-            return acc;
-          }, [])
-        ),
-      ]
-        .sort((a, b) => a.label.localeCompare(b.label))
-        .reverse(),
-    ],
-    [servers]
-  );
-  const availableIslands: SelectOption[] = useMemo(
-    () => [
-      { label: 'None', value: '', occurrences: 0 },
-      ...servers
-        .reduce<SelectOption[]>((acc, curr) => {
-          const island = getIslandByTerrain(curr?.island);
-          const option = { label: island?.name || curr?.island, value: island?.terrainId || curr?.island, occurrences: 1 };
+  useEffect(() => {
+    workerRef.current = new Worker(new URL('../../workers/makeServerFilters.js', import.meta.url));
+    workerRef.current.onmessage = (e) => {
+      setAvailableVersions(e?.data?.versionsValues || []);
+      setAvailableIslands(e?.data?.islandsValues || []);
+      setAvailableMods(e?.data?.modsValues || []);
+    };
 
-          if (!option.label) return acc;
-
-          const foundIdx = acc.findIndex((o) => o.value === option.value);
-          if (foundIdx === -1) {
-            acc.push(option);
-          } else {
-            acc[foundIdx].occurrences += 1;
-          }
-
-          return acc;
-        }, [])
-        .sort((a, b) => b.occurrences - a.occurrences),
-    ],
-    [servers, getIslandByTerrain]
-  );
-  const availableMods: SelectOption[] = useMemo(
-    () =>
-      servers
-        .reduce<SelectOption[]>((acc, curr) => {
-          if (!curr?.mods?.length) return acc;
-
-          curr.mods.forEach((mod) => {
-            const option = { label: mod.name, value: mod.steamId, occurrences: 1 };
-
-            const foundIdx = acc.findIndex((o) => o.value === option.value);
-            if (foundIdx === -1) {
-              acc.push(option);
-            } else {
-              acc[foundIdx].occurrences += 1;
-            }
-          });
-
-          return acc;
-        }, [])
-        .sort((a, b) => b.occurrences - a.occurrences),
-    [servers]
-  );
+    return () => {
+      workerRef?.current?.terminate();
+    };
+  }, []);
 
   return (
     <>
@@ -120,58 +66,52 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
           </div>
 
           <div>
-            {availableIslands.length > 0 && (
-              <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
-                {availableIslands.map((option, i) => (
-                  <Select.Option key={i} value={option.value}>
-                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
+            <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
+              {availableIslands.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                </Select.Option>
+              ))}
+            </Select>
           </div>
 
           <div>
-            {availableVersions.length > 0 && (
-              <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
-                {availableVersions.map((option, i) => (
-                  <Select.Option key={i} value={option.value}>
-                    <span>
-                      {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                    </span>
+            <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
+              {availableVersions.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  <span>
+                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                  </span>
 
-                    {option.value && (
-                      <>
-                        {isLatestGameVersion(option.value) && (
-                          <>
-                            <Spacer w={1 / 3} inline />
-                            <Dot type="success" scale={3 / 4}></Dot>
-                          </>
-                        )}
-                        {isLatestGameVersion(option.value, true) && (
-                          <>
-                            <Spacer w={1 / 3} inline />
-                            <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
-                          </>
-                        )}
-                      </>
-                    )}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
+                  {option.value && (
+                    <>
+                      {isLatestGameVersion(option.value) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Dot type="success" scale={3 / 4}></Dot>
+                        </>
+                      )}
+                      {isLatestGameVersion(option.value, true) && (
+                        <>
+                          <Spacer w={1 / 3} inline />
+                          <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
+                        </>
+                      )}
+                    </>
+                  )}
+                </Select.Option>
+              ))}
+            </Select>
           </div>
 
           <div>
-            {availableMods.length > 0 && (
-              <Select disabled placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
-                {availableMods.map((option, i) => (
-                  <Select.Option key={i} value={option.value}>
-                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
+            <Select disabled placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+              {availableMods.map((option, i) => (
+                <Select.Option key={i} value={option.value}>
+                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                </Select.Option>
+              ))}
+            </Select>
           </div>
 
           <div>

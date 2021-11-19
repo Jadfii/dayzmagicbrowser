@@ -95,3 +95,9 @@ export interface ServerFilters {
   version?: string;
   limit?: number;
 }
+
+export interface SelectOption {
+  label: string;
+  value: string;
+  occurrences: number;
+}
