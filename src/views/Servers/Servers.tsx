@@ -5,18 +5,15 @@ import { NextSeo } from 'next-seo';
 import ServerFilters from '../../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
-import { Server } from '../../types/Types';
+import { ServersContext } from 'src/contexts/ServersProvider';
 
-interface Props {
-  servers: Server[];
-}
-
-const Servers: React.FC<Props> = ({ servers }) => {
-  const { resetFilters, filteredServers, setFilteredServers } = useContext(ServerFiltersContext);
+const Servers: React.FC = () => {
+  const { servers, isLoadingServers, refreshServers } = useContext(ServersContext);
+  const { resetFilters } = useContext(ServerFiltersContext);
 
   useEffect(() => {
-    setFilteredServers(servers);
-  }, [servers]);
+    refreshServers();
+  }, []);
 
   return (
     <>
@@ -43,7 +40,7 @@ const Servers: React.FC<Props> = ({ servers }) => {
 
         <Spacer h={1} />
 
-        <ServerList servers={filteredServers} />
+        <ServerList servers={servers} isLoading={isLoadingServers} />
       </div>
     </>
   );

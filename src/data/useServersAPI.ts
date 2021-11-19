@@ -4,9 +4,9 @@ import { Server, ServerFilters } from '../types/Types';
 import { mapServerResponse } from './Mapper';
 
 const useServersAPI = () => {
-  async function getServers(filters: ServerFilters): Promise<Server[]> {
+  async function getServers(filters?: ServerFilters): Promise<Server[]> {
     try {
-      const res = await get('servers', { limit: 10000, sortBy: 'players:desc', ...filters });
+      const res = await get('servers', { limit: 10000, sortBy: 'players:desc', ...(filters || {}) });
 
       if (res?.length) {
         console.log(`Loaded ${res?.results?.length} servers.`);
