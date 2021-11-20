@@ -116,7 +116,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <Spacer h={2} />
 
                 <div className="flex items-center justify-between mt-auto">
-                  {typeof server?.players === 'undefined' && server?.ip ? (
+                  {typeof server?.players !== 'undefined' && server?.ip ? (
                     <PlayerCount server={server} type="h5" />
                   ) : (
                     <Skeleton cols={4} rows={1.5} />
