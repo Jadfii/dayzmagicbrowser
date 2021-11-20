@@ -24,6 +24,8 @@ const Skeleton: React.FC<Props> = ({ cols, rows, height, width }) => {
         .skeleton {
           height: ${height ? `${height}px` : rows ? `calc(${rows} * 1rem)` : `100%`};
           width: ${width ? `${height}px` : cols ? `calc(${cols} * 1rem)` : `100%`};
+
+          border-radius: 5px;
         }
       `}</style>
     </>
