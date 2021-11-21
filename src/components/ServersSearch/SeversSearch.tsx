@@ -10,7 +10,7 @@ const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
-  const { getServers } = useServersAPI();
+  const { searchServers } = useServersAPI();
 
   const [options, setOptions] = useState<React.ReactElement[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
@@ -41,7 +41,7 @@ const ServersSearch: React.FC = () => {
     (async () => {
       setIsSearching(true);
 
-      const results = await getServers({ name: debouncedSearchValue, limit: 50 });
+      const results = await searchServers(debouncedSearchValue);
 
       // Search results, sort by players, map to option component, limit to top 100 results
       const optionsResult = results

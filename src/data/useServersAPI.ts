@@ -19,7 +19,18 @@ const useServersAPI = () => {
     }
   }
 
-  return { getServers };
+  async function searchServers(searchTerm: string): Promise<Server[]> {
+    try {
+      const res = await get(`servers/search/${encodeURIComponent(searchTerm)}`);
+
+      return (res || []).map((server: ServerObjectResponse) => mapServerResponse(server));
+    } catch (e) {
+      console.error('Failed to search game servers.', e);
+      return [];
+    }
+  }
+
+  return { getServers, searchServers };
 };
 
 export default useServersAPI;
