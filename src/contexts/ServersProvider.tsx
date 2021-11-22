@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import useServersAPI from '../data/useServersAPI';
 import { Server } from '../types/Types';
+
+const REFRESH_TIME_MINS = 5;
 
 type ContextProps = {
   servers: Server[];
@@ -15,6 +17,17 @@ const ServersProvider: React.FC = ({ children }) => {
   const [servers, setServers] = useState<Server[]>([]);
 
   const [isLoadingServers, setIsLoadingServers] = useState<boolean>(false);
+
+  // Refresh servers after a period if they've been loaded
+  useEffect(() => {
+    if (servers.length === 0) return;
+
+    const interval = setInterval(() => {
+      refreshServers();
+    }, REFRESH_TIME_MINS * 1000 * 60);
+
+    return () => clearInterval(interval);
+  }, [servers]);
 
   // Other methods below
 
