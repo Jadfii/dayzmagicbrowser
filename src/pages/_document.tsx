@@ -22,6 +22,9 @@ class AppDocument extends Document {
       <Html lang="en">
         <Head>
           <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
+          <link rel="manifest" href="/manifest.json" />
+          <link rel="apple-touch-icon" href="/icon.png"></link>
+          <meta name="theme-color" content="#0070f3" />
         </Head>
         <body>
           <Main />
