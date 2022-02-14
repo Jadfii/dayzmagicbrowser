@@ -10,7 +10,7 @@ import type { AppProps /*, AppContext */ } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { META_DESCRIPTION, TITLE_PREFIX } from '../constants/meta.constant';
 import { IMAGE_BUCKET } from '../constants/links.constant';
-import ServersProvider from 'src/contexts/ServersProvider';
+import ServersProvider from '../contexts/ServersProvider';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (

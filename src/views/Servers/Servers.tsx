@@ -5,7 +5,7 @@ import { NextSeo } from 'next-seo';
 import ServerFilters from '../../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
-import { ServersContext } from 'src/contexts/ServersProvider';
+import { ServersContext } from '../../contexts/ServersProvider';
 
 const Servers: React.FC = () => {
   const { servers, isLoadingServers, refreshServers } = useContext(ServersContext);
