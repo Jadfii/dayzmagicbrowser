@@ -34,7 +34,7 @@ module.exports = withPWA({
   reactStrictMode: true,
   images: {
     loader: 'custom',
-    domains: ['dayz-magic-launcher.s3.eu-west-2.amazonaws.com', 'catamphetamine.gitlab.io'],
+    domains: ['ik.imagekit.io', 'catamphetamine.gitlab.io'],
   },
   async headers() {
     return [

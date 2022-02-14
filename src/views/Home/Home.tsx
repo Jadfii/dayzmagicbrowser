@@ -4,7 +4,6 @@ import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
 import ServerCard from '../../components/ServerCard/ServerCard';
-import { IMAGE_BUCKET } from '../../constants/links.constant';
 import { HomeServers } from '../../types/Types';
 
 interface Props {
@@ -17,7 +16,7 @@ const Home: React.FC<Props> = ({ homeServers }) => {
   return (
     <>
       <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>
-        <BackgroundImage src={`${IMAGE_BUCKET}home.jpg`} />
+        <BackgroundImage src={`/images/home.jpg`} />
 
         <Grid.Container className="px-8 my-auto">
           <Grid sm={24} md={18} lg={10} className="relative flex-col">

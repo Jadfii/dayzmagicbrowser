@@ -3,12 +3,11 @@ import { Lock, Play } from '@geist-ui/react-icons';
 import React, { useContext, useMemo } from 'react';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server } from '../../types/Types';
-import Image from 'next/image';
+import Image from '../Image/Image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import CountryFlag from '../CountryFlag/CountryFlag';
-import ImagePlaceholder from '../ImagePlaceholder/ImagePlaceholder';
 import Skeleton from '../Skeleton/Skeleton';
 
 interface Props {
@@ -36,25 +35,15 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
         <a>
           <Card hoverable className="server-card group">
             <div className="relative w-full" style={{ height: imageHeight }}>
-              {server?.island ? (
-                serverIsland?.imageURL ? (
-                  <Image
-                    alt={`${server?.name} map preview`}
-                    layout="fill"
-                    src={serverIsland?.imageURL}
-                    loading="lazy"
-                    className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
-                    loader={({ src }) => src}
-                    unoptimized
-                  />
-                ) : (
-                  <ImagePlaceholder />
-                )
-              ) : (
-                <>
-                  <Skeleton />
-                </>
-              )}
+              <Image
+                isLoading={!server?.island}
+                maxHeight={imageHeight}
+                alt={`${server?.name} map preview`}
+                layout="fill"
+                src={serverIsland?.imageURL}
+                loading="lazy"
+                className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
+              />
             </div>
 
             <Card.Content>
