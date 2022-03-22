@@ -23,7 +23,8 @@
     "next-seo": "^5.1.0",
     "pretty-bytes": "^5.6.0",
     "react": "^17.0.2",
-    "react-dom": "^17.0.2"
+    "react-dom": "^17.0.2",
+    "use-interval": "^1.4.0"
   },
   "devDependencies": {
     "@styled-jsx/plugin-sass": "^4.0.2",
