@@ -5,7 +5,7 @@ import '../styles/globals.scss';
 import IslandsProvider from '../contexts/IslandsProvider';
 import GameProvider from '../contexts/GameProvider';
 import AppLayout from '../components/AppLayout/AppLayout';
-import type { AppProps /*, AppContext */ } from 'next/app';
+import type { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { META_DESCRIPTION, TITLE_PREFIX } from '../constants/meta.constant';
 import { IMAGE_BUCKET } from '../constants/links.constant';
@@ -19,6 +19,7 @@ const App = ({ Component, pageProps }: AppProps) => {
         description={META_DESCRIPTION}
         openGraph={{
           images: [{ url: `${IMAGE_BUCKET}home.jpg` }],
+          // eslint-disable-next-line camelcase
           site_name: TITLE_PREFIX,
         }}
         additionalLinkTags={[

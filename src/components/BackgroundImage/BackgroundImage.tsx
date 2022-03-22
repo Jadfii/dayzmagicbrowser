@@ -1,6 +1,5 @@
 import React from 'react';
 import Image from '../Image/Image';
-import ImagePlaceholder from '../ImagePlaceholder/ImagePlaceholder';
 
 interface Props {
   src?: string;

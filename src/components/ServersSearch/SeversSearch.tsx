@@ -54,6 +54,8 @@ const ServersSearch: React.FC = () => {
 
       setIsSearching(false);
     })();
+
+    return undefined;
   }, [debouncedSearchValue]);
 
   // Inject the custom icon
@@ -81,7 +83,6 @@ const ServersSearch: React.FC = () => {
 
     ReactDOM.render(<Search />, iconElement);
 
-    //rightIconElement.remove();
     setHasInsertedIcon(true);
   }, [hasInsertedIcon]);
 

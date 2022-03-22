@@ -1,5 +1,5 @@
 import { useTheme } from '@geist-ui/react';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 interface Props {
   cols?: number;
@@ -10,6 +10,18 @@ interface Props {
 
 const Skeleton: React.FC<Props> = ({ cols, rows, height, width }) => {
   const theme = useTheme();
+
+  const skeletonHeight = useMemo((): string => {
+    if (height) return `${height}px`;
+    else if (rows) return `calc(${rows} * 1rem)`;
+    else return '100%';
+  }, [height, rows]);
+
+  const skeletonWidth = useMemo((): string => {
+    if (width) return `${width}px`;
+    else if (cols) return `calc(${cols} * 1rem)`;
+    else return '100%';
+  }, [width, height, rows]);
 
   return (
     <>
@@ -22,8 +34,8 @@ const Skeleton: React.FC<Props> = ({ cols, rows, height, width }) => {
 
       <style jsx>{`
         .skeleton {
-          height: ${height ? `${height}px` : rows ? `calc(${rows} * 1rem)` : `100%`};
-          width: ${width ? `${height}px` : cols ? `calc(${cols} * 1rem)` : `100%`};
+          height: ${skeletonHeight};
+          width: ${skeletonWidth};
 
           border-radius: 5px;
         }

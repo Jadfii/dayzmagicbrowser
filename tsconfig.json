@@ -16,6 +16,6 @@
     "downlevelIteration": true,
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/workers/makeServerFilters.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "src/workers/makeServerFilters.js", "./*.config.js"],
   "exclude": ["node_modules"]
 }
