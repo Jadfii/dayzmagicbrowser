@@ -2,7 +2,7 @@ import React from 'react';
 import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 import ServerCard from '../../components/ServerCard/ServerCard';
 import { HomeServers } from '../../types/Types';
 
@@ -11,8 +11,6 @@ interface Props {
 }
 
 const Home: React.FC<Props> = ({ homeServers }) => {
-  const router = useRouter();
-
   return (
     <>
       <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>
@@ -31,9 +29,13 @@ const Home: React.FC<Props> = ({ homeServers }) => {
             </Text>
 
             <div className="mt-10" style={{ width: '75%' }}>
-              <Button onClick={() => router.push('/servers')} type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
-                Browse servers
-              </Button>
+              <Link href="/servers">
+                <a>
+                  <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
+                    Browse servers
+                  </Button>
+                </a>
+              </Link>
             </div>
           </Grid>
         </Grid.Container>

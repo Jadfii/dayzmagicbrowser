@@ -1,37 +1,37 @@
-import React, { Dispatch, useEffect, useState } from 'react';
-import useDebounce from '../hooks/useDebounce';
-import { ServerFilters } from '../types/Types';
+import React, { useContext, useEffect, useMemo, useState, useCallback } from 'react';
+import { DAYZ_EXP_APPID } from '../constants/game.constant';
+import { IslandsContext } from './IslandsProvider';
+import { ServersContext } from './ServersProvider';
 
 type ContextProps = {
-  filter: ServerFilters;
   resetFilters: () => void;
   filtersActive: number;
   serverName: string;
-  setServerName: Dispatch<React.SetStateAction<string>>;
+  setServerName: React.Dispatch<React.SetStateAction<string>>;
   serverIsland: string;
-  setServerIsland: Dispatch<React.SetStateAction<string>>;
+  setServerIsland: React.Dispatch<React.SetStateAction<string>>;
   serverVersion: string;
-  setServerVersion: Dispatch<React.SetStateAction<string>>;
+  setServerVersion: React.Dispatch<React.SetStateAction<string>>;
   serverMods: string[];
-  setServerMods: Dispatch<React.SetStateAction<string[]>>;
+  setServerMods: React.Dispatch<React.SetStateAction<string[]>>;
   isFirstPersonOnly: boolean | undefined;
-  setIsFirstPersonOnly: Dispatch<React.SetStateAction<boolean | undefined>>;
+  setIsFirstPersonOnly: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isOfficial: boolean | undefined;
-  setIsOfficial: Dispatch<React.SetStateAction<boolean | undefined>>;
+  setIsOfficial: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   isExperimental: boolean | undefined;
-  setIsExperimental: Dispatch<React.SetStateAction<boolean | undefined>>;
+  setIsExperimental: React.Dispatch<React.SetStateAction<boolean | undefined>>;
   hasNoQueue: boolean | undefined;
-  setHasNoQueue: Dispatch<React.SetStateAction<boolean | undefined>>;
+  setHasNoQueue: React.Dispatch<React.SetStateAction<boolean | undefined>>;
 };
 
 export const ServerFiltersContext = React.createContext<ContextProps>({} as ContextProps);
 
 const ServerFiltersProvider: React.FC = ({ children }) => {
-  const [filter, setFilter] = useState<ServerFilters>({});
+  const { getIslandByTerrain } = useContext(IslandsContext);
+  const { servers, setFilteredServers } = useContext(ServersContext);
 
   const [filtersActive, setFiltersActive] = useState<number>(0);
   const [serverName, setServerName] = useState<string>('');
-  const debouncedServerName = useDebounce(serverName, 500);
   const [serverIsland, setServerIsland] = useState<string>('');
   const [serverVersion, setServerVersion] = useState<string>('');
   const [isFirstPersonOnly, setIsFirstPersonOnly] = useState<boolean | undefined>(undefined);
@@ -40,7 +40,7 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
   const [hasNoQueue, setHasNoQueue] = useState<boolean | undefined>(undefined);
   const [serverMods, setServerMods] = useState<string[]>([]);
 
-  function resetFilters() {
+  const resetFilters = useCallback(() => {
     setServerName('');
     setServerIsland('');
     setServerVersion('');
@@ -49,84 +49,101 @@ const ServerFiltersProvider: React.FC = ({ children }) => {
     setIsExperimental(false);
     setHasNoQueue(false);
     setServerMods([]);
-  }
+  }, [setServerName, setServerIsland, setServerVersion, setIsFirstPersonOnly, setIsOfficial, setIsExperimental, setHasNoQueue, setServerMods]);
 
   useEffect(() => {
     (async () => {
-      const filterObject: ServerFilters = {};
+      let serversToFilter = [...servers];
 
       let activeFiltersCount = 0;
-      if (debouncedServerName.length > 0) {
-        filterObject.name = debouncedServerName;
+      if (serverName.length > 0) {
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.name?.toLowerCase().includes(serverName?.toLowerCase()));
       }
 
       if (serverIsland.length > 0) {
-        filterObject.map = serverIsland;
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => (getIslandByTerrain(server?.island)?.terrainId || server?.island) === serverIsland);
       }
 
       if (serverVersion.length > 0) {
-        filterObject.version = serverVersion;
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.version === serverVersion);
       }
 
       if (serverMods.length > 0) {
         activeFiltersCount++;
       }
 
-      if (serverMods.length > 0) {
+      if (isFirstPersonOnly) {
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.isFirstPerson);
       }
 
-      if (typeof isFirstPersonOnly !== 'undefined') {
+      if (isOfficial) {
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.isPublicHive);
       }
 
-      if (typeof isOfficial !== 'undefined') {
+      if (isExperimental) {
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.appId === DAYZ_EXP_APPID);
       }
 
-      if (typeof isExperimental !== 'undefined') {
+      if (hasNoQueue) {
         activeFiltersCount++;
+        serversToFilter = serversToFilter.filter((server) => server?.queue <= 0);
       }
 
-      if (typeof hasNoQueue !== 'undefined') {
-        activeFiltersCount++;
-      }
-
-      setFilter(filterObject);
       setFiltersActive(activeFiltersCount);
+      setFilteredServers(serversToFilter);
     })();
-  }, [debouncedServerName, serverIsland, serverVersion, serverMods, isFirstPersonOnly, isOfficial, isExperimental, hasNoQueue]);
+  }, [servers, serverName, serverIsland, serverVersion, serverMods, isFirstPersonOnly, isOfficial, isExperimental, hasNoQueue]);
 
-  return (
-    <ServerFiltersContext.Provider
-      value={{
-        filter,
-        resetFilters,
-        filtersActive,
-        serverName,
-        setServerName,
-        serverIsland,
-        setServerIsland,
-        serverVersion,
-        setServerVersion,
-        serverMods,
-        setServerMods,
-        isFirstPersonOnly,
-        setIsFirstPersonOnly,
-        isOfficial,
-        setIsOfficial,
-        isExperimental,
-        setIsExperimental,
-        hasNoQueue,
-        setHasNoQueue,
-      }}
-    >
-      {children}
-    </ServerFiltersContext.Provider>
+  const exportValue = useMemo(
+    () => ({
+      resetFilters,
+      filtersActive,
+      serverName,
+      setServerName,
+      serverIsland,
+      setServerIsland,
+      serverVersion,
+      setServerVersion,
+      serverMods,
+      setServerMods,
+      isFirstPersonOnly,
+      setIsFirstPersonOnly,
+      isOfficial,
+      setIsOfficial,
+      isExperimental,
+      setIsExperimental,
+      hasNoQueue,
+      setHasNoQueue,
+    }),
+    [
+      resetFilters,
+      filtersActive,
+      serverName,
+      setServerName,
+      serverIsland,
+      setServerIsland,
+      serverVersion,
+      setServerVersion,
+      serverMods,
+      setServerMods,
+      isFirstPersonOnly,
+      setIsFirstPersonOnly,
+      isOfficial,
+      setIsOfficial,
+      isExperimental,
+      setIsExperimental,
+      hasNoQueue,
+      setHasNoQueue,
+    ]
   );
+
+  return <ServerFiltersContext.Provider value={exportValue}>{children}</ServerFiltersContext.Provider>;
 };
 
 export default ServerFiltersProvider;

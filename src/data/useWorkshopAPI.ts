@@ -9,8 +9,8 @@ const useWorkshopAPI = () => {
       const res = await get(`workshop/getMods/${fileIds.join(',')}`);
 
       return res.map((mod: WorkshopModResponse) => mapWorkshopModResponse(mod));
-    } catch (e) {
-      console.error('Failed to get workshop mods.', e);
+    } catch (err) {
+      console.error('Failed to get workshop mods.', err);
       return [];
     }
   }

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import useServersAPI from '../data/useServersAPI';
 import { Server } from '../types/Types';
 
@@ -6,6 +6,8 @@ const REFRESH_TIME_MINS = 5;
 
 type ContextProps = {
   servers: Server[];
+  filteredServers: Server[];
+  setFilteredServers: React.Dispatch<React.SetStateAction<Server[]>>;
   refreshServers: () => void;
   isLoadingServers: boolean;
 };
@@ -15,6 +17,7 @@ export const ServersContext = React.createContext<ContextProps>({} as ContextPro
 const ServersProvider: React.FC = ({ children }) => {
   const { getServers } = useServersAPI();
   const [servers, setServers] = useState<Server[]>([]);
+  const [filteredServers, setFilteredServers] = useState<Server[]>([]);
 
   const [isLoadingServers, setIsLoadingServers] = useState<boolean>(false);
 
@@ -31,24 +34,23 @@ const ServersProvider: React.FC = ({ children }) => {
 
   // Other methods below
 
-  async function refreshServers() {
+  const refreshServers = useCallback(async () => {
     setIsLoadingServers(true);
-    const serversResult = await getServers();
-    setServers(serversResult.sort((a, b) => b?.players + b?.queue - (a?.players + a?.queue)));
-    setIsLoadingServers(false);
-  }
 
-  return (
-    <ServersContext.Provider
-      value={{
-        servers,
-        refreshServers,
-        isLoadingServers,
-      }}
-    >
-      {children}
-    </ServersContext.Provider>
+    const serversResult = await getServers();
+    const sortedServers = serversResult.sort((a, b) => b?.players + b?.queue - (a?.players + a?.queue));
+
+    setServers(sortedServers);
+
+    setIsLoadingServers(false);
+  }, [setIsLoadingServers, setServers]);
+
+  const exportValue = useMemo(
+    () => ({ servers, filteredServers, setFilteredServers, refreshServers, isLoadingServers }),
+    [servers, filteredServers, setFilteredServers, refreshServers, isLoadingServers]
   );
+
+  return <ServersContext.Provider value={exportValue}>{children}</ServersContext.Provider>;
 };
 
 export default ServersProvider;

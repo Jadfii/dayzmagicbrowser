@@ -44,28 +44,30 @@ const GameProvider: React.FC = ({ children }) => {
 
   const nameParam: string[] = useMemo(() => (inGameNickname ? [`-name=${inGameNickname}`] : []), [inGameNickname]);
 
-  const joinServer = (server: Server) => {
-    const result = openDayzGame(server.appId, [...generateServerParams(server), ...nameParam]);
+  const joinServer = useCallback(
+    (server: Server) => {
+      const result = openDayzGame(server.appId, [...generateServerParams(server), ...nameParam]);
 
-    if (result) {
-      setToast({ text: `Joining server ${server.name}`, type: 'success' });
-    }
+      if (result) {
+        setToast({ text: `Joining server ${server.name}`, type: 'success' });
+      }
 
-    return result;
-  };
-
-  return (
-    <GameContext.Provider
-      value={{
-        joinServer,
-        isLatestGameVersion,
-        latestGameVersion,
-        latestExpGameVersion,
-      }}
-    >
-      {children}
-    </GameContext.Provider>
+      return result;
+    },
+    [setToast]
   );
+
+  const exportValue = useMemo(
+    () => ({
+      joinServer,
+      isLatestGameVersion,
+      latestGameVersion,
+      latestExpGameVersion,
+    }),
+    [joinServer, isLatestGameVersion, latestGameVersion, latestExpGameVersion]
+  );
+
+  return <GameContext.Provider value={exportValue}>{children}</GameContext.Provider>;
 };
 
 export default GameProvider;

@@ -17,8 +17,8 @@ const useIslandsAPI = (): Methods => {
       }
 
       return (res?.results || []).map((island: IslandResponse) => mapIslandResponse(island));
-    } catch (e) {
-      console.error('Failed to get islands.', e);
+    } catch (err) {
+      console.error('Failed to get islands.', err);
       return [];
     }
   }

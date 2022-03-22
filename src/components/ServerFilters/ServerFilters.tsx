@@ -4,6 +4,7 @@ import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
 import { GameContext } from '../../contexts/GameProvider';
 import { Server, SelectOption } from '../../types/Types';
+import useDebounce from '../../hooks/useDebounce';
 interface Props {
   servers: Server[];
 }
@@ -14,8 +15,6 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
   const { islands } = useContext(IslandsContext);
   const { isLatestGameVersion } = useContext(GameContext);
   const {
-    serverName,
-    setServerName,
     serverIsland,
     setServerIsland,
     serverVersion,
@@ -62,7 +61,7 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
       <Card>
         <div className="grid grid-cols-4 gap-6 py-4 items-center">
           <div>
-            <Input placeholder="Server name" clearable value={serverName} onChange={(e) => setServerName(e.target.value)} />
+            <ServerNameSearch />
           </div>
 
           <div>
@@ -115,25 +114,25 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
           </div>
 
           <div>
-            <Checkbox disabled scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox disabled scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox disabled scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
               Experimental server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox disabled scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
               Has no queue
             </Checkbox>
           </div>
@@ -144,3 +143,20 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
 };
 
 export default ServerFilters;
+
+const ServerNameSearch: React.FC = () => {
+  const { setServerName } = useContext(ServerFiltersContext);
+
+  const [serverNameInput, setServerNameInput] = useState<string>('');
+  const debouncedServerNameInput = useDebounce(serverNameInput, 500);
+
+  useEffect(() => {
+    setServerName(debouncedServerNameInput);
+  }, [debouncedServerNameInput]);
+
+  return (
+    <>
+      <Input placeholder="Server name" clearable value={serverNameInput} onChange={(e) => setServerNameInput(e.target.value)} />
+    </>
+  );
+};

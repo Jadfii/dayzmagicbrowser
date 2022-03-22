@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Island } from '../types/Types';
 import useIslandsAPI from '../data/useIslandsAPI';
 
@@ -24,9 +24,9 @@ const IslandsProvider: React.FC = ({ children }) => {
 
   // Other methods below
 
-  async function refreshIslands() {
+  const refreshIslands = useCallback(async () => {
     setIslands(await getIslands());
-  }
+  }, [setIslands]);
 
   const getIslandByTerrain = useCallback(
     (terrainId: string) => {
@@ -37,17 +37,16 @@ const IslandsProvider: React.FC = ({ children }) => {
     [islands]
   );
 
-  return (
-    <IslandsContext.Provider
-      value={{
-        islands,
-        refreshIslands,
-        getIslandByTerrain,
-      }}
-    >
-      {children}
-    </IslandsContext.Provider>
+  const exportValue = useMemo(
+    () => ({
+      islands,
+      refreshIslands,
+      getIslandByTerrain,
+    }),
+    [islands, refreshIslands, getIslandByTerrain]
   );
+
+  return <IslandsContext.Provider value={exportValue}>{children}</IslandsContext.Provider>;
 };
 
 export default IslandsProvider;

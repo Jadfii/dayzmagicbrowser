@@ -4,11 +4,11 @@ import ServerList from '../../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
-import { ServersContext } from '../../contexts/ServersProvider';
+import ServerFiltersProvider, { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
+import ServersProvider, { ServersContext } from '../../contexts/ServersProvider';
 
-const Servers: React.FC = () => {
-  const { servers, isLoadingServers, refreshServers } = useContext(ServersContext);
+const InnerView: React.FC = () => {
+  const { servers, filteredServers, isLoadingServers, refreshServers } = useContext(ServersContext);
   const { resetFilters } = useContext(ServerFiltersContext);
 
   useEffect(() => {
@@ -40,8 +40,20 @@ const Servers: React.FC = () => {
 
         <Spacer h={1} />
 
-        <ServerList servers={servers} isLoading={isLoadingServers} />
+        <ServerList servers={filteredServers} isLoading={isLoadingServers} />
       </div>
+    </>
+  );
+};
+
+const Servers: React.FC = () => {
+  return (
+    <>
+      <ServersProvider>
+        <ServerFiltersProvider>
+          <InnerView />
+        </ServerFiltersProvider>
+      </ServersProvider>
     </>
   );
 };

@@ -7,8 +7,8 @@ const useGameAPI = () => {
       const res = await get(`game/version`);
 
       return res.version;
-    } catch (e) {
-      console.error('Failed to get latest game version.', e);
+    } catch (err) {
+      console.error('Failed to get latest game version.', err);
       return undefined;
     }
   }
