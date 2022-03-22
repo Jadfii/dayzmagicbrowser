@@ -6,6 +6,7 @@
     "build": "next build",
     "build-static": "next build && next export",
     "lint": "next lint",
+    "lint:quiet": "npm run lint -- --quiet",
     "prettier": "prettier --ignore-path .gitignore \"./src/**/*.+(ts|tsx)\"",
     "prettier:check": "npm run prettier -- --check",
     "prettier:write": "npm run prettier -- --write",
