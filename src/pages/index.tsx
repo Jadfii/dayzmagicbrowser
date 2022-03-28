@@ -1,24 +1,66 @@
-import { GetStaticProps } from 'next';
-import { HomeServerResponse, ServerObjectResponse } from '../types/ResponseTypes';
-import { mapServerResponse } from '../data/Mapper';
-import { get } from '../services/HTTP';
+import { GetServerSideProps } from 'next';
+import prisma, { serialiseServer } from '../lib/prisma';
 import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
 import ServerCard from '../components/ServerCard/ServerCard';
-import { HomeServers } from '../types/Types';
+import { HomeServers, Server } from '../types/Types';
+import { DAYZ_EXP_APPID } from '../constants/game.constant';
+import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
-export const getStaticProps: GetStaticProps = async () => {
-  const data: HomeServerResponse = await get(`servers/home`);
+export const getServerSideProps: GetServerSideProps = async () => {
+  const popularServers = await prisma.server.findMany({
+    take: 4,
+    orderBy: [
+      {
+        playerCount: 'desc',
+      },
+      {
+        queueCount: 'desc',
+      },
+    ],
+  });
+
+  const officialServers = await prisma.server.findMany({
+    where: {
+      isPublicHive: true,
+    },
+    take: 4,
+    orderBy: [
+      {
+        playerCount: 'desc',
+      },
+      {
+        queueCount: 'desc',
+      },
+    ],
+  });
+
+  const experimentalServers = await prisma.server.findMany({
+    where: {
+      appId: DAYZ_EXP_APPID,
+    },
+    take: 4,
+    orderBy: [
+      {
+        playerCount: 'desc',
+      },
+      {
+        queueCount: 'desc',
+      },
+    ],
+  });
 
   return {
     props: {
       homeServers: Object.fromEntries(
-        Object.entries(data).map(([key, val]) => [key, val.map((server: ServerObjectResponse) => mapServerResponse(server))])
+        Object.entries({ popular: popularServers, official: officialServers, experimental: experimentalServers }).map(([key, val]) => [
+          key,
+          val.map(serialiseServer),
+        ])
       ),
     },
-    revalidate: 60, // Fetch new data every 60 seconds
   };
 };
 
@@ -27,6 +69,8 @@ interface Props {
 }
 
 const Home: React.FC<Props> = ({ homeServers }) => {
+  useRouterRefreshAtInterval(120000);
+
   return (
     <>
       <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>

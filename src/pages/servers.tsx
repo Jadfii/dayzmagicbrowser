@@ -1,19 +1,30 @@
 import { Button, Spacer, Text } from '@geist-ui/react';
-import React, { useContext, useEffect } from 'react';
+import React from 'react';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import ServerFiltersProvider, { ServerFiltersContext } from '../contexts/ServerFiltersProvider';
-import ServersProvider, { ServersContext } from '../contexts/ServersProvider';
+import { GetServerSideProps } from 'next';
+import prisma, { serialiseServer } from '../lib/prisma';
+import { Server } from '../types/Types';
+import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
-const InnerView: React.FC = () => {
-  const { servers, filteredServers, isLoadingServers, refreshServers } = useContext(ServersContext);
-  const { resetFilters } = useContext(ServerFiltersContext);
+export const getServerSideProps: GetServerSideProps = async () => {
+  const servers = await prisma.server.findMany();
 
-  useEffect(() => {
-    if (!servers?.length) refreshServers();
-  }, []);
+  const serialisedServers: Server[] = servers.map(serialiseServer);
+
+  return {
+    props: { servers: serialisedServers },
+  };
+};
+
+interface Props {
+  servers: Server[];
+}
+
+const Servers: React.FC<Props> = ({ servers }) => {
+  useRouterRefreshAtInterval(120000);
 
   return (
     <>
@@ -25,7 +36,7 @@ const InnerView: React.FC = () => {
         <div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Button onClick={() => resetFilters()} icon={<Delete />} auto>
+              <Button onClick={() => {}} icon={<Delete />} auto>
                 Reset filters
               </Button>
             </div>
@@ -40,20 +51,8 @@ const InnerView: React.FC = () => {
 
         <Spacer h={1} />
 
-        <ServerList servers={filteredServers} isLoading={isLoadingServers} />
+        <ServerList servers={servers} isLoading={false} />
       </div>
-    </>
-  );
-};
-
-const Servers: React.FC = () => {
-  return (
-    <>
-      <ServersProvider>
-        <ServerFiltersProvider>
-          <InnerView />
-        </ServerFiltersProvider>
-      </ServersProvider>
     </>
   );
 };

@@ -18,9 +18,9 @@ export const getDateFromTime = (time: string, isTomorrow?: boolean): Date => new
 // Gets the server time duration in real time in ms
 // Day & Night are each treated as 12 hours
 // Night acceleration uses the base acceleration multiplied by the night acceleration
-export const getServerTimeDuration = (timeAcceleration: ServerTimeAcceleration): ServerTimeDuration => ({
-  day: Math.floor((12 / timeAcceleration.day) * 60000 * 60),
-  night: Math.floor((12 / timeAcceleration.day / timeAcceleration.night) * 60000 * 60),
+export const getServerTimeDuration = (timeAcceleration: number[]): ServerTimeDuration => ({
+  day: Math.floor((12 / timeAcceleration?.[0] || 1) * 60000 * 60),
+  night: Math.floor((12 / (timeAcceleration?.[0] || 1) / (timeAcceleration?.[1] || 1)) * 60000 * 60),
 });
 
 // Returns humanized server time duration in real time
@@ -72,8 +72,8 @@ const getServerDuration = (startDate: Date, endDate: Date, timeAcceleration: Ser
 
 // Get humanized duration until specified time in relative server time
 export const getServerTimeUntil = (server: Server, until: ServerTime): string => {
-  const serverTimeOfDay = getServerTimeOfDay(server.time);
-  const serverDate = getDateFromTime(server.time);
+  const serverTimeOfDay = getServerTimeOfDay(server.clockTime);
+  const serverDate = getDateFromTime(server.clockTime);
 
   let isTomorrow = false;
   if (until === ServerTime.SUNRISE) {
@@ -84,7 +84,7 @@ export const getServerTimeUntil = (server: Server, until: ServerTime): string =>
 
   const untilDate = getDateFromTime(until, isTomorrow);
 
-  const timeLeft = getServerDuration(serverDate, untilDate, server.timeAcceleration);
+  const timeLeft = getServerDuration(serverDate, untilDate, getServerTimeDuration(server.timeAcceleration));
 
   return dayjs.duration(timeLeft, 'ms').humanize();
 };

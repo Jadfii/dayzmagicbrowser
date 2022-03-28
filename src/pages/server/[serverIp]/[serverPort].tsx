@@ -1,22 +1,26 @@
 import { GetServerSideProps } from 'next';
-import { mapServerResponse } from '../../../data/Mapper';
-import { get } from '../../../services/HTTP';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign } from '@geist-ui/react-icons';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
+import prisma, { serialiseServer } from '../../../lib/prisma';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import { GameContext } from '../../../contexts/GameProvider';
 import { IslandsContext } from '../../../contexts/IslandsProvider';
 import useWorkshopAPI from '../../../data/useWorkshopAPI';
-import { Island, Server, WorkshopMod } from '../../../types/Types';
+import { Server, Island, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
+import ky from 'ky';
+
+interface DayZVersion {
+  stable?: string;
+  exp?: string;
+}
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -25,27 +29,35 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const data = await get(`servers/${encodeURIComponent(params?.serverIp as string)}/${encodeURIComponent(params?.serverPort as string)}`);
-  if (!data?.ip) {
+  const server = await prisma.server.findFirst({
+    where: {
+      ipAddress: String(params?.serverIp),
+      gamePort: Number(params?.serverPort),
+    },
+  });
+
+  if (!server?.ipAddress) {
     return {
       notFound: true,
     };
   }
 
+  const gameVersionRes = await ky.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
+
   return {
-    props: { server: mapServerResponse(data) },
+    props: { server: serialiseServer(server), dayzVersion: { stable: gameVersionRes?.version, exp: gameVersionRes?.version_exp } },
   };
 };
 
 interface Props {
   server?: Server;
+  dayzVersion?: DayZVersion;
 }
 
-const ServerPage: React.FC<Props> = ({ server }) => {
+const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
   const theme = useTheme();
   const { getWorkshopMods } = useWorkshopAPI();
   const { getIslandByTerrain } = useContext(IslandsContext);
-  const { isLatestGameVersion } = useContext(GameContext);
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
@@ -55,15 +67,20 @@ const ServerPage: React.FC<Props> = ({ server }) => {
   const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island, getIslandByTerrain]);
 
   const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
+  const isLatestGameVersion = useMemo(
+    () =>
+      (server?.version || '').replace(new RegExp('\\.', 'g'), '') ===
+      ((isExperimental ? dayzVersion?.exp : dayzVersion?.stable) || '').replace(new RegExp('\\.', 'g'), ''),
+    [server?.version, dayzVersion, isExperimental]
+  );
 
   async function loadMods() {
-    if (!server?.mods?.length) return setIsLoadingMods(false);
+    if (!server?.modIds?.length) return setIsLoadingMods(false);
 
     setIsLoadingMods(true);
-    const workshopMods = await getWorkshopMods(server.mods.map((mod) => mod.steamId));
+    const workshopMods = await getWorkshopMods(server.modIds);
     setServerMods(
       workshopMods
-        .map((mod) => (!mod?.name ? { ...mod, name: server?.mods?.find((m) => m.steamId === mod.id)?.name || '' } : mod))
         .filter((mod) => mod?.name)
         .sort((a, b) => {
           if (!a?.subscriptions) return 1;
@@ -76,10 +93,10 @@ const ServerPage: React.FC<Props> = ({ server }) => {
 
   useEffect(() => {
     loadMods();
-  }, [server?.mods]);
+  }, [server?.modIds]);
 
   useEffect(() => {
-    if (!server?.ip) {
+    if (!server?.ipAddress) {
       return;
     }
 
@@ -106,11 +123,11 @@ const ServerPage: React.FC<Props> = ({ server }) => {
                 <Spacer h={1 / 2} inline />
 
                 <div className="flex space-x-2">
-                  {server.hasPassword && <ServerFeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
+                  {server.isPassword && <ServerFeatureBadge type="warning" label="Passworded" icon={<Lock />} />}
                   {server.isFirstPerson && <ServerFeatureBadge type="success" label="First person" icon={<User />} />}
                   {server.isPublicHive && <ServerFeatureBadge type="default" label="Official" icon={<Check />} />}
                   {isExperimental && <ServerFeatureBadge backgroundColor={theme.palette.cyan} label="Experimental" icon={<Tool />} />}
-                  {server.isMonetized && (
+                  {server.isMonetised && (
                     <ServerFeatureBadge type="secondary" backgroundColor={theme.palette.violet} label="Monetized" icon={<DollarSign />} />
                   )}
                   {server.isBattleEye ? (
@@ -126,7 +143,7 @@ const ServerPage: React.FC<Props> = ({ server }) => {
           <div className="relative flex flex-auto py-8">
             <div className="flex flex-col flex-auto">
               <div className="flex items-start">
-                <Link href={`/play/${server.ip}/${server.gamePort}`}>
+                <Link href={`/play/${server.ipAddress}/${server.gamePort}`}>
                   <a>
                     <Button type="success-light" icon={<Play />} scale={4 / 3}>
                       Play
@@ -165,7 +182,7 @@ const ServerPage: React.FC<Props> = ({ server }) => {
 
                           <Spacer w={1 / 2} />
 
-                          {isLatestGameVersion && isLatestGameVersion(server.version || '', isExperimental) && (
+                          {isLatestGameVersion && (
                             <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
                               <Check color={theme.palette.success} />
                             </Tooltip>

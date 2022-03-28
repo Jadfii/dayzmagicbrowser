@@ -2,7 +2,7 @@ import { Card, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Clock, Moon, Sun } from '@geist-ui/react-icons';
 import React from 'react';
 import { Server } from '../../types/Types';
-import { getHumanizedTimeDuration } from '../../utils/time.util';
+import { getHumanizedTimeDuration, getServerTimeDuration } from '../../utils/time.util';
 
 interface Props {
   server: Server;
@@ -19,7 +19,7 @@ const ServerTimeCard: React.FC<Props> = ({ server }) => {
         <Spacer w={1} />
 
         <Text h3 margin={0}>
-          {server.time}
+          {server.clockTime}
         </Text>
 
         <div className="flex items-center ml-auto">
@@ -30,7 +30,7 @@ const ServerTimeCard: React.FC<Props> = ({ server }) => {
           <Spacer w={1 / 2} />
 
           <Text h5 margin={0}>
-            {getHumanizedTimeDuration(server.timeDuration.day)}
+            {getHumanizedTimeDuration(getServerTimeDuration(server.timeAcceleration)?.day)}
           </Text>
         </div>
 
@@ -44,7 +44,7 @@ const ServerTimeCard: React.FC<Props> = ({ server }) => {
           <Spacer w={1 / 2} />
 
           <Text h5 margin={0}>
-            {getHumanizedTimeDuration(server.timeDuration.night)}
+            {getHumanizedTimeDuration(getServerTimeDuration(server.timeAcceleration)?.night)}
           </Text>
         </div>
       </div>

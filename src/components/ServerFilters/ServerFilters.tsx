@@ -1,8 +1,6 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { ServerFiltersContext } from '../../contexts/ServerFiltersProvider';
 import { IslandsContext } from '../../contexts/IslandsProvider';
-import { GameContext } from '../../contexts/GameProvider';
 import { Server, SelectOption } from '../../types/Types';
 import useDebounce from '../../hooks/useDebounce';
 interface Props {
@@ -13,23 +11,6 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
   const workerRef = useRef<Worker>();
 
   const { islands } = useContext(IslandsContext);
-  const { isLatestGameVersion } = useContext(GameContext);
-  const {
-    serverIsland,
-    setServerIsland,
-    serverVersion,
-    setServerVersion,
-    serverMods,
-    setServerMods,
-    isFirstPersonOnly,
-    setIsFirstPersonOnly,
-    isOfficial,
-    setIsOfficial,
-    isExperimental,
-    setIsExperimental,
-    hasNoQueue,
-    setHasNoQueue,
-  } = useContext(ServerFiltersContext);
 
   const [availableVersions, setAvailableVersions] = useState<SelectOption[]>([]);
   const [availableIslands, setAvailableIslands] = useState<SelectOption[]>([]);
@@ -54,7 +35,9 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
     };
   }, []);
 
-  return (
+  return <></>;
+
+  /*return (
     <>
       <Spacer h={1} />
 
@@ -139,20 +122,16 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
         </div>
       </Card>
     </>
-  );
+  );*/
 };
 
 export default ServerFilters;
 
 const ServerNameSearch: React.FC = () => {
-  const { setServerName } = useContext(ServerFiltersContext);
-
   const [serverNameInput, setServerNameInput] = useState<string>('');
   const debouncedServerNameInput = useDebounce(serverNameInput, 500);
 
-  useEffect(() => {
-    setServerName(debouncedServerNameInput);
-  }, [debouncedServerNameInput]);
+  useEffect(() => {}, [debouncedServerNameInput]);
 
   return (
     <>
