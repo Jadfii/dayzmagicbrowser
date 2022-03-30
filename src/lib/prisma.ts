@@ -1,5 +1,5 @@
-import { PrismaClient, Server as PrismaServer } from '@prisma/client';
-import { Server } from '../types/Types';
+import { PrismaClient, Server as PrismaServer, Island as PrismaIsland } from '@prisma/client';
+import { Server, Island } from '../types/Types';
 
 let prisma: PrismaClient;
 
@@ -28,5 +28,21 @@ export function serialiseServer(server: PrismaServer): Server {
   return {
     ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds'),
     modIds: server.modIds.map((modId) => Number(modId)),
+  };
+}
+
+export function excludeFromIsland<Island, Key extends keyof Island>(model: Island, ...keys: Key[]): Omit<Island, Key> {
+  const modelCopy = { ...model };
+
+  for (let key of keys) {
+    delete modelCopy[key];
+  }
+
+  return modelCopy;
+}
+
+export function serialiseIsland(island: PrismaIsland): Island {
+  return {
+    ...excludeFromIsland(island, 'createdAt', 'updatedAt'),
   };
 }

@@ -1,7 +1,6 @@
 import { Badge, Button, Card, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Lock, Play } from '@geist-ui/react-icons';
-import React, { useContext, useMemo } from 'react';
-import { IslandsContext } from '../../contexts/IslandsProvider';
+import React from 'react';
 import { Server } from '../../types/Types';
 import Image from '../Image/Image';
 import Link from 'next/link';
@@ -9,6 +8,9 @@ import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import CountryFlag from '../CountryFlag/CountryFlag';
 import Skeleton from '../Skeleton/Skeleton';
+import { useRecoilValueLoadable } from 'recoil';
+import { findIslandByTerrainIdState } from '../../state/islands';
+import { getIslandImageURL } from '../../constants/links.constant';
 
 interface Props {
   server?: Server;
@@ -17,9 +19,7 @@ interface Props {
 
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const router = useRouter();
-  const { getIslandByTerrain } = useContext(IslandsContext);
-
-  const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
+  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
@@ -40,7 +40,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 maxHeight={imageHeight}
                 alt={`${server?.name} map preview`}
                 layout="fill"
-                src={serverIsland?.imageURL}
+                src={getIslandImageURL(serverIsland?.contents?.terrainId)}
                 loading="lazy"
                 className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
               />
@@ -79,7 +79,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <Text small className="my-0">
                   {server?.clockTime ? (
                     <>
-                      {serverIsland?.name || server?.island} - {server?.clockTime}
+                      {serverIsland?.contents?.name || server?.island} - {server?.clockTime}
                     </>
                   ) : (
                     <>

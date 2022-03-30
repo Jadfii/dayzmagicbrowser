@@ -59,11 +59,13 @@ export interface ServerSearchOption extends Server {
 
 export interface Island {
   id: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   terrainId: string;
   name: string;
-  description?: string;
-  workshopId?: string;
-  imageURL: string;
+  description: string | null;
+  workshopId: string | null;
+  isOfficial: boolean;
 }
 
 export interface WorkshopMod {

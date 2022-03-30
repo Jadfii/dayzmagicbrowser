@@ -51,7 +51,6 @@ const Image: React.FC<Props> = ({ isLoading, maxHeight, src, ...rest }) => {
         </>
       ) : (
         <>
-          {' '}
           {src ? <NextImage src={src} layout="fill" loader={(props) => imageKitLoader({ maxHeight, ...props })} {...rest} /> : <ImagePlaceholder />}
         </>
       )}

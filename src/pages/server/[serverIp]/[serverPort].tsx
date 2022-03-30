@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign } from '@geist-ui/react-icons';
-import { useContext, useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import prisma, { serialiseServer } from '../../../lib/prisma';
@@ -9,13 +9,15 @@ import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import { IslandsContext } from '../../../contexts/IslandsProvider';
-import useWorkshopAPI from '../../../data/useWorkshopAPI';
 import { Server, Island, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
-import ky from 'ky';
+import http from '../../../services/HTTP';
+import { getWorkshopMods } from '../../../data/SteamApi';
+import { useRecoilValueLoadable } from 'recoil';
+import { findIslandByTerrainIdState } from '../../../state/islands';
+import { getIslandImageURL } from '../../../constants/links.constant';
 
 interface DayZVersion {
   stable?: string;
@@ -42,29 +44,31 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const gameVersionRes = await ky.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
+  const gameVersionRequest = http.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
+  const serverModsRequest = getWorkshopMods(server?.modIds.map((modId) => String(modId)));
+
+  const [gameVersionRes, serverModsRes] = await Promise.all([gameVersionRequest, serverModsRequest]);
 
   return {
-    props: { server: serialiseServer(server), dayzVersion: { stable: gameVersionRes?.version, exp: gameVersionRes?.version_exp } },
+    props: {
+      server: serialiseServer(server),
+      workshopMods: serverModsRes,
+      dayzVersion: { stable: gameVersionRes?.version, exp: gameVersionRes?.version_exp },
+    },
   };
 };
 
 interface Props {
   server?: Server;
+  workshopMods?: WorkshopMod[];
   dayzVersion?: DayZVersion;
 }
 
-const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
+const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
   const theme = useTheme();
-  const { getWorkshopMods } = useWorkshopAPI();
-  const { getIslandByTerrain } = useContext(IslandsContext);
+  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
-
-  const [serverMods, setServerMods] = useState<WorkshopMod[]>([]);
-  const [isLoadingMods, setIsLoadingMods] = useState<boolean>(true);
-
-  const serverIsland: Island | undefined = useMemo(() => getIslandByTerrain(server?.island || ''), [server?.island, getIslandByTerrain]);
 
   const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
   const isLatestGameVersion = useMemo(
@@ -73,27 +77,6 @@ const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
       ((isExperimental ? dayzVersion?.exp : dayzVersion?.stable) || '').replace(new RegExp('\\.', 'g'), ''),
     [server?.version, dayzVersion, isExperimental]
   );
-
-  async function loadMods() {
-    if (!server?.modIds?.length) return setIsLoadingMods(false);
-
-    setIsLoadingMods(true);
-    const workshopMods = await getWorkshopMods(server.modIds);
-    setServerMods(
-      workshopMods
-        .filter((mod) => mod?.name)
-        .sort((a, b) => {
-          if (!a?.subscriptions) return 1;
-          if (!b?.subscriptions) return -1;
-          return b?.subscriptions - a?.subscriptions;
-        })
-    );
-    setIsLoadingMods(false);
-  }
-
-  useEffect(() => {
-    loadMods();
-  }, [server?.modIds]);
 
   useEffect(() => {
     if (!server?.ipAddress) {
@@ -112,7 +95,7 @@ const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
       {server?.name && server?.version ? (
         <>
           <div className="relative flex items-end h-48 py-4">
-            <BackgroundImage src={serverIsland?.imageURL} />
+            <BackgroundImage src={getIslandImageURL(serverIsland?.contents?.terrainId)} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">
@@ -166,7 +149,7 @@ const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
                       icon={<Map />}
                       item={
                         <Text h3 margin={0}>
-                          {serverIsland?.name || server.island}
+                          {serverIsland?.contents?.name || server.island}
                         </Text>
                       }
                     />
@@ -195,9 +178,7 @@ const ServerPage: React.FC<Props> = ({ server, dayzVersion }) => {
                   </div>
                 </div>
 
-                <div className="flex flex-auto w-3/12">
-                  <ServerModList mods={serverMods} isLoading={isLoadingMods} />
-                </div>
+                <div className="flex flex-auto w-3/12">{workshopMods && <ServerModList mods={workshopMods} />}</div>
               </div>
             </div>
           </div>

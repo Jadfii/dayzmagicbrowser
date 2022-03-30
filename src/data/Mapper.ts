@@ -14,20 +14,6 @@ export const getServerTimeAcceleration = (acceleration?: string): ServerTimeAcce
   };
 };
 
-export const mapServerGeoDataResponse = (data: ServerGeoDataResponse): ServerGeoData => ({
-  countryCode: data?.country_code || null,
-  country: data?.country || null,
-});
-
-export const mapIslandResponse = (island: IslandResponse): Island => ({
-  id: island._id,
-  terrainId: island.terrain,
-  name: island.name,
-  description: island.description,
-  imageURL: `/images/${island.thumbnail}`,
-  workshopId: island.workshop_id,
-});
-
 export const mapWorkshopModResponse = (mod: WorkshopModResponse): WorkshopMod => ({
   id: mod.publishedfileid,
   name: mod.title,

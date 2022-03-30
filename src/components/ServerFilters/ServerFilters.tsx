@@ -1,6 +1,5 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { IslandsContext } from '../../contexts/IslandsProvider';
 import { Server, SelectOption } from '../../types/Types';
 import useDebounce from '../../hooks/useDebounce';
 interface Props {
@@ -10,17 +9,9 @@ interface Props {
 const ServerFilters: React.FC<Props> = ({ servers }) => {
   const workerRef = useRef<Worker>();
 
-  const { islands } = useContext(IslandsContext);
-
   const [availableVersions, setAvailableVersions] = useState<SelectOption[]>([]);
   const [availableIslands, setAvailableIslands] = useState<SelectOption[]>([]);
   const [availableMods, setAvailableMods] = useState<SelectOption[]>([]);
-
-  useEffect(() => {
-    if (!servers?.length || !islands?.length) return;
-
-    workerRef.current?.postMessage({ servers, islands });
-  }, [servers, islands]);
 
   useEffect(() => {
     workerRef.current = new Worker(new URL('../../workers/makeServerFilters.js', import.meta.url));
