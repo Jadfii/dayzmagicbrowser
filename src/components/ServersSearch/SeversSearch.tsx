@@ -52,8 +52,8 @@ const ServersSearch: React.FC = () => {
           return b?.playerCount + b?.queueCount - (a?.playerCount + a?.queueCount);
         })
         .map((server: Server, i: number) => (
-          <AutoComplete.Item value={server.id}>
-            <ServerOption key={i} server={server} handleClick={handleOptionClick} />
+          <AutoComplete.Item value={server.id} key={i}>
+            <ServerOption server={server} handleClick={handleOptionClick} />
           </AutoComplete.Item>
         ))
         .slice(0, RESULTS_LIMIT);

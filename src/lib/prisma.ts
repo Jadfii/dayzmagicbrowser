@@ -17,7 +17,7 @@ export default prisma;
 export function excludeFromServer<Server, Key extends keyof Server>(model: Server, ...keys: Key[]): Omit<Server, Key> {
   const modelCopy = { ...model };
 
-  for (let key of keys) {
+  for (const key of keys) {
     delete modelCopy[key];
   }
 
@@ -34,7 +34,7 @@ export function serialiseServer(server: PrismaServer): Server {
 export function excludeFromIsland<Island, Key extends keyof Island>(model: Island, ...keys: Key[]): Omit<Island, Key> {
   const modelCopy = { ...model };
 
-  for (let key of keys) {
+  for (const key of keys) {
     delete modelCopy[key];
   }
 
