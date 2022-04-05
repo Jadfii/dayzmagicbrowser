@@ -41,6 +41,9 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
+      - name: Install Serverless CLI
+        run: npm install -g @serverless/cli
+
       - name: Deploy with Serverless
         uses: serverless/github-action@v3
         env:
