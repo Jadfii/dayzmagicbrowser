@@ -2,7 +2,7 @@ name: Deploy To AWS Serverless
 
 on:
   push:
-    branches: [main]
+    branches: [main, feature/api]
 
 jobs:
   lint:
