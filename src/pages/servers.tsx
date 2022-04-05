@@ -36,7 +36,7 @@ const Servers: React.FC<Props> = ({ servers }) => {
         <div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Button onClick={() => {}} icon={<Delete />} auto>
+              <Button onClick={() => console.log('reset filters')} icon={<Delete />} auto>
                 Reset filters
               </Button>
             </div>

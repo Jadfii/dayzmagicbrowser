@@ -9,7 +9,7 @@ import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import { Server, Island, WorkshopMod } from '../../../types/Types';
+import { Server, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';

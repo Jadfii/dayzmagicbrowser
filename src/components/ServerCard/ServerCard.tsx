@@ -6,7 +6,6 @@ import Image from '../Image/Image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
-import CountryFlag from '../CountryFlag/CountryFlag';
 import Skeleton from '../Skeleton/Skeleton';
 import { useRecoilValueLoadable } from 'recoil';
 import { findIslandByTerrainIdState } from '../../state/islands';

@@ -1,7 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getWorkshopMods } from '../../../data/SteamApi';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const modIdsQuery = req?.query?.modIds;
 
@@ -17,3 +17,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(500).json({ error: 'Failed to query Steam API' });
   }
 };
+
+export default handler;

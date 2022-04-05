@@ -2,7 +2,7 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Server } from '../../../types/Types';
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   let searchTerm = req?.query?.name;
 
   if (!searchTerm) return res.status(400).json({ error: 'No search term provided.' });
@@ -21,3 +21,5 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
   return res.status(200).json(serialisedServers);
 };
+
+export default handler;

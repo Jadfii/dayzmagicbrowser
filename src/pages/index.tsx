@@ -5,7 +5,7 @@ import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
 import ServerCard from '../components/ServerCard/ServerCard';
-import { HomeServers, Server } from '../types/Types';
+import { HomeServers } from '../types/Types';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 

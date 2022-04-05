@@ -122,7 +122,9 @@ const ServerNameSearch: React.FC = () => {
   const [serverNameInput, setServerNameInput] = useState<string>('');
   const debouncedServerNameInput = useDebounce(serverNameInput, 500);
 
-  useEffect(() => {}, [debouncedServerNameInput]);
+  useEffect(() => {
+    console.log(debouncedServerNameInput);
+  }, [debouncedServerNameInput]);
 
   return (
     <>

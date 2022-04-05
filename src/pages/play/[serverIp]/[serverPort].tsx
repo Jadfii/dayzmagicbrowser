@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next';
 import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Text } from '@geist-ui/react';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { Server } from '../../../types/Types';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
