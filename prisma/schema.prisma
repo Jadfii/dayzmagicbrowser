@@ -43,4 +43,5 @@ model Server {
   isPublicHive     Boolean
   isMonetised      Boolean
   isOffline        Boolean
+  @@unique([ipAddress, queryPort])
 }
