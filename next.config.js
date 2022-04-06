@@ -30,6 +30,8 @@ module.exports = withPWA({
     register: true,
     skipWaiting: true,
     disable: process.env.NODE_ENV !== 'production',
+    runtimeCaching,
+    buildExcludes: [/middleware-manifest\.json$/],
   },
   reactStrictMode: true,
   images: {
