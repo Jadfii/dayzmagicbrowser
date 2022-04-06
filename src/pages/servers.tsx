@@ -10,7 +10,7 @@ import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const servers = await prisma.server.findMany();
+  const servers = await prisma.server.findMany({ take: 1000 });
 
   const serialisedServers: Server[] = servers.map(serialiseServer);
 
