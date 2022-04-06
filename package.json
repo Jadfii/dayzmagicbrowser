@@ -11,7 +11,8 @@
     "prettier:check": "npm run prettier -- --check",
     "prettier:write": "npm run prettier -- --write",
     "start": "next start",
-    "test": "jest"
+    "test": "jest",
+    "vercel-build": "prisma generate && prisma migrate deploy && next build"
   },
   "dependencies": {
     "@geist-ui/react": "^2.2.5",
