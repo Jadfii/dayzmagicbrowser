@@ -1,14 +1,15 @@
 import { Badge, Button, Card, Spacer, Text, Tooltip } from '@geist-ui/react';
 import { Lock, Play } from '@geist-ui/react-icons';
-import React, { useContext, useMemo } from 'react';
-import { IslandsContext } from '../../contexts/IslandsProvider';
+import React from 'react';
 import { Server } from '../../types/Types';
 import Image from '../Image/Image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
-import CountryFlag from '../CountryFlag/CountryFlag';
 import Skeleton from '../Skeleton/Skeleton';
+import { useRecoilValueLoadable } from 'recoil';
+import { findIslandByTerrainIdState } from '../../state/islands';
+import { getIslandImageURL } from '../../constants/links.constant';
 
 interface Props {
   server?: Server;
@@ -17,21 +18,19 @@ interface Props {
 
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const router = useRouter();
-  const { getIslandByTerrain } = useContext(IslandsContext);
-
-  const serverIsland = useMemo(() => getIslandByTerrain(server?.island || ''), [getIslandByTerrain, server?.island]);
+  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
     e.stopPropagation();
-    if (!server?.ip) return;
+    if (!server?.ipAddress) return;
 
-    router.push(`/play/${server.ip}/${server.gamePort}`);
+    router.push(`/play/${server.ipAddress}/${server.gamePort}`);
   }
 
   return (
     <>
-      <Link href={server?.ip && server?.gamePort ? `/server/${server?.ip}/${server?.gamePort}` : ''}>
+      <Link href={server?.ipAddress && server?.gamePort ? `/server/${server?.ipAddress}/${server?.gamePort}` : ''}>
         <a>
           <Card hoverable className="server-card group">
             <div className="relative w-full" style={{ height: imageHeight }}>
@@ -40,7 +39,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 maxHeight={imageHeight}
                 alt={`${server?.name} map preview`}
                 layout="fill"
-                src={serverIsland?.imageURL}
+                src={getIslandImageURL(serverIsland?.contents?.terrainId)}
                 loading="lazy"
                 className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
               />
@@ -49,18 +48,6 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
             <Card.Content>
               <div className="flex flex-col">
                 <div className="flex items-center">
-                  {server?.geo.countryCode && (
-                    <>
-                      <Tooltip text={server.geo.country}>
-                        <div className="relative flex-shrink-0 w-4 h-4">
-                          <CountryFlag countryCode={server.geo.countryCode} country={server.geo.country} />
-                        </div>
-                      </Tooltip>
-
-                      <Spacer w={1 / 2} />
-                    </>
-                  )}
-
                   {server?.name ? (
                     <Tooltip text={server.name} className="truncate">
                       <Text h5 width="100%" className="truncate my-0">
@@ -78,7 +65,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                     </>
                   )}
 
-                  {server?.hasPassword && (
+                  {server?.isPassword && (
                     <>
                       <Spacer w={1 / 3} inline />
                       <Tooltip text="Locked">
@@ -89,9 +76,9 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 </div>
 
                 <Text small className="my-0">
-                  {server?.time ? (
+                  {server?.clockTime ? (
                     <>
-                      {serverIsland?.name || server?.island} - {server?.time}
+                      {serverIsland?.contents?.name || server?.island} - {server?.clockTime}
                     </>
                   ) : (
                     <>
@@ -105,13 +92,13 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <Spacer h={2} />
 
                 <div className="flex items-center justify-between mt-auto">
-                  {typeof server?.players !== 'undefined' && server?.ip ? (
+                  {typeof server?.playerCount !== 'undefined' && server?.ipAddress ? (
                     <PlayerCount server={server} type="h5" />
                   ) : (
                     <Skeleton cols={4} rows={1.5} />
                   )}
 
-                  <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ip} scale={3 / 4} auto>
+                  <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ipAddress} scale={3 / 4} auto>
                     Play
                   </Button>
                 </div>

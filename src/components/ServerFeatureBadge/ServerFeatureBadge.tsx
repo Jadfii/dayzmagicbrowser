@@ -9,7 +9,7 @@ interface Props {
   backgroundColor?: string;
 }
 
-const FeatureBadge: React.FC<Props> = ({ icon, label, type = 'default', backgroundColor }) => {
+const ServerFeatureBadge: React.FC<Props> = ({ icon, label, type = 'default', backgroundColor }) => {
   return (
     <Badge type={type} style={{ ...(backgroundColor ? { backgroundColor } : {}) }}>
       <div className="flex items-center">
@@ -23,4 +23,4 @@ const FeatureBadge: React.FC<Props> = ({ icon, label, type = 'default', backgrou
   );
 };
 
-export default FeatureBadge;
+export default ServerFeatureBadge;

@@ -4,17 +4,15 @@ import { AutoComplete } from '@geist-ui/react';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
-import useServersAPI from '../../data/useServersAPI';
+import { Server } from '../../types/Types';
 
 const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
-  const { searchServers } = useServersAPI();
-
   const [options, setOptions] = useState<React.ReactElement[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedSearchValue = useDebounce(searchValue, 500);
+  const debouncedSearchValue: string = useDebounce(searchValue, 500);
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
@@ -41,14 +39,23 @@ const ServersSearch: React.FC = () => {
     (async () => {
       setIsSearching(true);
 
-      const results = await searchServers(debouncedSearchValue);
+      const serverResults = await fetch(
+        `/api/servers/search?` +
+          new URLSearchParams({
+            name: debouncedSearchValue,
+          })
+      ).then((response) => response.json());
 
       // Search results, sort by players, map to option component, limit to top 100 results
-      const optionsResult = results
-        .sort((a, b) => {
-          return b?.players + b?.queue - (a?.players + a?.queue);
+      const optionsResult = serverResults
+        .sort((a: Server, b: Server) => {
+          return b?.playerCount + b?.queueCount - (a?.playerCount + a?.queueCount);
         })
-        .map((server, i) => <ServerOption key={i} server={server} handleClick={handleOptionClick} />)
+        .map((server: Server, i: number) => (
+          <AutoComplete.Item value={server.id} key={i}>
+            <ServerOption server={server} handleClick={handleOptionClick} />
+          </AutoComplete.Item>
+        ))
         .slice(0, RESULTS_LIMIT);
       setOptions(optionsResult);
 

@@ -7,7 +7,7 @@ interface Props extends React.HTMLProps<HTMLDivElement> {
   item: React.ReactNode;
 }
 
-const InfoCard: React.FC<Props> = ({ icon, iconDescription, item, className }) => {
+const ServerInfoCard: React.FC<Props> = ({ icon, iconDescription, item, className }) => {
   return (
     <Card className={`self-start ${className}`}>
       <div className="flex items-center h-16">
@@ -21,4 +21,4 @@ const InfoCard: React.FC<Props> = ({ icon, iconDescription, item, className }) =
   );
 };
 
-export default InfoCard;
+export default ServerInfoCard;

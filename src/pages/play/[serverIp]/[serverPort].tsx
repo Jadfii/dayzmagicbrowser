@@ -1,9 +1,8 @@
-import PlayServer from '../../../views/PlayServer/PlayServer';
 import { GetServerSideProps } from 'next';
-import { mapServerResponse } from '../../../data/Mapper';
-import { get } from '../../../services/HTTP';
-
-export default PlayServer;
+import prisma, { serialiseServer } from '../../../lib/prisma';
+import { Text } from '@geist-ui/react';
+import React, { useEffect } from 'react';
+import { Server } from '../../../types/Types';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -12,14 +11,42 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const data = await get(`servers/${encodeURIComponent(params?.serverIp as string)}/${encodeURIComponent(params?.serverPort as string)}`);
-  if (!data?.ip) {
+  const server = await prisma.server.findFirst({
+    where: {
+      ipAddress: String(params?.serverIp),
+      gamePort: Number(params?.serverPort),
+    },
+  });
+
+  if (!server?.ipAddress) {
     return {
       notFound: true,
     };
   }
 
   return {
-    props: { server: mapServerResponse(data) },
+    props: { server: serialiseServer(server) },
   };
 };
+
+interface Props {
+  server?: Server;
+}
+
+const PlayServer: React.FC<Props> = ({ server }) => {
+  useEffect(() => {
+    if (!server?.name) return;
+  }, [server]);
+
+  return (
+    <div className="relative flex items-center justify-center flex-auto">
+      {server?.name ? (
+        <div>
+          <Text h2>Connecting to {server?.name}</Text>
+        </div>
+      ) : null}
+    </div>
+  );
+};
+
+export default PlayServer;

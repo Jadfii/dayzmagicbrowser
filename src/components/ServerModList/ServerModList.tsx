@@ -5,7 +5,7 @@ import ModCard from './ModCard';
 
 interface Props {
   mods: WorkshopMod[];
-  isLoading: boolean;
+  isLoading?: boolean;
 }
 
 const ServerModList: React.FC<Props> = ({ mods, isLoading }) => {

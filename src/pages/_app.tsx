@@ -2,13 +2,12 @@ import React from 'react';
 import { GeistProvider, CssBaseline } from '@geist-ui/react';
 import 'tailwindcss/tailwind.css';
 import '../styles/globals.scss';
-import IslandsProvider from '../contexts/IslandsProvider';
-import GameProvider from '../contexts/GameProvider';
 import AppLayout from '../components/AppLayout/AppLayout';
 import type { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { META_DESCRIPTION, TITLE_PREFIX } from '../constants/meta.constant';
 import { IMAGE_BUCKET } from '../constants/links.constant';
+import { RecoilRoot } from 'recoil';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -30,16 +29,14 @@ const App = ({ Component, pageProps }: AppProps) => {
         ]}
       />
 
-      <GeistProvider themeType={'dark'}>
-        <CssBaseline />
-        <IslandsProvider>
-          <GameProvider>
-            <AppLayout>
-              <Component {...pageProps} />
-            </AppLayout>
-          </GameProvider>
-        </IslandsProvider>
-      </GeistProvider>
+      <RecoilRoot>
+        <GeistProvider themeType={'dark'}>
+          <CssBaseline />
+          <AppLayout>
+            <Component {...pageProps} />
+          </AppLayout>
+        </GeistProvider>
+      </RecoilRoot>
     </>
   );
 };

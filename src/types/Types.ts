@@ -16,28 +16,28 @@ export interface ServerGeoData {
 
 export interface Server {
   id: string;
-  ip: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  modIds: number[];
   queryPort: number;
   gamePort: number;
-  name: string;
   appId: number;
+  playerCount: number;
+  maxPlayerCount: number;
+  queueCount: number;
+  timeAcceleration: number[];
+  ipAddress: string;
+  name: string;
   version: string;
-  players: number;
-  maxPlayers: number;
-  queue: number;
-  time: string;
+  clockTime: string;
   island: string;
-  timeAcceleration: ServerTimeAcceleration;
-  timeDuration: ServerTimeDuration;
-  hasPassword: boolean;
   isFirstPerson: boolean;
+  isPassword: boolean;
   isBattleEye: boolean;
-  isVac: boolean;
+  isVAC: boolean;
   isPublicHive: boolean;
+  isMonetised: boolean;
   isOffline: boolean;
-  isMonetized: boolean;
-  geo: ServerGeoData;
-  mods: ServerMod[];
 }
 
 export interface ServerMod {
@@ -59,11 +59,13 @@ export interface ServerSearchOption extends Server {
 
 export interface Island {
   id: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   terrainId: string;
   name: string;
-  description?: string;
-  workshopId?: string;
-  imageURL: string;
+  description: string | null;
+  workshopId: string | null;
+  isOfficial: boolean;
 }
 
 export interface WorkshopMod {
