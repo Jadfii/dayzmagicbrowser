@@ -45,7 +45,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 
   const gameVersionRequest = http.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
-  const serverModsRequest = getWorkshopMods(server?.modIds.map((modId) => String(modId)));
+  const serverModsRequest = server?.modIds?.length ? getWorkshopMods(server?.modIds.map((modId) => String(modId))) : [];
 
   const [gameVersionRes, serverModsRes] = await Promise.all([gameVersionRequest, serverModsRequest]);
 
