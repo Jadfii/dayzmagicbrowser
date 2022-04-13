@@ -10,7 +10,7 @@ import { DAYZ_EXP_APPID } from '../constants/game.constant';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
 export const getServerSideProps: GetServerSideProps = async () => {
-  const popularServers = await prisma.server.findMany({
+  const popularServers = prisma.server.findMany({
     take: 4,
     orderBy: [
       {
@@ -22,7 +22,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     ],
   });
 
-  const officialServers = await prisma.server.findMany({
+  const officialServers = prisma.server.findMany({
     where: {
       isPublicHive: true,
     },
@@ -37,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     ],
   });
 
-  const experimentalServers = await prisma.server.findMany({
+  const experimentalServers = prisma.server.findMany({
     where: {
       appId: DAYZ_EXP_APPID,
     },
@@ -52,14 +52,13 @@ export const getServerSideProps: GetServerSideProps = async () => {
     ],
   });
 
+  const [popular, official, experimental] = await prisma.$transaction([popularServers, officialServers, experimentalServers]);
+
+  const homeServers = Object.fromEntries(Object.entries({ popular, official, experimental }).map(([key, val]) => [key, val.map(serialiseServer)]));
+
   return {
     props: {
-      homeServers: Object.fromEntries(
-        Object.entries({ popular: popularServers, official: officialServers, experimental: experimentalServers }).map(([key, val]) => [
-          key,
-          val.map(serialiseServer),
-        ])
-      ),
+      homeServers,
     },
   };
 };
