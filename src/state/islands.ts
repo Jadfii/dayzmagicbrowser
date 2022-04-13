@@ -1,13 +1,16 @@
 import { atom, selector, selectorFamily } from 'recoil';
-import http from '../services/HTTP';
 import { Island } from '../types/Types';
 
 async function getAllIslands(): Promise<Island[]> {
-  try {
-    const response = (await fetch('/api/islands').then((response) => response.json())) || [];
-    return response || [];
-  } catch (err) {
-    console.error(err);
+  if (global.window) {
+    try {
+      const response = (await fetch('/api/islands').then((response) => response.json())) || [];
+      return response || [];
+    } catch (err) {
+      console.error(err);
+      return [];
+    }
+  } else {
     return [];
   }
 }
@@ -33,6 +36,6 @@ export const findIslandByTerrainIdState = selectorFamily({
     ({ get }) => {
       const islands = get(islandListState);
 
-      return islands.find((island) => island?.terrainId === terrainId);
+      return islands.find((island) => (terrainId?.toLowerCase() || '').includes(island?.terrainId?.toLowerCase()));
     },
 });
