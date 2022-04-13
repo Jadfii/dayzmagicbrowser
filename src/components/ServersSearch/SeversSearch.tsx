@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 import { AutoComplete } from '@geist-ui/react';
 import ServerOption from './ServerOption';
@@ -16,7 +16,7 @@ const ServersSearch: React.FC = () => {
 
   const [isSearching, setIsSearching] = useState<boolean>(false);
 
-  const [hasInsertedIcon, setHasInsertedIcon] = useState<boolean>(false);
+  const hasInsertedIcon = useRef<boolean>(false);
 
   function searchHandler(value: string) {
     setSearchValue(value);
@@ -69,7 +69,7 @@ const ServersSearch: React.FC = () => {
   // Workaround since AutoComplete doesn't accept an icon ??
   useEffect(() => {
     // Icon is already injected. Do nothing
-    if (hasInsertedIcon) return;
+    if (hasInsertedIcon?.current) return;
 
     const inputElement = document.getElementById(ELEMENT_ID);
     if (!inputElement) return;
@@ -90,8 +90,8 @@ const ServersSearch: React.FC = () => {
 
     ReactDOM.render(<Search />, iconElement);
 
-    setHasInsertedIcon(true);
-  }, [hasInsertedIcon]);
+    hasInsertedIcon.current = true;
+  }, []);
 
   return (
     <>
