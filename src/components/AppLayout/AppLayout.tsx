@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 import { useTheme } from '@geist-ui/react';
 import Masthead from '../Masthead/Masthead';
 import Footer from '../Footer/Footer';
 
-const AppLayout: React.FC = ({ children }) => {
+const AppLayout: React.FC<PropsWithChildren<unknown>> = ({ children }) => {
   const theme = useTheme();
 
   return (
