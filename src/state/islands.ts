@@ -2,15 +2,15 @@ import { atom, selector, selectorFamily } from 'recoil';
 import { Island } from '../types/Types';
 
 async function getAllIslands(): Promise<Island[]> {
-  if (global.window) {
-    try {
+  try {
+    if (global.window) {
       const response = (await fetch('/api/islands').then((response) => response.json())) || [];
       return response || [];
-    } catch (err) {
-      console.error(err);
+    } else {
       return [];
     }
-  } else {
+  } catch (err) {
+    console.error(err);
     return [];
   }
 }
