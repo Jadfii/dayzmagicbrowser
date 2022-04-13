@@ -1,8 +1,10 @@
-import { Divider, Spacer, Tag } from '@geist-ui/react';
-import React from 'react';
+import { Divider, Loading, Spacer, Tag } from '@geist-ui/react';
+import React, { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import Link from 'next/link';
 import Logo from '../Logo/Logo';
-import ServersSearch from '../ServersSearch/SeversSearch';
+
+const ServersSearch = dynamic(() => import('../ServersSearch/SeversSearch'), { suspense: true });
 
 const Masthead: React.FC = () => {
   return (
@@ -19,7 +21,9 @@ const Masthead: React.FC = () => {
         </Link>
 
         <div className="ml-6" style={{ width: '40%' }}>
-          <ServersSearch />
+          <Suspense fallback={<Loading />}>
+            <ServersSearch />
+          </Suspense>
         </div>
 
         <Spacer w={1} />
