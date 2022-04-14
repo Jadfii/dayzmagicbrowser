@@ -3,18 +3,16 @@ import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Server } from '../../../types/Types';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
-  let searchTerm = req?.query?.name;
-
-  if (!searchTerm) return res.status(400).json({ error: 'No search term provided.' });
-
-  if (Array.isArray(searchTerm)) searchTerm = searchTerm?.[0];
-
   const servers = await prisma.server.findMany({
-    where: {
-      name: {
-        search: searchTerm.split(' ').join(' & '),
+    orderBy: [
+      {
+        playerCount: 'desc',
       },
-    },
+      {
+        queueCount: 'desc',
+      },
+    ],
+    take: 1000,
   });
 
   const serialisedServers: Server[] = servers.map(serialiseServer);

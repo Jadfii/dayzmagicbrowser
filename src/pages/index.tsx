@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async () => {
     ],
   });
 
-  const [popular, official, experimental] = await prisma.$transaction([popularServers, officialServers, experimentalServers]);
+  const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);
 
   const homeServers = Object.fromEntries(Object.entries({ popular, official, experimental }).map(([key, val]) => [key, val.map(serialiseServer)]));
 

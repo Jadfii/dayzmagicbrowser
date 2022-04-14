@@ -1,5 +1,6 @@
 generator client {
   provider        = "prisma-client-js"
+  engineType      = "library"
   previewFeatures = ["fullTextSearch"]
 }
 
@@ -43,5 +44,6 @@ model Server {
   isPublicHive     Boolean
   isMonetised      Boolean
   isOffline        Boolean
+
   @@unique([ipAddress, queryPort])
 }
