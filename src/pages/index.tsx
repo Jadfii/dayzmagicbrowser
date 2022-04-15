@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
@@ -9,7 +9,7 @@ import { HomeServers } from '../types/Types';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps = async () => {
   const popularServers = prisma.server.findMany({
     take: 4,
     orderBy: [
@@ -54,20 +54,21 @@ export const getServerSideProps: GetServerSideProps = async () => {
 
   const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);
 
-  const homeServers = Object.fromEntries(Object.entries({ popular, official, experimental }).map(([key, val]) => [key, val.map(serialiseServer)]));
+  const homeServers: HomeServers = {
+    popular: popular.map(serialiseServer),
+    official: official.map(serialiseServer),
+    experimental: experimental.map(serialiseServer),
+  };
 
   return {
+    revalidate: 60,
     props: {
       homeServers,
     },
   };
 };
 
-interface Props {
-  homeServers: HomeServers;
-}
-
-const Home: React.FC<Props> = ({ homeServers }) => {
+const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeServers }) => {
   useRouterRefreshAtInterval(120000);
 
   return (

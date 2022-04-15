@@ -4,12 +4,12 @@ import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import { GetServerSideProps } from 'next';
+import { InferGetStaticPropsType } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 
-export const getServerSideProps: GetServerSideProps = async () => {
+export const getStaticProps = async () => {
   const servers = await prisma.server.findMany({
     orderBy: [
       {
@@ -19,21 +19,18 @@ export const getServerSideProps: GetServerSideProps = async () => {
         queueCount: 'desc',
       },
     ],
-    take: 1000,
+    take: 200,
   });
 
   const serialisedServers: Server[] = servers.map(serialiseServer);
 
   return {
+    revalidate: 60,
     props: { servers: serialisedServers },
   };
 };
 
-interface Props {
-  servers: Server[];
-}
-
-const Servers: React.FC<Props> = ({ servers }) => {
+const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ servers }) => {
   useRouterRefreshAtInterval(120000);
 
   return (
