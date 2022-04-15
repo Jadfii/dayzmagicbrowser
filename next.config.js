@@ -36,6 +36,7 @@ module.exports = withPWA({
   runtime: 'edge',
   serverComponents: true,
   reactStrictMode: true,
+  optimizeFonts: false,
   images: {
     loader: 'custom',
     domains: ['ik.imagekit.io', 'catamphetamine.gitlab.io'],
