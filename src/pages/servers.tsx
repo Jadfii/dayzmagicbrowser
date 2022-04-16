@@ -6,10 +6,8 @@ import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
-import { SelectOption, Server } from '../types/Types';
+import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
-import { findIsland } from '../state/islands';
-import { getGameVersion, isMatchingVersion } from '../data/Version';
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
   // Caching
@@ -33,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
   };
 
   // Get servers
-  const serversQuery = prisma.server.findMany({
+  const servers = await prisma.server.findMany({
     orderBy: [
       {
         playerCount: 'desc',
@@ -46,87 +44,17 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
     where: filters,
   });
 
-  // Get all islands
-  const islandsQuery = prisma.island.findMany();
-
-  // Get all available islands
-  const groupedIslandsQuery = prisma.server.groupBy({
-    by: ['island'],
-    _count: {
-      island: true,
-    },
-    orderBy: {
-      _count: {
-        island: 'desc',
-      },
-    },
-  });
-
-  // Get all available versions
-  const groupedVersionsQuery = prisma.server.groupBy({
-    by: ['version'],
-    _count: {
-      version: true,
-    },
-    orderBy: {
-      version: 'desc',
-    },
-  });
-
-  // Run queries
-  const [servers, islands, groupedIslands, groupedVersions, gameVersion] = await Promise.all([
-    serversQuery,
-    islandsQuery,
-    groupedIslandsQuery,
-    groupedVersionsQuery,
-    getGameVersion(),
-  ]);
-
   // Serialise servers so they can be passed to component
   const serialisedServers: Server[] = servers.map(serialiseServer);
-
-  // Match islands to saved islands in DB
-  // then map to correct format
-  const mappedGroupedIslands = groupedIslands.reduce<SelectOption[]>((acc, curr) => {
-    const foundIsland = findIsland(curr.island, islands);
-    const terrainId = foundIsland?.terrainId || curr?.island;
-    const foundIdx = acc.findIndex((filter) => filter?.value === terrainId);
-
-    if (foundIdx === -1) {
-      acc.push({ label: foundIsland?.name || curr?.island, value: terrainId, count: curr?._count?.island });
-    }
-
-    return acc;
-  }, []);
-
-  // Map versions to correct format
-  const mappedGroupedVersions = groupedVersions.reduce<SelectOption[]>((acc, curr) => {
-    const isLatestStableVersion = isMatchingVersion(curr.version, gameVersion.stable);
-    const isLatestExpVersion = !isLatestStableVersion && isMatchingVersion(curr.version, gameVersion.exp);
-
-    acc.push({
-      label: curr?.version,
-      value: curr?.version,
-      count: curr?._count?.version,
-      highlighted: isLatestStableVersion,
-      highlightedSecondary: isLatestExpVersion,
-    });
-
-    return acc;
-  }, []);
 
   return {
     props: {
       servers: serialisedServers,
-      availableFilters: {
-        islands: mappedGroupedIslands,
-        versions: mappedGroupedVersions,
-      },
     },
   };
 };
 
-const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ servers, availableFilters }) => {
+const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ servers }) => {
   useRouterRefreshAtInterval(120000);
 
   return (
@@ -149,7 +77,7 @@ const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
             </Text>
           </div>
 
-          <ServerFilters availableFilters={availableFilters} />
+          <ServerFilters />
         </div>
 
         <Spacer h={1} />

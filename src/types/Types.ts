@@ -98,6 +98,11 @@ export interface ServerFilters {
   limit?: number;
 }
 
+export interface AvailableServerFilters {
+  islands: SelectOption[];
+  versions: SelectOption[];
+}
+
 export interface GameVersion {
   stable: string;
   exp: string;

@@ -1,41 +1,12 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
 import React, { useEffect, useState } from 'react';
-import { SelectOption } from '../../types/Types';
+import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
-import { useRouter } from 'next/router';
+import useServerFilters from '../../hooks/useServerFilters';
 
-function useServerFilters() {
-  const router = useRouter();
-
-  // Filters
-  const [name, setName] = useState<string>('');
-  const [island, setIsland] = useState<string>('');
-  const [version, setVersion] = useState<string>('');
-
-  // Apply filters to URL
-  useEffect(() => {
-    const filters = {
-      ...(name ? { name } : {}),
-      ...(island ? { island } : {}),
-      ...(version ? { version } : {}),
-    };
-
-    router.push({
-      query: filters,
-    });
-  }, [name, island, version]);
-
-  return { name, setName, island, setIsland, version, setVersion };
-}
-interface Props {
-  availableFilters: {
-    islands: SelectOption[];
-    versions: SelectOption[];
-  };
-}
-
-const ServerFilters: React.FC<Props> = ({ availableFilters }) => {
-  const { name, setName, island, setIsland, version, setVersion } = useServerFilters();
+const ServerFilters: React.FC = () => {
+  const { name, setName, island, setIsland, version, setVersion, mods, setMods } = useServerFilters();
+  const { availableFilters } = useAvailableServerFilters();
 
   return (
     <>
@@ -87,7 +58,7 @@ const ServerFilters: React.FC<Props> = ({ availableFilters }) => {
           </div>
 
           {/*<div>
-            <Select disabled placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
+            <Select disabled placeholder="Mods" value={mods} onChange={(value) => setMods(value as string[])} width="100%" multiple>
               {availableMods.map((option, i) => (
                 <Select.Option key={i} value={option.value}>
                   {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}

@@ -1,5 +1,5 @@
-import { IslandResponse, ServerGeoDataResponse, WorkshopModResponse } from '../types/ResponseTypes';
-import { Island, ServerGeoData, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
+import { WorkshopModResponse } from '../types/ResponseTypes';
+import { ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 
 export const getServerTimeAcceleration = (acceleration?: string): ServerTimeAcceleration => {
   const splitAcceleration: number[] = acceleration?.split(',').map((acc) => Number(acc)) || [];
