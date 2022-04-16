@@ -13,11 +13,11 @@ import { Server, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
-import http from '../../../services/HTTP';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { useRecoilValueLoadable } from 'recoil';
 import { findIslandByTerrainIdState } from '../../../state/islands';
 import { getIslandImageURL } from '../../../constants/links.constant';
+import { getGameVersion, isMatchingVersion } from '../../../data/Version';
 
 interface DayZVersion {
   stable?: string;
@@ -44,16 +44,15 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const gameVersionRequest = http.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
   const serverModsRequest = server?.modIds?.length ? getWorkshopMods(server?.modIds.map((modId) => String(modId))) : [];
 
-  const [gameVersionRes, serverModsRes] = await Promise.all([gameVersionRequest, serverModsRequest]);
+  const [gameVersionRes, serverModsRes] = await Promise.all([getGameVersion(), serverModsRequest]);
 
   return {
     props: {
       server: serialiseServer(server),
       workshopMods: serverModsRes,
-      dayzVersion: { stable: gameVersionRes?.version, exp: gameVersionRes?.version_exp },
+      dayzVersion: gameVersionRes,
     },
   };
 };
@@ -73,9 +72,11 @@ const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
   const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
   const isLatestGameVersion = useMemo(
     () =>
-      (server?.version || '').replace(new RegExp('\\.', 'g'), '') ===
-      ((isExperimental ? dayzVersion?.exp : dayzVersion?.stable) || '').replace(new RegExp('\\.', 'g'), ''),
-    [server?.version, dayzVersion, isExperimental]
+      server?.version &&
+      dayzVersion?.stable &&
+      dayzVersion?.exp &&
+      isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
+    [(server?.version, dayzVersion, isExperimental)]
   );
 
   useEffect(() => {

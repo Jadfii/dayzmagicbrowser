@@ -98,8 +98,15 @@ export interface ServerFilters {
   limit?: number;
 }
 
+export interface GameVersion {
+  stable: string;
+  exp: string;
+}
+
 export interface SelectOption {
-  label: string;
+  label?: string;
   value: string;
-  occurrences: number;
+  count: number;
+  highlighted?: boolean;
+  highlightedSecondary?: boolean;
 }
