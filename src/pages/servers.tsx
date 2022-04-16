@@ -14,17 +14,17 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
 
   // Get query params
-  const { name, island, version, modIds } = query;
+  const { name, island, version, mods } = query;
 
   // Construct filters for prisma where query
   const filters = {
     ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
     ...(typeof island === 'string' ? { island: { contains: island } } : {}),
     ...(typeof version === 'string' ? { version } : {}),
-    ...(typeof modIds === 'string'
+    ...(typeof mods === 'string'
       ? {
           modIds: {
-            hasEvery: modIds.split(',').map((modId) => Number(modId.trim())),
+            hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
           },
         }
       : {}),
