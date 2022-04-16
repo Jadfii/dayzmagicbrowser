@@ -5,6 +5,8 @@ import prisma from '../../../lib/prisma';
 import { findIsland } from '../../../state/islands';
 import { getWorkshopMods } from '../../../data/SteamApi';
 
+const INITIAL_MOD_COUNT = 50;
+
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Caching
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
@@ -66,15 +68,19 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     islandsQuery,
     groupedIslandsQuery,
     groupedVersionsQuery,
-    getWorkshopMods(mappedGroupedMods.slice(0, 20).map((mod) => String(mod.value))),
+    getWorkshopMods(mappedGroupedMods.slice(0, INITIAL_MOD_COUNT).map((mod) => String(mod.value))),
     getGameVersion(),
   ]);
 
   // Map to enriched data (to get mod name/label)
-  mappedGroupedMods = mappedGroupedMods.map((mod) => ({
-    ...mod,
-    label: enrichedGroupedMods.find((m) => m.id === String(mod.value))?.name || 'Unknown mod',
-  }));
+  mappedGroupedMods = mappedGroupedMods.map((mod) => {
+    const matchedModName = enrichedGroupedMods.find((m) => m.id === String(mod.value))?.name;
+
+    return {
+      ...mod,
+      ...(matchedModName ? { label: matchedModName } : {}),
+    };
+  });
 
   // Match islands to saved islands in DB
   // then map to correct format
