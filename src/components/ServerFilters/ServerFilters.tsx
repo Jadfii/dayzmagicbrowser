@@ -74,15 +74,17 @@ const ServerFilters: React.FC = () => {
             <Select
               placeholder="Mods"
               value={getFilter(SERVER_FILTER.MODS)}
-              onChange={(value) => setFilter(SERVER_FILTER.NAME, (value as string[]).join(','))}
+              onChange={(value) => setFilter(SERVER_FILTER.MODS, (value as string[]).join(','))}
               width="100%"
               multiple
             >
-              {availableFilters?.mods?.slice(0, 20)?.map((option, i) => (
-                <Select.Option key={i} value={String(option.value)}>
-                  {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
-                </Select.Option>
-              ))}
+              {availableFilters?.mods
+                ?.filter((mod) => mod?.label)
+                ?.map((option, i) => (
+                  <Select.Option key={i} value={String(option.value)}>
+                    {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
+                  </Select.Option>
+                ))}
             </Select>
           </div>
 
