@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign } from '@geist-ui/react-icons';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -166,9 +166,13 @@ const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
 
                           <Spacer w={1 / 2} />
 
-                          {isLatestGameVersion && (
+                          {isLatestGameVersion ? (
                             <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
                               <Check color={theme.palette.success} />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip text={`This server is running an outdated version of DayZ${isExperimental ? ' Experimental' : ''}`}>
+                              <AlertTriangle color={theme.palette.warning} />
                             </Tooltip>
                           )}
                         </div>
