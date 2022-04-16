@@ -52,10 +52,10 @@ export default function useServerFilters() {
 
     const { name, island, version, mods } = router.query;
 
-    if (name) setName(name as string);
-    if (island) setIsland(island as string);
-    if (version) setVersion(version as string);
-    if (mods) setMods(mods as string);
+    setName((name as string) || '');
+    setIsland((island as string) || '');
+    setVersion((version as string) || '');
+    setMods((mods as string) || '');
 
     isInitialised.current = true;
   }, [router?.isReady, flatRouterQuery]);

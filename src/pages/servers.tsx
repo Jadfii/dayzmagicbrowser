@@ -1,5 +1,5 @@
 import { Button, Spacer, Text } from '@geist-ui/react';
-import React from 'react';
+import React, { useCallback } from 'react';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
@@ -8,6 +8,7 @@ import { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
+import { useRouter } from 'next/router';
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
   // Caching
@@ -56,6 +57,11 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
 
 const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ servers }) => {
   useRouterRefreshAtInterval(120000);
+  const router = useRouter();
+
+  function resetFilters() {
+    router.push({ query: {} });
+  }
 
   return (
     <>
@@ -67,7 +73,7 @@ const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
         <div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Button onClick={() => console.log('reset filters')} icon={<Delete />} auto>
+              <Button onClick={resetFilters} icon={<Delete />} auto>
                 Reset filters
               </Button>
             </div>
