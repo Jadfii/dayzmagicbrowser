@@ -21,7 +21,7 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select placeholder="Map" value={island} onChange={(value) => setIsland(value as string)}>
               {availableFilters?.islands?.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
+                <Select.Option key={i} value={String(option.value)}>
                   {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                 </Select.Option>
               ))}
@@ -31,7 +31,7 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select placeholder="Version" value={version} onChange={(value) => setVersion(value as string)}>
               {availableFilters?.versions.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
+                <Select.Option key={i} value={String(option.value)}>
                   <span>
                     {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                   </span>
@@ -57,17 +57,17 @@ const ServerFilters: React.FC = () => {
             </Select>
           </div>
 
-          {/*<div>
-            <Select disabled placeholder="Mods" value={mods} onChange={(value) => setMods(value as string[])} width="100%" multiple>
-              {availableMods.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+          <div>
+            <Select placeholder="Mods" value={mods} onChange={(value) => setMods(value as string[])} width="100%" multiple>
+              {availableFilters?.mods?.slice(0, 20)?.map((option, i) => (
+                <Select.Option key={i} value={String(option.value)}>
+                  {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                 </Select.Option>
               ))}
             </Select>
           </div>
 
-          <div>
+          {/*<div>
             <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
               First person only
             </Checkbox>

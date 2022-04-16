@@ -3,6 +3,7 @@ import { getGameVersion, isMatchingVersion } from './../../../data/Version';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { findIsland } from '../../../state/islands';
+import { getWorkshopMods } from '../../../data/SteamApi';
 
 const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   // Caching
@@ -35,13 +36,45 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
+  // Get all available mod Ids
+  const allModIds = await prisma.server.groupBy({
+    by: ['modIds'],
+    orderBy: {
+      modIds: 'desc',
+    },
+  });
+
+  // Group and sort by occurence
+  let mappedGroupedMods = allModIds
+    .flatMap((m) => m.modIds)
+    .reduce<SelectOption[]>((acc, curr) => {
+      const currentModId = Number(curr);
+      const foundIdx = acc.findIndex((mod) => mod.value === currentModId);
+
+      if (foundIdx === -1) {
+        acc.push({ value: currentModId, count: 1 });
+      } else {
+        acc[foundIdx].count += 1;
+      }
+
+      return acc;
+    }, [])
+    .sort((a, b) => b.count - a.count);
+
   // Run queries
-  const [islands, groupedIslands, groupedVersions, gameVersion] = await Promise.all([
+  const [islands, groupedIslands, groupedVersions, enrichedGroupedMods, gameVersion] = await Promise.all([
     islandsQuery,
     groupedIslandsQuery,
     groupedVersionsQuery,
+    getWorkshopMods(mappedGroupedMods.slice(0, 20).map((mod) => String(mod.value))),
     getGameVersion(),
   ]);
+
+  // Map to enriched data (to get mod name/label)
+  mappedGroupedMods = mappedGroupedMods.map((mod) => ({
+    ...mod,
+    label: enrichedGroupedMods.find((m) => m.id === String(mod.value))?.name || 'Unknown mod',
+  }));
 
   // Match islands to saved islands in DB
   // then map to correct format
@@ -73,7 +106,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return acc;
   }, []);
 
-  return res.status(200).json({ islands: mappedGroupedIslands, versions: mappedGroupedVersions });
+  return res.status(200).json({ islands: mappedGroupedIslands, versions: mappedGroupedVersions, mods: mappedGroupedMods });
 };
 
 export default handler;

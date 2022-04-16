@@ -22,7 +22,7 @@ export default function useServerFilters() {
     router.push({
       query: filters,
     });
-  }, [name, island, version]);
+  }, [name, island, version, mods]);
 
   return { name, setName, island, setIsland, version, setVersion, mods, setMods };
 }

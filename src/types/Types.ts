@@ -101,6 +101,7 @@ export interface ServerFilters {
 export interface AvailableServerFilters {
   islands: SelectOption[];
   versions: SelectOption[];
+  mods: SelectOption[];
 }
 
 export interface GameVersion {
@@ -110,7 +111,7 @@ export interface GameVersion {
 
 export interface SelectOption {
   label?: string;
-  value: string;
+  value: string | number;
   count: number;
   highlighted?: boolean;
   highlightedSecondary?: boolean;
