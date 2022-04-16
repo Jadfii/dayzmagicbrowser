@@ -91,13 +91,6 @@ export interface HomeServers {
   experimental: Server[];
 }
 
-export interface ServerFilters {
-  name?: string;
-  map?: string;
-  version?: string;
-  limit?: number;
-}
-
 export interface AvailableServerFilters {
   islands: SelectOption[];
   versions: SelectOption[];
@@ -115,4 +108,11 @@ export interface SelectOption {
   count: number;
   highlighted?: boolean;
   highlightedSecondary?: boolean;
+}
+
+export enum SERVER_FILTER {
+  NAME = 'NAME',
+  ISLAND = 'ISLAND',
+  VERSION = 'VERSION',
+  MODS = 'MODS',
 }
