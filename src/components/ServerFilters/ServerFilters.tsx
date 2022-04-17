@@ -4,10 +4,9 @@ import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
 import { usePrevious } from '../../hooks/usePrevious';
 import useServerFilters from '../../hooks/useServerFilters';
-import { SERVER_FILTER } from '../../types/Types';
 
 const ServerFilters: React.FC = () => {
-  const { getFilter, setFilter } = useServerFilters();
+  const filters = useServerFilters();
   const { availableFilters } = useAvailableServerFilters();
 
   return (
@@ -17,16 +16,11 @@ const ServerFilters: React.FC = () => {
       <Card>
         <div className="grid grid-cols-4 gap-6 py-4 items-center">
           <div>
-            <ServerNameSearch value={getFilter(SERVER_FILTER.NAME) as string} onChange={(val) => setFilter(SERVER_FILTER.NAME, val)} />
+            <ServerNameSearch value={filters.name} onChange={filters.setName} />
           </div>
 
           <div>
-            <Select
-              placeholder="Map"
-              value={getFilter(SERVER_FILTER.ISLAND) as string}
-              clearable
-              onChange={(value) => setFilter(SERVER_FILTER.ISLAND, value as string)}
-            >
+            <Select placeholder="Map" value={filters.island} clearable onChange={(value) => filters.setIsland((value as string) || null)}>
               <NoneSelectOption />
               {availableFilters?.islands?.map((option, i) => (
                 <Select.Option key={i} value={String(option.value)}>
@@ -37,11 +31,7 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Select
-              placeholder="Version"
-              value={getFilter(SERVER_FILTER.VERSION) as string}
-              onChange={(value) => setFilter(SERVER_FILTER.VERSION, value as string)}
-            >
+            <Select placeholder="Version" value={filters.version} onChange={(value) => filters.setVersion((value as string) || null)}>
               <NoneSelectOption />
               {availableFilters?.versions.map((option, i) => (
                 <Select.Option key={i} value={String(option.value)}>
@@ -73,8 +63,8 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select
               placeholder="Mods"
-              value={getFilter(SERVER_FILTER.MODS) as string[]}
-              onChange={(value) => setFilter(SERVER_FILTER.MODS, (value as string[]).join(','))}
+              value={filters.mods}
+              onChange={(value) => filters.setMods((value as string[]).join(','))}
               width="100%"
               multiple
             >
@@ -89,31 +79,19 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Checkbox
-              scale={4 / 3}
-              checked={getFilter(SERVER_FILTER.FIRST_PERSON) as boolean}
-              onChange={(e) => setFilter(SERVER_FILTER.FIRST_PERSON, e.target.checked ? (+!!e.target.checked).toString() : '')}
-            >
+            <Checkbox scale={4 / 3} checked={filters.firstPerson} onChange={(e) => filters.setFirstPerson(e.target.checked || null)}>
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox
-              scale={4 / 3}
-              checked={getFilter(SERVER_FILTER.OFFICIAL) as boolean}
-              onChange={(e) => setFilter(SERVER_FILTER.OFFICIAL, e.target.checked ? (+!!e.target.checked).toString() : '')}
-            >
+            <Checkbox scale={4 / 3} checked={filters.official} onChange={(e) => filters.setOfficial(e.target.checked || null)}>
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox
-              scale={4 / 3}
-              checked={getFilter(SERVER_FILTER.EXPERIMENTAL) as boolean}
-              onChange={(e) => setFilter(SERVER_FILTER.EXPERIMENTAL, e.target.checked ? (+!!e.target.checked).toString() : '')}
-            >
+            <Checkbox scale={4 / 3} checked={filters.experimental} onChange={(e) => filters.setExperimental(e.target.checked || null)}>
               Experimental server
             </Checkbox>
           </div>
