@@ -4,7 +4,7 @@ import React from 'react';
 import { Server } from '../../types/Types';
 import ServerCard from '../ServerCard/ServerCard';
 
-const MAX_SERVERS = 200;
+const MAX_SERVERS = 250;
 
 interface Props {
   servers: Server[];

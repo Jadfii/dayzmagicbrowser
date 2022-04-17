@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
         queueCount: 'desc',
       },
     ],
-    take: 200,
+    take: 250,
     where: {
       ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
       ...(typeof island === 'string' ? { island: { contains: island } } : {}),
