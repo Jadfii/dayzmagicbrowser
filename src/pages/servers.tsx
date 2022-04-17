@@ -1,5 +1,5 @@
 import { Button, Spacer, Text } from '@geist-ui/react';
-import React, { useCallback } from 'react';
+import React from 'react';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
@@ -9,27 +9,14 @@ import prisma, { serialiseServer } from '../lib/prisma';
 import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 import { useRouter } from 'next/router';
+import { DAYZ_EXP_APPID } from '../constants/game.constant';
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
   // Caching
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
 
   // Get query params
-  const { name, island, version, mods } = query;
-
-  // Construct filters for prisma where query
-  const filters = {
-    ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
-    ...(typeof island === 'string' ? { island: { contains: island } } : {}),
-    ...(typeof version === 'string' ? { version } : {}),
-    ...(typeof mods === 'string'
-      ? {
-          modIds: {
-            hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
-          },
-        }
-      : {}),
-  };
+  const { name, island, version, mods, firstperson, official, experimental } = query;
 
   // Get servers
   const servers = await prisma.server.findMany({
@@ -42,7 +29,21 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
       },
     ],
     take: 200,
-    where: filters,
+    where: {
+      ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
+      ...(typeof island === 'string' ? { island: { contains: island } } : {}),
+      ...(typeof version === 'string' ? { version } : {}),
+      ...(typeof mods === 'string'
+        ? {
+            modIds: {
+              hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
+            },
+          }
+        : {}),
+      ...(typeof firstperson === 'string' ? { isFirstPerson: true } : {}),
+      ...(typeof official === 'string' ? { isPublicHive: true } : {}),
+      ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
+    },
   });
 
   // Serialise servers so they can be passed to component

@@ -23,7 +23,7 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select
               placeholder="Map"
-              value={getFilter(SERVER_FILTER.ISLAND)}
+              value={getFilter(SERVER_FILTER.ISLAND) as string}
               clearable
               onChange={(value) => setFilter(SERVER_FILTER.ISLAND, value as string)}
             >
@@ -39,7 +39,7 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select
               placeholder="Version"
-              value={getFilter(SERVER_FILTER.VERSION)}
+              value={getFilter(SERVER_FILTER.VERSION) as string}
               onChange={(value) => setFilter(SERVER_FILTER.VERSION, value as string)}
             >
               <NoneSelectOption />
@@ -73,7 +73,7 @@ const ServerFilters: React.FC = () => {
           <div>
             <Select
               placeholder="Mods"
-              value={getFilter(SERVER_FILTER.MODS)}
+              value={getFilter(SERVER_FILTER.MODS) as string[]}
               onChange={(value) => setFilter(SERVER_FILTER.MODS, (value as string[]).join(','))}
               width="100%"
               multiple
@@ -88,25 +88,37 @@ const ServerFilters: React.FC = () => {
             </Select>
           </div>
 
-          {/*<div>
-            <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+          <div>
+            <Checkbox
+              scale={4 / 3}
+              checked={getFilter(SERVER_FILTER.FIRST_PERSON) as boolean}
+              onChange={(e) => setFilter(SERVER_FILTER.FIRST_PERSON, e.target.checked ? (+!!e.target.checked).toString() : '')}
+            >
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={getFilter(SERVER_FILTER.OFFICIAL) as boolean}
+              onChange={(e) => setFilter(SERVER_FILTER.OFFICIAL, e.target.checked ? (+!!e.target.checked).toString() : '')}
+            >
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={getFilter(SERVER_FILTER.EXPERIMENTAL) as boolean}
+              onChange={(e) => setFilter(SERVER_FILTER.EXPERIMENTAL, e.target.checked ? (+!!e.target.checked).toString() : '')}
+            >
               Experimental server
             </Checkbox>
           </div>
 
-          <div>
+          {/*<div>
             <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
               Has no queue
             </Checkbox>
