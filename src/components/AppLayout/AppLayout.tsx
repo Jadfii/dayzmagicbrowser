@@ -13,7 +13,7 @@ const AppLayout: React.FC<PropsWithChildren<unknown>> = ({ children }) => {
           <div className="relative flex flex-col flex-auto min-h-screen">
             <Masthead />
 
-            <div className="relative flex flex-col flex-auto pt-16">{children}</div>
+            <div className="relative flex flex-col flex-auto pt-20">{children}</div>
           </div>
 
           <div className="flex">
