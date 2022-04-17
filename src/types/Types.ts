@@ -109,13 +109,3 @@ export interface SelectOption {
   highlighted?: boolean;
   highlightedSecondary?: boolean;
 }
-
-export enum SERVER_FILTER {
-  NAME = 'NAME',
-  ISLAND = 'ISLAND',
-  VERSION = 'VERSION',
-  MODS = 'MODS',
-  FIRST_PERSON = 'FIRSTPERSON',
-  OFFICIAL = 'OFFICIAL',
-  EXPERIMENTAL = 'EXPERIMENTAL',
-}
