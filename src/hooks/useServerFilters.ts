@@ -5,7 +5,10 @@ export default function useServerFilters() {
   const [name, setName] = useQueryState('name', queryTypes.string.withDefault(''));
   const [island, setIsland] = useQueryState('island', queryTypes.string.withDefault(''));
   const [version, setVersion] = useQueryState('version', queryTypes.string.withDefault(''));
-  const [mods, setMods] = useQueryState('mods', queryTypes.string.withDefault(''));
+  const [mods, setMods] = useQueryState('mods', {
+    parse: (query: string) => query.split(','),
+    serialize: (value) => value.join(','),
+  });
   const [firstPerson, setFirstPerson] = useQueryState('firstperson', queryTypes.boolean.withDefault(false));
   const [official, setOfficial] = useQueryState('official', queryTypes.boolean.withDefault(false));
   const [experimental, setExperimental] = useQueryState('experimental', queryTypes.boolean.withDefault(false));
@@ -17,7 +20,7 @@ export default function useServerFilters() {
     setIsland,
     version,
     setVersion,
-    mods: mods.split(','),
+    mods,
     setMods,
     firstPerson,
     setFirstPerson,
