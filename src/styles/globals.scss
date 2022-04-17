@@ -20,7 +20,7 @@ img {
   -ms-user-select: none;
 }
 
-.container > div > div:not(.container) > div {
+.container > div > div:not(.container) > div:not(.auto-complete) {
   @apply px-8;
 }
 
