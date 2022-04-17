@@ -47,7 +47,12 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
   });
 
   // Serialise servers so they can be passed to component
-  const serialisedServers: Server[] = servers.map(serialiseServer);
+  const serialisedServers: Server[] = servers.map(serialiseServer).sort((a, b) => {
+    const aCount = a.queueCount + a.playerCount;
+    const bCount = b.queueCount + b.playerCount;
+
+    return bCount - aCount;
+  });
 
   return {
     props: {
