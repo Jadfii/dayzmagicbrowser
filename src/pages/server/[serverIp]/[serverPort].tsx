@@ -1,4 +1,4 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
@@ -9,7 +9,6 @@ import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import { Server, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
@@ -18,11 +17,6 @@ import { useRecoilValueLoadable } from 'recoil';
 import { findIslandByTerrainIdState } from '../../../state/islands';
 import { getIslandImageURL } from '../../../constants/links.constant';
 import { getGameVersion, isMatchingVersion } from '../../../data/Version';
-
-interface DayZVersion {
-  stable?: string;
-  exp?: string;
-}
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -46,24 +40,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   const serverModsRequest = server?.modIds?.length ? getWorkshopMods(server?.modIds.map((modId) => String(modId))) : [];
 
-  const [gameVersionRes, serverModsRes] = await Promise.all([getGameVersion(), serverModsRequest]);
+  const [gameVersionRes, serverModsRes] = await Promise.allSettled([getGameVersion(), serverModsRequest]);
 
   return {
     props: {
       server: serialiseServer(server),
-      workshopMods: serverModsRes,
-      dayzVersion: gameVersionRes,
+      workshopMods: serverModsRes?.status === 'fulfilled' ? serverModsRes?.value || [] : [],
+      dayzVersion: gameVersionRes?.status === 'fulfilled' ? gameVersionRes?.value : { stable: '', exp: '' },
     },
   };
 };
 
-interface Props {
-  server?: Server;
-  workshopMods?: WorkshopMod[];
-  dayzVersion?: DayZVersion;
-}
-
-const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods, dayzVersion }) => {
   const theme = useTheme();
   const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
