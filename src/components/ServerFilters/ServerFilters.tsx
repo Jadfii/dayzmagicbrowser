@@ -61,7 +61,16 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Select placeholder="Mods" value={filters.mods || []} onChange={(value) => filters.setMods(value as string[])} width="100%" multiple>
+            <Select
+              placeholder="Mods"
+              value={filters.mods || []}
+              onChange={(value) => {
+                const mods = value as string[];
+                filters.setMods(mods.length > 0 ? mods : null);
+              }}
+              width="100%"
+              multiple
+            >
               {availableFilters?.mods
                 ?.filter((mod) => mod?.label)
                 ?.map((option, i) => (
