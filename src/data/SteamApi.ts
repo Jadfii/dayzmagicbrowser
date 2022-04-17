@@ -14,7 +14,12 @@ export async function getWorkshopMods(fileIds: string[]): Promise<WorkshopMod[]>
     })
     .then((response) => response.json())
     .then((data) => data?.response?.publishedfiledetails)
-    .then((mods) => mods.map(mapWorkshopModResponse).sort((a: WorkshopMod, b: WorkshopMod) => (b?.subscriptions || 0) - (a?.subscriptions || 0)));
+    .then((mods) =>
+      mods
+        .map(mapWorkshopModResponse)
+        .filter((mod: WorkshopMod) => mod.name)
+        .sort((a: WorkshopMod, b: WorkshopMod) => (b?.subscriptions || 0) - (a?.subscriptions || 0))
+    );
 
   return modsResponse;
 }
