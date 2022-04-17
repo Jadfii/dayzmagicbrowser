@@ -90,7 +90,7 @@ const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
 
         <Spacer h={1} />
 
-        <ServerList servers={servers} isLoading={false} />
+        <ServerList servers={servers} isLoading={false} onResetFilters={resetFilters} />
       </div>
     </>
   );
