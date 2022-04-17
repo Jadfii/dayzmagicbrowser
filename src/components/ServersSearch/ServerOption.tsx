@@ -4,6 +4,8 @@ import React from 'react';
 import { Server } from '../../types/Types';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Link from 'next/link';
+import { useRecoilValueLoadable } from 'recoil';
+import { findIslandByTerrainIdState } from '../../state/islands';
 
 interface Props {
   server: Server;
@@ -12,6 +14,7 @@ interface Props {
 
 const ServerOption: React.FC<Props> = ({ server, handleClick }) => {
   const theme = useTheme();
+  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   function onClick() {
     if (!server?.ipAddress) return;
@@ -50,7 +53,7 @@ const ServerOption: React.FC<Props> = ({ server, handleClick }) => {
                 <Map size={16} />
                 <Spacer w={1 / 3} />
                 <Text p margin={0} className="truncate">
-                  {server.island}
+                  {serverIsland?.contents?.name || server.island}
                 </Text>
               </div>
             </Grid>
