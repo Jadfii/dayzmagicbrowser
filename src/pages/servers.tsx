@@ -10,6 +10,7 @@ import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 import { useRouter } from 'next/router';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
+import { sortServersByPlayerCount } from '../utils/server.util';
 
 export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
   // Caching
@@ -47,12 +48,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
   });
 
   // Serialise servers so they can be passed to component
-  const serialisedServers: Server[] = servers.map(serialiseServer).sort((a, b) => {
-    const aCount = a.queueCount + a.playerCount;
-    const bCount = b.queueCount + b.playerCount;
-
-    return bCount - aCount;
-  });
+  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return {
     props: {

@@ -8,6 +8,7 @@ import ServerCard from '../components/ServerCard/ServerCard';
 import { HomeServers } from '../types/Types';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
+import { sortServersByPlayerCount } from '../utils/server.util';
 
 export const getStaticProps = async () => {
   const popularServers = prisma.server.findMany({
@@ -55,9 +56,9 @@ export const getStaticProps = async () => {
   const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);
 
   const homeServers: HomeServers = {
-    popular: popular.map(serialiseServer),
-    official: official.map(serialiseServer),
-    experimental: experimental.map(serialiseServer),
+    popular: sortServersByPlayerCount(popular.map(serialiseServer)),
+    official: sortServersByPlayerCount(official.map(serialiseServer)),
+    experimental: sortServersByPlayerCount(experimental.map(serialiseServer)),
   };
 
   return {
