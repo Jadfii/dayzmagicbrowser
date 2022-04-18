@@ -4,6 +4,7 @@ import useDebounce from '../../hooks/useDebounce';
 import { SelectOption, WorkshopMod } from '../../types/Types';
 import http from '../../services/HTTP';
 import { X } from '@geist-ui/react-icons';
+import FormItemLabel from '../FormItemLabel/FormItemLabel';
 
 const searchWorkshopModsRequest = async (searchTerm: string) =>
   await http
@@ -97,17 +98,19 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
 
   return (
     <>
-      <AutoComplete
-        placeholder="Server mods"
-        options={autoCompleteOptions.map((e) => ({ label: String(e.label || e.value), value: String(e.value) }))}
-        value={searchValue}
-        onChange={changeHandler}
-        onSelect={selectHandler}
-        width="100%"
-        searching={isSearching}
-        clearable
-        ref={inputRef}
-      />
+      <FormItemLabel label="Mods">
+        <AutoComplete
+          placeholder="Select or search server mods"
+          options={autoCompleteOptions.map((e) => ({ label: String(e.label || e.value), value: String(e.value) }))}
+          value={searchValue}
+          onChange={changeHandler}
+          onSelect={selectHandler}
+          width="100%"
+          searching={isSearching}
+          clearable
+          ref={inputRef}
+        />
+      </FormItemLabel>
 
       {enrichedSelectedMods.length > 0 && (
         <div className="space-y-2 mt-2">

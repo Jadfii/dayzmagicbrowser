@@ -4,6 +4,7 @@ import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
 import { usePrevious } from '../../hooks/usePrevious';
 import useServerFilters from '../../hooks/useServerFilters';
+import CustomSelect from './CustomSelect';
 import ServerModsFilter from './ServerModsFilter';
 
 const ServerFilters: React.FC = () => {
@@ -21,18 +22,29 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Select placeholder="Map" value={filters.island} clearable onChange={(value) => filters.setIsland((value as string) || null)}>
+            <CustomSelect
+              placeholder="Select map"
+              label="Map"
+              value={filters.island}
+              clearable
+              onChange={(value) => filters.setIsland((value as string) || null)}
+            >
               <NoneSelectOption />
               {availableFilters?.islands?.map((option, i) => (
                 <Select.Option key={i} value={String(option.value)}>
                   {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                 </Select.Option>
               ))}
-            </Select>
+            </CustomSelect>
           </div>
 
           <div>
-            <Select placeholder="Version" value={filters.version} onChange={(value) => filters.setVersion((value as string) || null)}>
+            <CustomSelect
+              placeholder="Select version"
+              label="Version"
+              value={filters.version}
+              onChange={(value) => filters.setVersion((value as string) || null)}
+            >
               <NoneSelectOption />
               {availableFilters?.versions.map((option, i) => (
                 <Select.Option key={i} value={String(option.value)}>
@@ -58,7 +70,7 @@ const ServerFilters: React.FC = () => {
                   )}
                 </Select.Option>
               ))}
-            </Select>
+            </CustomSelect>
           </div>
 
           <div>
@@ -138,13 +150,15 @@ const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, in
   return (
     <>
       <Input
-        placeholder="Server name"
+        placeholder="Search server name"
         clearable
         disabled={disabled}
         initialValue={initialValue}
         value={serverNameInput}
         onChange={(e) => setServerNameInput(e.target.value)}
-      />
+      >
+        Server name
+      </Input>
     </>
   );
 };
