@@ -74,11 +74,11 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Map to enriched data (to get mod name/label)
   mappedGroupedMods = mappedGroupedMods.map((mod) => {
-    const matchedModName = enrichedGroupedMods.find((m) => m.id === String(mod.value))?.name;
+    const matchedMod = enrichedGroupedMods.find((m) => m.id === String(mod.value));
 
     return {
       ...mod,
-      ...(matchedModName ? { label: matchedModName } : {}),
+      ...(matchedMod?.name ? { label: matchedMod?.name } : {}),
     };
   });
 

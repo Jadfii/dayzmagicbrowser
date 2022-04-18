@@ -60,15 +60,16 @@ export interface IslandResponse {
 
 export interface WorkshopModTagResponse {
   tag: string;
+  display_name: string;
 }
 
 export interface WorkshopModResponse {
   ban_reason: string;
   banned: number;
-  consumer_app_id: number;
+  consumer_appid: number;
   creator: string;
-  creator_app_id: number;
-  description: string;
+  creator_appid: number;
+  file_description: string;
   favorited: number;
   file_size: number;
   file_url: string;

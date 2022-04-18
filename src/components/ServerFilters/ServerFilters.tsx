@@ -4,6 +4,7 @@ import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
 import { usePrevious } from '../../hooks/usePrevious';
 import useServerFilters from '../../hooks/useServerFilters';
+import ServerModsFilter from './ServerModsFilter';
 
 const ServerFilters: React.FC = () => {
   const filters = useServerFilters();
@@ -14,9 +15,9 @@ const ServerFilters: React.FC = () => {
       <Spacer h={1} />
 
       <Card>
-        <div className="grid grid-cols-4 gap-6 py-4 items-center">
+        <div className="grid grid-cols-4 gap-6 py-4">
           <div>
-            <ServerNameSearch value={filters.name} onChange={filters.setName} />
+            <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null)} />
           </div>
 
           <div>
@@ -61,24 +62,21 @@ const ServerFilters: React.FC = () => {
           </div>
 
           <div>
-            <Select
-              placeholder="Mods"
-              value={filters.mods || []}
-              onChange={(value) => {
-                const mods = value as string[];
-                filters.setMods(mods.length > 0 ? mods : null);
-              }}
-              width="100%"
-              multiple
-            >
-              {availableFilters?.mods
-                ?.filter((mod) => mod?.label)
-                ?.map((option, i) => (
-                  <Select.Option key={i} value={String(option.value)}>
-                    {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
-                  </Select.Option>
-                ))}
-            </Select>
+            <ServerModsFilter
+              availableOptions={availableFilters?.mods?.filter((mod) => mod?.label) || []}
+              selectedMods={filters.mods || []}
+              onAddMod={(modId: string) => filters.setMods((prevMods) => [...new Set([...(prevMods || []), modId])])}
+              onRemoveMod={(modId: string) =>
+                filters.setMods((prevMods) => {
+                  if (prevMods !== null) {
+                    const newMods = prevMods?.filter((m) => m !== modId);
+                    if (newMods.length > 0) return newMods;
+                  }
+
+                  return null;
+                })
+              }
+            />
           </div>
 
           <div>
