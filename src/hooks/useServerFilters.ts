@@ -12,6 +12,7 @@ export default function useServerFilters() {
   const [firstPerson, setFirstPerson] = useQueryState('firstperson', queryTypes.boolean.withDefault(false));
   const [official, setOfficial] = useQueryState('official', queryTypes.boolean.withDefault(false));
   const [experimental, setExperimental] = useQueryState('experimental', queryTypes.boolean.withDefault(false));
+  const [hasNoQueue, setHasNoQueue] = useQueryState('noqueue', queryTypes.boolean.withDefault(false));
 
   return {
     name,
@@ -28,5 +29,7 @@ export default function useServerFilters() {
     setOfficial,
     experimental,
     setExperimental,
+    hasNoQueue,
+    setHasNoQueue,
   };
 }

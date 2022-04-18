@@ -97,11 +97,11 @@ const ServerFilters: React.FC = () => {
             </Checkbox>
           </div>
 
-          {/*<div>
-            <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
+          <div>
+            <Checkbox scale={4 / 3} checked={filters.hasNoQueue} onChange={(e) => filters.setHasNoQueue(e.target.checked || null)}>
               Has no queue
             </Checkbox>
-          </div>*/}
+          </div>
         </div>
       </Card>
     </>

@@ -17,7 +17,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
 
   // Get query params
-  const { name, island, version, mods, firstperson, official, experimental } = query;
+  const { name, island, version, mods, firstperson, official, experimental, noqueue } = query;
 
   // Get servers
   const servers = await prisma.server.findMany({
@@ -44,6 +44,7 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
       ...(typeof firstperson === 'string' ? { isFirstPerson: true } : {}),
       ...(typeof official === 'string' ? { isPublicHive: true } : {}),
       ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
+      ...(typeof noqueue === 'string' ? { queueCount: 0 } : {}),
     },
   });
 
