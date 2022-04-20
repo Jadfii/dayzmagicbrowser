@@ -23,7 +23,9 @@
     "fuse.js": "^6.5.3",
     "ky": "^0.30.0",
     "ky-universal": "^0.10.1",
+    "lambda-rate-limiter": "^3.0.1",
     "next": "^12.1.5",
+    "next-connect": "^0.12.2",
     "next-pwa": "^5.5.0",
     "next-seo": "^5.4.0",
     "pretty-bytes": "^6.0.0",
@@ -35,6 +37,7 @@
   "devDependencies": {
     "@next/eslint-plugin-next": "^12.1.5",
     "@styled-jsx/plugin-sass": "^4.0.2",
+    "@types/lambda-rate-limiter": "^3.0.0",
     "@types/react": "^18.0.5",
     "@types/react-dom": "^18.0.1",
     "@typescript-eslint/eslint-plugin": "^5.19.0",

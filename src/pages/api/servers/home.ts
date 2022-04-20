@@ -1,8 +1,14 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
 import prisma, { serialiseServer } from '../../../lib/prisma';
+import nextConnect from 'next-connect';
+import rateLimit from '../../../middleware/rateLimit';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = nextConnect();
+
+handler.use(rateLimit());
+
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   const popularServers = prisma.server.findMany({
     take: 4,
     orderBy: [
@@ -50,6 +56,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   const homeServers = Object.fromEntries(Object.entries({ popular, official, experimental }).map(([key, val]) => [key, val.map(serialiseServer)]));
 
   return res.status(200).json(homeServers);
-};
+});
 
 export default handler;

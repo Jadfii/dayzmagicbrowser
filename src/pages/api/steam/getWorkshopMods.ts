@@ -1,7 +1,13 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { getWorkshopMods } from '../../../data/SteamApi';
+import nextConnect from 'next-connect';
+import rateLimit from '../../../middleware/rateLimit';
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = nextConnect();
+
+handler.use(rateLimit(3));
+
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const modIdsQuery = req?.query?.modIds;
 
@@ -16,6 +22,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
     return res.status(500).json({ error: 'Failed to query Steam API' });
   }
-};
+});
 
 export default handler;
