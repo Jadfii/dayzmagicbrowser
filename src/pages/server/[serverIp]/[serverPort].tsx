@@ -13,8 +13,6 @@ import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFea
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
 import { getWorkshopMods } from '../../../data/SteamApi';
-import { useRecoilValueLoadable } from 'recoil';
-import { findIslandByTerrainIdState } from '../../../state/islands';
 import { getIslandImageURL } from '../../../constants/links.constant';
 import { getGameVersion, isMatchingVersion } from '../../../data/Version';
 
@@ -29,6 +27,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     where: {
       ipAddress: String(params?.serverIp),
       gamePort: Number(params?.serverPort),
+    },
+    include: {
+      relatedIsland: true,
     },
   });
 
@@ -53,7 +54,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
 const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods, dayzVersion }) => {
   const theme = useTheme();
-  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
@@ -84,7 +84,7 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
       {server?.name && server?.version ? (
         <>
           <div className="relative flex items-end h-48 py-4">
-            <BackgroundImage src={getIslandImageURL(serverIsland?.contents?.terrainId)} />
+            <BackgroundImage src={getIslandImageURL(server?.relatedIsland?.terrainId)} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">
@@ -138,7 +138,7 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                       icon={<Map />}
                       item={
                         <Text h3 margin={0}>
-                          {serverIsland?.contents?.name || server.island}
+                          {server?.relatedIsland?.name || server.island}
                         </Text>
                       }
                     />

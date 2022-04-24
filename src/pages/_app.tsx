@@ -7,7 +7,6 @@ import type { AppProps } from 'next/app';
 import { DefaultSeo } from 'next-seo';
 import { META_DESCRIPTION, TITLE_PREFIX } from '../constants/meta.constant';
 import { IMAGE_BUCKET } from '../constants/links.constant';
-import { RecoilRoot } from 'recoil';
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
@@ -29,14 +28,12 @@ const App = ({ Component, pageProps }: AppProps) => {
         ]}
       />
 
-      <RecoilRoot>
-        <GeistProvider themeType={'dark'}>
-          <CssBaseline />
-          <AppLayout>
-            <Component {...pageProps} />
-          </AppLayout>
-        </GeistProvider>
-      </RecoilRoot>
+      <GeistProvider themeType={'dark'}>
+        <CssBaseline />
+        <AppLayout>
+          <Component {...pageProps} />
+        </AppLayout>
+      </GeistProvider>
     </>
   );
 };

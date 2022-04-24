@@ -2,8 +2,8 @@ import { SelectOption } from './../../../types/Types';
 import { getGameVersion, isMatchingVersion } from './../../../data/Version';
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
-import { findIsland } from '../../../state/islands';
 import { getWorkshopMods } from '../../../data/SteamApi';
+import { findIsland } from '../../../utils/server.util';
 
 const INITIAL_MOD_COUNT = 50;
 

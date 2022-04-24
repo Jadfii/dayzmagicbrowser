@@ -31,6 +31,7 @@ export interface Server {
   version: string;
   clockTime: string;
   island: string;
+  relatedIsland?: Island;
   isFirstPerson: boolean;
   isPassword: boolean;
   isBattleEye: boolean;

@@ -46,6 +46,9 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
       ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
       ...(typeof noqueue === 'string' ? { queueCount: 0 } : {}),
     },
+    include: {
+      relatedIsland: true,
+    },
   });
 
   // Serialise servers so they can be passed to component

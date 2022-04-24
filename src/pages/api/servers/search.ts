@@ -21,6 +21,9 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
         search: searchTerm.split(' ').join(' & '),
       },
     },
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const serialisedServers: Server[] = servers.map(serialiseServer);

@@ -28,6 +28,9 @@ export function serialiseServer(server: PrismaServer): Server {
   return {
     ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds'),
     modIds: server.modIds.map((modId) => Number(modId)),
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    ...(server?.relatedIsland ? { relatedIsland: serialiseIsland(server?.relatedIsland) } : {}),
   };
 }
 

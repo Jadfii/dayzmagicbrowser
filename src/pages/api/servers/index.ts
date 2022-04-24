@@ -20,6 +20,9 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
       },
     ],
     take: 1000,
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const serialisedServers: Server[] = servers.map(serialiseServer);

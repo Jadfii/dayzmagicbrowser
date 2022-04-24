@@ -19,6 +19,9 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
         queueCount: 'desc',
       },
     ],
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const officialServers = prisma.server.findMany({
@@ -34,6 +37,9 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
         queueCount: 'desc',
       },
     ],
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const experimentalServers = prisma.server.findMany({
@@ -49,6 +55,9 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
         queueCount: 'desc',
       },
     ],
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);

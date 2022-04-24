@@ -18,32 +18,35 @@ model Island {
   description String?
   workshopId  String?
   isOfficial  Boolean
+  Server      Server[]
 }
 
 model Server {
-  id               String   @id @default(uuid())
-  createdAt        DateTime @default(now())
-  updatedAt        DateTime @updatedAt
-  modIds           BigInt[]
-  queryPort        Int
-  gamePort         Int
-  appId            Int
-  playerCount      Int      @default(0)
-  maxPlayerCount   Int      @default(0)
-  queueCount       Int      @default(0)
-  timeAcceleration Int[]
-  ipAddress        String
-  name             String
-  version          String
-  clockTime        String
-  island           String
-  isFirstPerson    Boolean
-  isPassword       Boolean
-  isBattleEye      Boolean
-  isVAC            Boolean
-  isPublicHive     Boolean
-  isMonetised      Boolean
-  isOffline        Boolean
+  id                     String   @id @default(uuid())
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  modIds                 BigInt[]
+  queryPort              Int
+  gamePort               Int
+  appId                  Int
+  playerCount            Int      @default(0)
+  maxPlayerCount         Int      @default(0)
+  queueCount             Int      @default(0)
+  timeAcceleration       Int[]
+  ipAddress              String
+  name                   String
+  version                String
+  clockTime              String
+  island                 String
+  relatedIslandTerrainId String?
+  relatedIsland          Island?  @relation(fields: [relatedIslandTerrainId], references: [terrainId])
+  isFirstPerson          Boolean
+  isPassword             Boolean
+  isBattleEye            Boolean
+  isVAC                  Boolean
+  isPublicHive           Boolean
+  isMonetised            Boolean
+  isOffline              Boolean
 
   @@unique([ipAddress, queryPort])
 }

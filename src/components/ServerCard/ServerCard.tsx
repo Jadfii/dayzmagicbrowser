@@ -7,8 +7,6 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Skeleton from '../Skeleton/Skeleton';
-import { useRecoilValueLoadable } from 'recoil';
-import { findIslandByTerrainIdState } from '../../state/islands';
 import { getIslandImageURL } from '../../constants/links.constant';
 
 interface Props {
@@ -18,7 +16,6 @@ interface Props {
 
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   const router = useRouter();
-  const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
@@ -39,7 +36,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 maxHeight={imageHeight}
                 alt={`${server?.name} map preview`}
                 layout="fill"
-                src={getIslandImageURL(serverIsland?.contents?.terrainId)}
+                src={getIslandImageURL(server?.relatedIsland?.terrainId)}
                 loading="lazy"
                 className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
               />
@@ -78,7 +75,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
                 <Text small className="my-0">
                   {server?.clockTime ? (
                     <>
-                      {serverIsland?.contents?.name || server?.island} - {server?.clockTime}
+                      {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
                     </>
                   ) : (
                     <>
