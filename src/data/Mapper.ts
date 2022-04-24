@@ -1,5 +1,5 @@
-import { IslandResponse, ServerGeoDataResponse, WorkshopModResponse } from '../types/ResponseTypes';
-import { Island, ServerGeoData, ServerTimeAcceleration, WorkshopMod } from '../types/Types';
+import { WorkshopModResponse } from '../types/ResponseTypes';
+import { ServerTimeAcceleration, WorkshopMod } from '../types/Types';
 
 export const getServerTimeAcceleration = (acceleration?: string): ServerTimeAcceleration => {
   const splitAcceleration: number[] = acceleration?.split(',').map((acc) => Number(acc)) || [];
@@ -18,11 +18,11 @@ export const mapWorkshopModResponse = (mod: WorkshopModResponse): WorkshopMod =>
   id: mod.publishedfileid,
   name: mod.title,
   banned: mod.banned === 1,
-  appId: mod.consumer_app_id,
+  appId: mod.consumer_appid,
   creatorSteamId: mod.creator,
-  description: mod.description,
+  description: mod.file_description,
   favourited: mod.favorited,
-  fileSize: mod.file_size,
+  fileSize: Number(mod.file_size),
   subscriptions: mod.subscriptions,
   previewURL: mod.preview_url,
   success: mod.result === 1,

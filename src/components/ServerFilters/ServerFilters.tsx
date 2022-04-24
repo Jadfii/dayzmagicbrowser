@@ -1,70 +1,66 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/react';
-import React, { useContext, useEffect, useRef, useState } from 'react';
-import { Server, SelectOption } from '../../types/Types';
+import React, { useEffect, useState } from 'react';
+import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
-interface Props {
-  servers: Server[];
-}
+import { usePrevious } from '../../hooks/usePrevious';
+import useServerFilters from '../../hooks/useServerFilters';
+import CustomSelect from './CustomSelect';
+import ServerModsFilter from './ServerModsFilter';
 
-const ServerFilters: React.FC<Props> = ({ servers }) => {
-  const workerRef = useRef<Worker>();
+const ServerFilters: React.FC = () => {
+  const filters = useServerFilters();
+  const { availableFilters } = useAvailableServerFilters();
 
-  const [availableVersions, setAvailableVersions] = useState<SelectOption[]>([]);
-  const [availableIslands, setAvailableIslands] = useState<SelectOption[]>([]);
-  const [availableMods, setAvailableMods] = useState<SelectOption[]>([]);
-
-  useEffect(() => {
-    workerRef.current = new Worker(new URL('../../workers/makeServerFilters.js', import.meta.url));
-    workerRef.current.onmessage = (e) => {
-      setAvailableVersions(e?.data?.versionsValues || []);
-      setAvailableIslands(e?.data?.islandsValues || []);
-      setAvailableMods(e?.data?.modsValues || []);
-    };
-
-    return () => {
-      workerRef?.current?.terminate();
-    };
-  }, []);
-
-  return <></>;
-
-  /*return (
+  return (
     <>
       <Spacer h={1} />
 
       <Card>
-        <div className="grid grid-cols-4 gap-6 py-4 items-center">
+        <div className="grid grid-cols-4 gap-6 py-4">
           <div>
-            <ServerNameSearch />
+            <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null)} />
           </div>
 
           <div>
-            <Select placeholder="Map" value={serverIsland} onChange={(value) => setServerIsland(value as string)}>
-              {availableIslands.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+            <CustomSelect
+              placeholder="Select map"
+              label="Map"
+              value={filters.island}
+              clearable
+              onChange={(value) => filters.setIsland((value as string) || null)}
+            >
+              <NoneSelectOption />
+              {availableFilters?.islands?.map((option, i) => (
+                <Select.Option key={i} value={String(option.value)}>
+                  {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                 </Select.Option>
               ))}
-            </Select>
+            </CustomSelect>
           </div>
 
           <div>
-            <Select placeholder="Version" value={serverVersion} onChange={(value) => setServerVersion(value as string)}>
-              {availableVersions.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
+            <CustomSelect
+              placeholder="Select version"
+              label="Version"
+              value={filters.version}
+              onChange={(value) => filters.setVersion((value as string) || null)}
+            >
+              <NoneSelectOption />
+              {availableFilters?.versions.map((option, i) => (
+                <Select.Option key={i} value={String(option.value)}>
                   <span>
-                    {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
+                    {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                   </span>
 
                   {option.value && (
                     <>
-                      {isLatestGameVersion(option.value) && (
+                      {option.highlighted && (
                         <>
                           <Spacer w={1 / 3} inline />
                           <Dot type="success" scale={3 / 4}></Dot>
                         </>
                       )}
-                      {isLatestGameVersion(option.value, true) && (
+                      {option.highlightedSecondary && (
                         <>
                           <Spacer w={1 / 3} inline />
                           <Dot className="dot-violet" type="success" scale={3 / 4}></Dot>
@@ -74,61 +70,103 @@ const ServerFilters: React.FC<Props> = ({ servers }) => {
                   )}
                 </Select.Option>
               ))}
-            </Select>
+            </CustomSelect>
           </div>
 
           <div>
-            <Select disabled placeholder="Mods" value={serverMods} onChange={(value) => setServerMods(value as string[])} width="100%" multiple>
-              {availableMods.map((option, i) => (
-                <Select.Option key={i} value={option.value}>
-                  {option.label} {option.occurrences > 0 && <>({option.occurrences})</>}
-                </Select.Option>
-              ))}
-            </Select>
+            <ServerModsFilter
+              availableOptions={availableFilters?.mods?.filter((mod) => mod?.label) || []}
+              selectedMods={filters.mods || []}
+              onAddMod={(modId: string) => filters.setMods((prevMods) => [...new Set([...(prevMods || []), modId])])}
+              onRemoveMod={(modId: string) =>
+                filters.setMods((prevMods) => {
+                  if (prevMods !== null) {
+                    const newMods = prevMods?.filter((m) => m !== modId);
+                    if (newMods.length > 0) return newMods;
+                  }
+
+                  return null;
+                })
+              }
+            />
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isFirstPersonOnly} onChange={(e) => setIsFirstPersonOnly(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={filters.firstPerson} onChange={(e) => filters.setFirstPerson(e.target.checked || null)}>
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isOfficial} onChange={(e) => setIsOfficial(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={filters.official} onChange={(e) => filters.setOfficial(e.target.checked || null)}>
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={isExperimental} onChange={(e) => setIsExperimental(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={filters.experimental} onChange={(e) => filters.setExperimental(e.target.checked || null)}>
               Experimental server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={hasNoQueue} onChange={(e) => setHasNoQueue(e.target.checked)}>
+            <Checkbox scale={4 / 3} checked={filters.hasNoQueue} onChange={(e) => filters.setHasNoQueue(e.target.checked || null)}>
               Has no queue
             </Checkbox>
           </div>
         </div>
       </Card>
     </>
-  );*/
+  );
 };
 
 export default ServerFilters;
 
-const ServerNameSearch: React.FC = () => {
+interface ServerNameSearchProps {
+  disabled?: boolean;
+  value?: string;
+  initialValue?: string;
+  onChange?: (val: string) => void;
+}
+
+const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, initialValue, onChange }) => {
   const [serverNameInput, setServerNameInput] = useState<string>('');
   const debouncedServerNameInput = useDebounce(serverNameInput, 500);
 
+  const previousDebouncedServerNameInput = usePrevious(debouncedServerNameInput);
+
   useEffect(() => {
-    console.log(debouncedServerNameInput);
+    if (typeof previousDebouncedServerNameInput === 'undefined' || previousDebouncedServerNameInput === debouncedServerNameInput) return;
+
+    if (onChange) onChange(debouncedServerNameInput);
   }, [debouncedServerNameInput]);
+
+  useEffect(() => {
+    if (typeof value === 'undefined') return;
+
+    setServerNameInput(value);
+  }, [value]);
 
   return (
     <>
-      <Input placeholder="Server name" clearable value={serverNameInput} onChange={(e) => setServerNameInput(e.target.value)} />
+      <Input
+        placeholder="Search server name"
+        clearable
+        disabled={disabled}
+        initialValue={initialValue}
+        value={serverNameInput}
+        onChange={(e) => setServerNameInput(e.target.value)}
+      >
+        Server name
+      </Input>
+    </>
+  );
+};
+
+const NoneSelectOption: React.FC = () => {
+  return (
+    <>
+      <Select.Option value={''}>None</Select.Option>
     </>
   );
 };

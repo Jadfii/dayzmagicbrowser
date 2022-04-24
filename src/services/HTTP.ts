@@ -1,6 +1,6 @@
 import ky from 'ky-universal';
 
-const config = {};
+const config = { timeout: 5000 };
 
 const instance = ky.create({
   ...config,

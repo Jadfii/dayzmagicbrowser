@@ -91,15 +91,21 @@ export interface HomeServers {
   experimental: Server[];
 }
 
-export interface ServerFilters {
-  name?: string;
-  map?: string;
-  version?: string;
-  limit?: number;
+export interface AvailableServerFilters {
+  islands: SelectOption[];
+  versions: SelectOption[];
+  mods: SelectOption[];
+}
+
+export interface GameVersion {
+  stable: string;
+  exp: string;
 }
 
 export interface SelectOption {
-  label: string;
-  value: string;
-  occurrences: number;
+  label?: string;
+  value: string | number;
+  count: number;
+  highlighted?: boolean;
+  highlightedSecondary?: boolean;
 }

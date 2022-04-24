@@ -8,6 +8,8 @@ const handler = nextConnect();
 handler.use(rateLimit(3));
 
 handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+  res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=60');
+
   try {
     const modIdsQuery = req?.query?.modIds;
 

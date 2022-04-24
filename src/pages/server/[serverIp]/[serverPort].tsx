@@ -1,6 +1,6 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign } from '@geist-ui/react-icons';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import { NextSeo } from 'next-seo';
@@ -9,20 +9,14 @@ import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import { Server, WorkshopMod } from '../../../types/Types';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
-import http from '../../../services/HTTP';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { useRecoilValueLoadable } from 'recoil';
 import { findIslandByTerrainIdState } from '../../../state/islands';
 import { getIslandImageURL } from '../../../constants/links.constant';
-
-interface DayZVersion {
-  stable?: string;
-  exp?: string;
-}
+import { getGameVersion, isMatchingVersion } from '../../../data/Version';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -44,27 +38,20 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const gameVersionRequest = http.get('https://dayzmagiclauncher.com/version').then((response) => response.json());
   const serverModsRequest = server?.modIds?.length ? getWorkshopMods(server?.modIds.map((modId) => String(modId))) : [];
 
-  const [gameVersionRes, serverModsRes] = await Promise.all([gameVersionRequest, serverModsRequest]);
+  const [gameVersionRes, serverModsRes] = await Promise.allSettled([getGameVersion(), serverModsRequest]);
 
   return {
     props: {
       server: serialiseServer(server),
-      workshopMods: serverModsRes,
-      dayzVersion: { stable: gameVersionRes?.version, exp: gameVersionRes?.version_exp },
+      workshopMods: serverModsRes?.status === 'fulfilled' ? serverModsRes?.value || [] : [],
+      dayzVersion: gameVersionRes?.status === 'fulfilled' ? gameVersionRes?.value : { stable: '', exp: '' },
     },
   };
 };
 
-interface Props {
-  server?: Server;
-  workshopMods?: WorkshopMod[];
-  dayzVersion?: DayZVersion;
-}
-
-const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods, dayzVersion }) => {
   const theme = useTheme();
   const serverIsland = useRecoilValueLoadable(findIslandByTerrainIdState(server?.island || ''));
 
@@ -73,9 +60,11 @@ const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
   const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
   const isLatestGameVersion = useMemo(
     () =>
-      (server?.version || '').replace(new RegExp('\\.', 'g'), '') ===
-      ((isExperimental ? dayzVersion?.exp : dayzVersion?.stable) || '').replace(new RegExp('\\.', 'g'), ''),
-    [server?.version, dayzVersion, isExperimental]
+      server?.version &&
+      dayzVersion?.stable &&
+      dayzVersion?.exp &&
+      isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
+    [(server?.version, dayzVersion, isExperimental)]
   );
 
   useEffect(() => {
@@ -165,9 +154,13 @@ const ServerPage: React.FC<Props> = ({ server, workshopMods, dayzVersion }) => {
 
                           <Spacer w={1 / 2} />
 
-                          {isLatestGameVersion && (
+                          {isLatestGameVersion ? (
                             <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
                               <Check color={theme.palette.success} />
+                            </Tooltip>
+                          ) : (
+                            <Tooltip text={`This server is running an outdated version of DayZ${isExperimental ? ' Experimental' : ''}`}>
+                              <AlertTriangle color={theme.palette.warning} />
                             </Tooltip>
                           )}
                         </div>

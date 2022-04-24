@@ -4,12 +4,22 @@ import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import { InferGetStaticPropsType } from 'next';
+import { InferGetServerSidePropsType, GetServerSideProps } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { Server } from '../types/Types';
 import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
+import { useRouter } from 'next/router';
+import { DAYZ_EXP_APPID } from '../constants/game.constant';
+import { sortServersByPlayerCount } from '../utils/server.util';
 
-export const getStaticProps = async () => {
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
+
+  // Get query params
+  const { name, island, version, mods, firstperson, official, experimental, noqueue } = query;
+
+  // Get servers
   const servers = await prisma.server.findMany({
     orderBy: [
       {
@@ -19,19 +29,42 @@ export const getStaticProps = async () => {
         queueCount: 'desc',
       },
     ],
-    take: 200,
+    take: 250,
+    where: {
+      ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
+      ...(typeof island === 'string' ? { island: { contains: island } } : {}),
+      ...(typeof version === 'string' ? { version } : {}),
+      ...(typeof mods === 'string'
+        ? {
+            modIds: {
+              hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
+            },
+          }
+        : {}),
+      ...(typeof firstperson === 'string' ? { isFirstPerson: true } : {}),
+      ...(typeof official === 'string' ? { isPublicHive: true } : {}),
+      ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
+      ...(typeof noqueue === 'string' ? { queueCount: 0 } : {}),
+    },
   });
 
-  const serialisedServers: Server[] = servers.map(serialiseServer);
+  // Serialise servers so they can be passed to component
+  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return {
-    revalidate: 60,
-    props: { servers: serialisedServers },
+    props: {
+      servers: serialisedServers,
+    },
   };
 };
 
-const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ servers }) => {
+const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ servers }) => {
   useRouterRefreshAtInterval(120000);
+  const router = useRouter();
+
+  function resetFilters() {
+    router.push({ query: {} });
+  }
 
   return (
     <>
@@ -43,7 +76,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
         <div>
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <Button onClick={() => console.log('reset filters')} icon={<Delete />} auto>
+              <Button onClick={resetFilters} icon={<Delete />} auto>
                 Reset filters
               </Button>
             </div>
@@ -53,12 +86,12 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
             </Text>
           </div>
 
-          <ServerFilters servers={servers} />
+          <ServerFilters />
         </div>
 
         <Spacer h={1} />
 
-        <ServerList servers={servers} isLoading={false} />
+        <ServerList servers={servers} isLoading={false} onResetFilters={resetFilters} />
       </div>
     </>
   );

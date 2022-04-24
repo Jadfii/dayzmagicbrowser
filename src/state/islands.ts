@@ -1,10 +1,14 @@
 import { atom, selector, selectorFamily } from 'recoil';
 import { Island } from '../types/Types';
+import http from '../services/HTTP';
+
+export const findIsland = (terrainId: string, islands: Island[]): Island | undefined =>
+  islands.find((island) => (terrainId?.toLowerCase() || '').includes(island?.terrainId?.toLowerCase()));
 
 async function getAllIslands(): Promise<Island[]> {
   try {
     if (global.window) {
-      const response = (await fetch('/api/islands').then((response) => response.json())) || [];
+      const response = (await http.get('/api/islands').then((response) => response.json())) || [];
       return response || [];
     } else {
       return [];
@@ -33,9 +37,6 @@ export const findIslandByTerrainIdState = selectorFamily({
   key: 'findIslandByTerrainId',
   get:
     (terrainId: string) =>
-    ({ get }) => {
-      const islands = get(islandListState);
-
-      return islands.find((island) => (terrainId?.toLowerCase() || '').includes(island?.terrainId?.toLowerCase()));
-    },
+    ({ get }) =>
+      findIsland(terrainId, get(islandListState)),
 });
