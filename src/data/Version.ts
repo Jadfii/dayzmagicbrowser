@@ -8,5 +8,4 @@ export const getGameVersion = async (): Promise<GameVersion> =>
     .then((data) => ({ stable: data?.version, exp: data?.version_exp }));
 
 export const isMatchingVersion = (versionOne: string, versionTwo: string): boolean =>
-  versionOne?.replace(new RegExp('.', 'g'), '')?.replace(new RegExp('0', 'g'), '') ===
-  versionTwo?.replace(new RegExp('.', 'g'), '')?.replace(new RegExp('0', 'g'), '');
+  versionOne?.replace(/\./g, '')?.replace(new RegExp('0', 'g'), '') === versionTwo?.replace(/\./g, '')?.replace(new RegExp('0', 'g'), '');
