@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { AutoComplete } from '@geist-ui/react';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
@@ -83,7 +83,8 @@ const ServersSearch: React.FC = () => {
     iconElement.className = rightIconElement.className;
     renderElement.prepend(iconElement);
 
-    ReactDOM.render(<Search />, iconElement);
+    const iconRoot = createRoot(iconElement);
+    iconRoot.render(<Search />);
 
     hasInsertedIcon.current = true;
   }, []);

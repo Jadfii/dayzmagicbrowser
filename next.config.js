@@ -33,7 +33,6 @@ module.exports = withPWA({
     buildExcludes: [/middleware-manifest\.json$/],
   },
   runtime: 'edge',
-  serverComponents: true,
   reactStrictMode: true,
   optimizeFonts: false,
   images: {
