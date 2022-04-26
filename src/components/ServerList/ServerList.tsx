@@ -17,7 +17,7 @@ const ServerList: React.FC<Props> = ({ servers, isLoading, onResetFilters }) => 
     if (onResetFilters) onResetFilters();
   }
 
-  if (servers.length === 0)
+  if (!isLoading && servers.length === 0)
     return (
       <div className="flex flex-col items-center justify-center mt-24">
         <Frown size={48} />

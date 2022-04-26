@@ -1,25 +1,18 @@
 import { Button, Spacer, Text } from '@geist-ui/react';
 import React from 'react';
+import { InferGetStaticPropsType } from 'next';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
-import { InferGetServerSidePropsType, GetServerSideProps } from 'next';
-import prisma, { serialiseServer } from '../lib/prisma';
-import { Server } from '../types/Types';
-import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 import { useRouter } from 'next/router';
-import { DAYZ_EXP_APPID } from '../constants/game.constant';
+import useServers from '../hooks/useServers';
+import useServerFilters from '../hooks/useServerFilters';
+import { Server } from '../types/Types';
+import { serialiseServer } from '../lib/prisma';
 import { sortServersByPlayerCount } from '../utils/server.util';
 
-export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
-
-  // Get query params
-  const { name, island, version, mods, firstperson, official, experimental, noqueue } = query;
-
-  // Get servers
+export const getStaticProps = async () => {
   const servers = await prisma.server.findMany({
     orderBy: [
       {
@@ -30,40 +23,23 @@ export const getServerSideProps: GetServerSideProps = async ({ query, res }) => 
       },
     ],
     take: 250,
-    where: {
-      ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
-      ...(typeof island === 'string' ? { island: { contains: island } } : {}),
-      ...(typeof version === 'string' ? { version } : {}),
-      ...(typeof mods === 'string'
-        ? {
-            modIds: {
-              hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
-            },
-          }
-        : {}),
-      ...(typeof firstperson === 'string' ? { isFirstPerson: true } : {}),
-      ...(typeof official === 'string' ? { isPublicHive: true } : {}),
-      ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
-      ...(typeof noqueue === 'string' ? { queueCount: 0 } : {}),
-    },
-    include: {
-      relatedIsland: true,
-    },
   });
 
-  // Serialise servers so they can be passed to component
   const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return {
+    revalidate: 60,
     props: {
       servers: serialisedServers,
     },
   };
 };
 
-const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ servers }) => {
-  useRouterRefreshAtInterval(120000);
+const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ servers }) => {
   const router = useRouter();
+
+  const filters = useServerFilters();
+  const { serverList, isLoading } = useServers(servers);
 
   function resetFilters() {
     router.push({ query: {} });
@@ -85,16 +61,16 @@ const Servers: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> 
             </div>
 
             <Text p margin={0}>
-              Showing {servers.length} servers
+              Showing {serverList.length} servers
             </Text>
           </div>
 
-          <ServerFilters />
+          <ServerFilters filters={filters} />
         </div>
 
         <Spacer h={1} />
 
-        <ServerList servers={servers} isLoading={false} onResetFilters={resetFilters} />
+        <ServerList servers={serverList} isLoading={isLoading} onResetFilters={resetFilters} />
       </div>
     </>
   );

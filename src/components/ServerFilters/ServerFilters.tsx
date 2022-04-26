@@ -7,8 +7,11 @@ import useServerFilters from '../../hooks/useServerFilters';
 import CustomSelect from './CustomSelect';
 import ServerModsFilter from './ServerModsFilter';
 
-const ServerFilters: React.FC = () => {
-  const filters = useServerFilters();
+interface Props {
+  filters: ReturnType<typeof useServerFilters>;
+}
+
+const ServerFilters: React.FC<Props> = ({ filters }) => {
   const { availableFilters } = useAvailableServerFilters();
 
   return (
