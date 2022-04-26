@@ -1,18 +1,20 @@
 import { InferGetStaticPropsType } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
-import { Button, Divider, Grid, Loading, Text } from '@geist-ui/react';
+import { Button, Divider, Grid, Text } from '@geist-ui/react';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
 import ServerCard from '../components/ServerCard/ServerCard';
-import { HomeServers } from '../types/Types';
+import { HomeServers, Server } from '../types/Types';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
-import { useRouterRefreshAtInterval } from '../hooks/useRouterRefresh';
 import { sortServersByPlayerCount } from '../utils/server.util';
+import useHomeServers from '../hooks/useHomeServers';
+import ServersEmptyState from '../components/ServersEmptyState/ServersEmptyState';
+import { HOME_SECTION_SERVERS_COUNT } from '../constants/layout.constant';
 
 export const getStaticProps = async () => {
   const popularServers = prisma.server.findMany({
-    take: 4,
+    take: HOME_SECTION_SERVERS_COUNT,
     orderBy: [
       {
         playerCount: 'desc',
@@ -30,7 +32,7 @@ export const getStaticProps = async () => {
     where: {
       isPublicHive: true,
     },
-    take: 4,
+    take: HOME_SECTION_SERVERS_COUNT,
     orderBy: [
       {
         playerCount: 'desc',
@@ -48,7 +50,7 @@ export const getStaticProps = async () => {
     where: {
       appId: DAYZ_EXP_APPID,
     },
-    take: 4,
+    take: HOME_SECTION_SERVERS_COUNT,
     orderBy: [
       {
         playerCount: 'desc',
@@ -79,7 +81,7 @@ export const getStaticProps = async () => {
 };
 
 const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeServers }) => {
-  useRouterRefreshAtInterval(120000);
+  const { homeServersList, isLoading } = useHomeServers(homeServers);
 
   return (
     <>
@@ -123,15 +125,7 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
           </Text>
         </div>
 
-        {homeServers?.popular.length > 0 ? (
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {homeServers?.popular.map((server, i) => (
-              <ServerCard server={server} key={i} />
-            ))}
-          </div>
-        ) : (
-          <Loading>Loading servers</Loading>
-        )}
+        <HomeServersSection servers={homeServersList?.popular} isLoading={isLoading} />
       </div>
 
       <Divider />
@@ -146,15 +140,7 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
           </Text>
         </div>
 
-        {homeServers?.official.length > 0 ? (
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {homeServers?.official.map((server, i) => (
-              <ServerCard server={server} key={i} />
-            ))}
-          </div>
-        ) : (
-          <Loading>Loading servers</Loading>
-        )}
+        <HomeServersSection servers={homeServersList?.official} isLoading={isLoading} />
       </div>
 
       <Divider />
@@ -169,18 +155,43 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
           </Text>
         </div>
 
-        {homeServers?.experimental.length > 0 ? (
-          <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-            {homeServers?.experimental.map((server, i) => (
-              <ServerCard server={server} key={i} />
-            ))}
-          </div>
-        ) : (
-          <Loading>Loading servers</Loading>
-        )}
+        <HomeServersSection servers={homeServersList?.experimental} isLoading={isLoading} />
       </div>
     </>
   );
 };
 
 export default Home;
+
+interface SectionProps {
+  servers?: Server[];
+  isLoading?: boolean;
+}
+
+const HomeServersSection: React.FC<SectionProps> = ({ servers = [], isLoading = false }) => {
+  if (isLoading)
+    return (
+      <>
+        {[...Array(HOME_SECTION_SERVERS_COUNT).keys()].map((_, i) => (
+          <ServerCard imageHeight={100} key={i} />
+        ))}
+      </>
+    );
+
+  if (servers.length === 0)
+    return (
+      <>
+        <ServersEmptyState dim />
+      </>
+    );
+
+  return (
+    <>
+      <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
+        {servers.map((server, i) => (
+          <ServerCard server={server} key={i} />
+        ))}
+      </div>
+    </>
+  );
+};

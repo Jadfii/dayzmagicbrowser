@@ -1,12 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import http from '../services/HTTP';
+import { fetcher } from '../data/fetcher';
 import { Server } from '../types/Types';
-
-async function fetcher<JSON = any>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-  return await http(input, init).then((res) => res.json());
-}
 
 export default function useServers(initialData?: Server[]): {
   serverList: Server[];
@@ -19,6 +15,7 @@ export default function useServers(initialData?: Server[]): {
   const { data, error } = useSWR<Server[]>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
     ...(initialData ? { fallbackData: initialData } : {}),
     isPaused: () => !router?.isReady,
+    refreshInterval: 120000,
   });
 
   useEffect(() => {
