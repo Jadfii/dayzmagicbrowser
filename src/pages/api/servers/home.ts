@@ -12,6 +12,9 @@ const handler = nextConnect();
 handler.use(rateLimit());
 
 handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
+
   const popularServers = prisma.server.findMany({
     take: HOME_SECTION_SERVERS_COUNT,
     orderBy: [
