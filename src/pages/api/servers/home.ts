@@ -71,11 +71,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     experimental: sortServersByPlayerCount(experimental.map(serialiseServer)),
   };
 
-  return res.status(200).json({
-    popular: [],
-    official: [],
-    experimental: [],
-  });
+  return res.status(200).json(homeServers);
 });
 
 export default handler;
