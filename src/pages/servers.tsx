@@ -23,6 +23,9 @@ export const getStaticProps = async () => {
       },
     ],
     take: 250,
+    include: {
+      relatedIsland: true,
+    },
   });
 
   const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
