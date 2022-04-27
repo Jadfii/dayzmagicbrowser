@@ -1,6 +1,8 @@
 import http from '../services/HTTP';
 import { GameVersion } from '../types/Types';
 
+export const EMPTY_GAME_VERSION: GameVersion = { stable: '', exp: '' };
+
 export const getGameVersion = async (): Promise<GameVersion> =>
   await http
     .get('https://dayzmagiclauncher.com/version')

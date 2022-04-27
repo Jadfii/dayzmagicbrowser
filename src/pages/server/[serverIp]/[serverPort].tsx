@@ -14,9 +14,11 @@ import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { getIslandImageURL } from '../../../constants/links.constant';
-import { getGameVersion, isMatchingVersion } from '../../../data/Version';
+import { isMatchingVersion } from '../../../data/Version';
+import { WorkshopMod } from '../../../types/Types';
+import useDayzVersion from '../../../hooks/useDayzVersion';
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
     return {
       notFound: true,
@@ -39,32 +41,41 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     };
   }
 
-  const serverModsRequest = server?.modIds?.length ? getWorkshopMods(server?.modIds.map((modId) => String(modId))) : [];
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
 
-  const [gameVersionRes, serverModsRes] = await Promise.allSettled([getGameVersion(), serverModsRequest]);
+  let workshopMods: WorkshopMod[] = [];
+
+  if (server?.modIds?.length > 0) {
+    try {
+      workshopMods = await getWorkshopMods(server?.modIds.map((modId) => String(modId)));
+    } catch (err) {
+      console.error(err);
+    }
+  }
 
   return {
     props: {
       server: serialiseServer(server),
-      workshopMods: serverModsRes?.status === 'fulfilled' ? serverModsRes?.value || [] : [],
-      dayzVersion: gameVersionRes?.status === 'fulfilled' ? gameVersionRes?.value : { stable: '', exp: '' },
+      workshopMods,
     },
   };
 };
 
-const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods, dayzVersion }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods }) => {
   const theme = useTheme();
+  const { dayzVersion } = useDayzVersion();
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
-  const isExperimental = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
-  const isLatestGameVersion = useMemo(
+  const isExperimental: boolean = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
+  const isLatestGameVersion: boolean = useMemo(
     () =>
       server?.version &&
       dayzVersion?.stable &&
       dayzVersion?.exp &&
       isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
-    [(server?.version, dayzVersion, isExperimental)]
+    [server?.version, dayzVersion, isExperimental]
   );
 
   useEffect(() => {
@@ -154,15 +165,19 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
 
                           <Spacer w={1 / 2} />
 
-                          {isLatestGameVersion ? (
-                            <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
-                              <Check color={theme.palette.success} />
-                            </Tooltip>
-                          ) : (
-                            <Tooltip text={`This server is running an outdated version of DayZ${isExperimental ? ' Experimental' : ''}`}>
-                              <AlertTriangle color={theme.palette.warning} />
-                            </Tooltip>
-                          )}
+                          {dayzVersion?.stable ? (
+                            <>
+                              {isLatestGameVersion ? (
+                                <Tooltip text={`This server is running the latest version of DayZ${isExperimental ? ' Experimental' : ''}`}>
+                                  <Check color={theme.palette.success} />
+                                </Tooltip>
+                              ) : (
+                                <Tooltip text={`This server is running an outdated version of DayZ${isExperimental ? ' Experimental' : ''}`}>
+                                  <AlertTriangle color={theme.palette.warning} />
+                                </Tooltip>
+                              )}
+                            </>
+                          ) : null}
                         </div>
                       }
                     />
