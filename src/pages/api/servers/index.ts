@@ -30,7 +30,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     take: 250,
     where: {
       ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
-      ...(typeof island === 'string' ? { island: { contains: island } } : {}),
+      ...(typeof island === 'string' ? { island: { contains: island, mode: 'insensitive' } } : {}),
       ...(typeof version === 'string' ? { version } : {}),
       ...(typeof mods === 'string'
         ? {
