@@ -1,8 +1,8 @@
-import { GetServerSideProps } from 'next';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Text } from '@geist-ui/react';
 import React, { useEffect } from 'react';
-import { Server } from '../../../types/Types';
+import { generateServerParams, openDayzGame } from '../../../services/Steam';
 
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -16,6 +16,9 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       ipAddress: String(params?.serverIp),
       gamePort: Number(params?.serverPort),
     },
+    include: {
+      relatedIsland: true,
+    },
   });
 
   if (!server?.ipAddress) {
@@ -25,17 +28,17 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 
   return {
-    props: { server: serialiseServer(server) },
+    props: {
+      server: serialiseServer(server),
+    },
   };
 };
 
-interface Props {
-  server?: Server;
-}
-
-const PlayServer: React.FC<Props> = ({ server }) => {
+const PlayServer: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server }) => {
   useEffect(() => {
     if (!server?.name) return;
+
+    openDayzGame(server.appId, generateServerParams(server));
   }, [server]);
 
   return (
