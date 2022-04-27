@@ -28,7 +28,7 @@ export const getStaticProps = async () => {
   const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return {
-    revalidate: 60,
+    revalidate: 600,
     props: {
       servers: serialisedServers,
     },

@@ -73,7 +73,7 @@ export const getStaticProps = async () => {
   };
 
   return {
-    revalidate: 60,
+    revalidate: 600,
     props: {
       homeServers,
     },
