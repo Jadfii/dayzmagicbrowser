@@ -7,6 +7,11 @@ import useServerFilters from '../../hooks/useServerFilters';
 import CustomSelect from './CustomSelect';
 import ServerModsFilter from './ServerModsFilter';
 
+const GLOBAL_SETSTATE_OPTIONS = {
+  scroll: false,
+  shallow: true,
+};
+
 interface Props {
   filters: ReturnType<typeof useServerFilters>;
 }
@@ -21,7 +26,7 @@ const ServerFilters: React.FC<Props> = ({ filters }) => {
       <Card>
         <div className="grid grid-cols-4 gap-6 py-4">
           <div>
-            <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null)} />
+            <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null, GLOBAL_SETSTATE_OPTIONS)} />
           </div>
 
           <div>
@@ -30,7 +35,7 @@ const ServerFilters: React.FC<Props> = ({ filters }) => {
               label="Map"
               value={filters.island}
               clearable
-              onChange={(value) => filters.setIsland((value as string) || null)}
+              onChange={(value) => filters.setIsland((value as string) || null, GLOBAL_SETSTATE_OPTIONS)}
             >
               <NoneSelectOption />
               {availableFilters?.islands?.map((option, i) => (
@@ -46,7 +51,7 @@ const ServerFilters: React.FC<Props> = ({ filters }) => {
               placeholder="Select version"
               label="Version"
               value={filters.version}
-              onChange={(value) => filters.setVersion((value as string) || null)}
+              onChange={(value) => filters.setVersion((value as string) || null, GLOBAL_SETSTATE_OPTIONS)}
             >
               <NoneSelectOption />
               {availableFilters?.versions.map((option, i) => (
@@ -80,7 +85,7 @@ const ServerFilters: React.FC<Props> = ({ filters }) => {
             <ServerModsFilter
               availableOptions={availableFilters?.mods?.filter((mod) => mod?.label) || []}
               selectedMods={filters.mods || []}
-              onAddMod={(modId: string) => filters.setMods((prevMods) => [...new Set([...(prevMods || []), modId])])}
+              onAddMod={(modId: string) => filters.setMods((prevMods) => [...new Set([...(prevMods || []), modId])], GLOBAL_SETSTATE_OPTIONS)}
               onRemoveMod={(modId: string) =>
                 filters.setMods((prevMods) => {
                   if (prevMods !== null) {
@@ -89,31 +94,47 @@ const ServerFilters: React.FC<Props> = ({ filters }) => {
                   }
 
                   return null;
-                })
+                }, GLOBAL_SETSTATE_OPTIONS)
               }
             />
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={filters.firstPerson} onChange={(e) => filters.setFirstPerson(e.target.checked || null)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={filters.firstPerson}
+              onChange={(e) => filters.setFirstPerson(e.target.checked || null, GLOBAL_SETSTATE_OPTIONS)}
+            >
               First person only
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={filters.official} onChange={(e) => filters.setOfficial(e.target.checked || null)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={filters.official}
+              onChange={(e) => filters.setOfficial(e.target.checked || null, GLOBAL_SETSTATE_OPTIONS)}
+            >
               Official server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={filters.experimental} onChange={(e) => filters.setExperimental(e.target.checked || null)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={filters.experimental}
+              onChange={(e) => filters.setExperimental(e.target.checked || null, GLOBAL_SETSTATE_OPTIONS)}
+            >
               Experimental server
             </Checkbox>
           </div>
 
           <div>
-            <Checkbox scale={4 / 3} checked={filters.hasNoQueue} onChange={(e) => filters.setHasNoQueue(e.target.checked || null)}>
+            <Checkbox
+              scale={4 / 3}
+              checked={filters.hasNoQueue}
+              onChange={(e) => filters.setHasNoQueue(e.target.checked || null, GLOBAL_SETSTATE_OPTIONS)}
+            >
               Has no queue
             </Checkbox>
           </div>
