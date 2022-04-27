@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import useServers from '../hooks/useServers';
 import useServerFilters from '../hooks/useServerFilters';
 import { Server } from '../types/Types';
-import { serialiseServer } from '../lib/prisma';
+import prisma, { serialiseServer } from '../lib/prisma';
 import { sortServersByPlayerCount } from '../utils/server.util';
 
 export const getStaticProps = async () => {

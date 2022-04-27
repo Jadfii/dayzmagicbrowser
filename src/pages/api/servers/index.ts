@@ -1,7 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Server } from '../../../types/Types';
-
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
