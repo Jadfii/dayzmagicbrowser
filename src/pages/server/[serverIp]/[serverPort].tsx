@@ -12,11 +12,10 @@ import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
 import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFeatureBadge';
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
-import { getWorkshopMods } from '../../../data/SteamApi';
 import { getIslandImageURL } from '../../../constants/links.constant';
 import { isMatchingVersion } from '../../../data/Version';
-import { WorkshopMod } from '../../../types/Types';
 import useDayzVersion from '../../../hooks/useDayzVersion';
+import useWorkshopMods from '../../../hooks/useWorkshopMods';
 
 export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -44,27 +43,17 @@ export const getServerSideProps: GetServerSideProps = async ({ res, params }) =>
   // Caching
   res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
 
-  let workshopMods: WorkshopMod[] = [];
-
-  if (server?.modIds?.length > 0) {
-    try {
-      workshopMods = await getWorkshopMods(server?.modIds.map((modId) => String(modId)));
-    } catch (err) {
-      console.error(err);
-    }
-  }
-
   return {
     props: {
       server: serialiseServer(server),
-      workshopMods,
     },
   };
 };
 
-const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server, workshopMods }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server }) => {
   const theme = useTheme();
   const { dayzVersion } = useDayzVersion();
+  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds);
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
@@ -186,7 +175,7 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                   </div>
                 </div>
 
-                <div className="flex flex-auto w-3/12">{workshopMods && <ServerModList mods={workshopMods} />}</div>
+                <div className="flex flex-auto w-3/12">{workshopMods && <ServerModList mods={workshopMods} isLoading={isLoadingMods} />}</div>
               </div>
             </div>
           </div>
