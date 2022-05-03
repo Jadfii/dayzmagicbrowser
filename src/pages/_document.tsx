@@ -21,10 +21,6 @@ class AppDocument extends Document {
     return (
       <Html lang="en">
         <Head>
-          <link rel="preload" href="/api/servers" as="fetch" crossOrigin="anonymous" />
-          <link rel="preload" href="/api/servers/home" as="fetch" crossOrigin="anonymous" />
-          <link rel="preload" href="/api/filters" as="fetch" crossOrigin="anonymous" />
-
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
           <link href="https://fonts.googleapis.com/css2?family=Inter&display=swap" rel="stylesheet" />
