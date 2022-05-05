@@ -1,4 +1,4 @@
-import { AutoComplete, Spacer, Tag } from '@geist-ui/react';
+import { AutoComplete, Spacer, Tag } from '@geist-ui/core';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useDebounce from '../../hooks/useDebounce';
 import { SelectOption, WorkshopMod } from '../../types/Types';

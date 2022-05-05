@@ -1,4 +1,4 @@
-import { Divider, Spacer, Tag, useTheme } from '@geist-ui/react';
+import { Divider, Spacer, Tag, useTheme } from '@geist-ui/core';
 import React from 'react';
 import Link from 'next/link';
 import Logo from '../Logo/Logo';

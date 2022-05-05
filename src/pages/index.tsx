@@ -1,6 +1,6 @@
 import { InferGetStaticPropsType } from 'next';
 import prisma, { serialiseServer } from '../lib/prisma';
-import { Button, Divider, Grid, Text } from '@geist-ui/react';
+import { Button, Divider, Grid, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';

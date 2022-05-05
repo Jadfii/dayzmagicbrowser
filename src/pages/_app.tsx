@@ -1,5 +1,5 @@
 import React from 'react';
-import { GeistProvider, CssBaseline } from '@geist-ui/react';
+import { GeistProvider, CssBaseline } from '@geist-ui/core';
 import 'tailwindcss/tailwind.css';
 import '../styles/globals.scss';
 import AppLayout from '../components/AppLayout/AppLayout';

@@ -1,4 +1,4 @@
-import { Card, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Card, Spacer, Text, Tooltip } from '@geist-ui/core';
 import { Clock, Moon, Sun } from '@geist-ui/react-icons';
 import React from 'react';
 import { Server } from '../../types/Types';

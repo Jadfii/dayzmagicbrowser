@@ -1,4 +1,4 @@
-import { Badge, Spacer } from '@geist-ui/react';
+import { Badge, Spacer } from '@geist-ui/core';
 import { BadgeTypes } from '@geist-ui/react/dist/badge/badge';
 import React from 'react';
 

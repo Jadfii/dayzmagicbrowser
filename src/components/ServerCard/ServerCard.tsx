@@ -1,13 +1,13 @@
-import { Badge, Button, Card, Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Badge, Button, Card, Spacer, Text, Tooltip } from '@geist-ui/core';
 import { Lock, Play } from '@geist-ui/react-icons';
 import React from 'react';
 import { Server } from '../../types/Types';
 import Image from '../Image/Image';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import PlayerCount from '../PlayerCount/PlayerCount';
 import Skeleton from '../Skeleton/Skeleton';
 import { getIslandImageURL } from '../../constants/links.constant';
+import useConnectServer from '../../hooks/useConnectServer';
 
 interface Props {
   server?: Server;
@@ -15,14 +15,14 @@ interface Props {
 }
 
 const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
-  const router = useRouter();
+  const { connectToServer } = useConnectServer(server);
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
     e.preventDefault();
     e.stopPropagation();
     if (!server?.ipAddress) return;
 
-    router.push(`/play/${server.ipAddress}/${server.gamePort}`);
+    connectToServer();
   }
 
   return (

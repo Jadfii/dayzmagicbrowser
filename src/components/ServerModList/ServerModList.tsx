@@ -1,4 +1,4 @@
-import { Card, Loading, Text } from '@geist-ui/react';
+import { Card, Loading, Text } from '@geist-ui/core';
 import React from 'react';
 import { WorkshopMod } from '../../types/Types';
 import ModCard from './ModCard';

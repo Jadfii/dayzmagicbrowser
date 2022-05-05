@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { AutoComplete } from '@geist-ui/react';
+import { AutoComplete } from '@geist-ui/core';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';

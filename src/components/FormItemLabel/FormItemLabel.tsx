@@ -1,4 +1,4 @@
-import { Text, useTheme } from '@geist-ui/react';
+import { Text, useTheme } from '@geist-ui/core';
 import { PropsWithChildren } from 'react';
 
 interface Props extends PropsWithChildren<unknown> {

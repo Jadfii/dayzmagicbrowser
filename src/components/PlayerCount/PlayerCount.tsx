@@ -1,5 +1,5 @@
 import React from 'react';
-import { Spacer, Text, Tooltip } from '@geist-ui/react';
+import { Spacer, Text, Tooltip } from '@geist-ui/core';
 import { Server } from '../../types/Types';
 
 interface Props {

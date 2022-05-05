@@ -1,4 +1,4 @@
-import { Link, Spacer, Text, useTheme } from '@geist-ui/react';
+import { Link, Spacer, Text, useTheme } from '@geist-ui/core';
 import React from 'react';
 import Logo from '../Logo/Logo';
 

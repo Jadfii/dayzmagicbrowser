@@ -1,4 +1,4 @@
-import { Button, Spacer, Text } from '@geist-ui/react';
+import { Button, Spacer, Text } from '@geist-ui/core';
 import React from 'react';
 import { InferGetStaticPropsType } from 'next';
 import ServerList from '../components/ServerList/ServerList';

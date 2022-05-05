@@ -1,4 +1,4 @@
-import { Select, SelectProps } from '@geist-ui/react';
+import { Select, SelectProps } from '@geist-ui/core';
 import FormItemLabel from '../FormItemLabel/FormItemLabel';
 
 interface CustomSelectProps extends SelectProps {

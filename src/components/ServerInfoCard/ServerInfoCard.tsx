@@ -1,4 +1,4 @@
-import { Card, Spacer, Tooltip } from '@geist-ui/react';
+import { Card, Spacer, Tooltip } from '@geist-ui/core';
 import React from 'react';
 
 interface Props extends React.HTMLProps<HTMLDivElement> {

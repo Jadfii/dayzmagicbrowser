@@ -1,5 +1,5 @@
 import React, { PropsWithChildren } from 'react';
-import { useTheme } from '@geist-ui/react';
+import { useTheme } from '@geist-ui/core';
 import Masthead from '../Masthead/Masthead';
 import Footer from '../Footer/Footer';
 

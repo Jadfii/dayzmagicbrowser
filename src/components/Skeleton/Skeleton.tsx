@@ -1,4 +1,4 @@
-import { useTheme } from '@geist-ui/react';
+import { useTheme } from '@geist-ui/core';
 import React, { useMemo } from 'react';
 
 interface Props {

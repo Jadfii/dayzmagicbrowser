@@ -1,4 +1,4 @@
-import { Grid, Spacer, Text, useTheme } from '@geist-ui/react';
+import { Grid, Spacer, Text, useTheme } from '@geist-ui/core';
 import { Lock, Map, Users } from '@geist-ui/react-icons';
 import React from 'react';
 import { Server } from '../../types/Types';

@@ -1,8 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
-import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/react';
+import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
 import { NextSeo } from 'next-seo';
 import prisma, { serialiseServer } from '../../../lib/prisma';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
@@ -16,6 +15,7 @@ import { getIslandImageURL } from '../../../constants/links.constant';
 import { isMatchingVersion } from '../../../data/Version';
 import useDayzVersion from '../../../hooks/useDayzVersion';
 import useWorkshopMods from '../../../hooks/useWorkshopMods';
+import useConnectServer from '../../../hooks/useConnectServer';
 
 export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -52,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, params }) =>
 
 const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server }) => {
   const theme = useTheme();
+  const { connectToServer } = useConnectServer(server);
   const { dayzVersion } = useDayzVersion();
   const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds);
 
@@ -66,6 +67,10 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
       isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
     [server?.version, dayzVersion, isExperimental]
   );
+
+  function onPlayClick() {
+    connectToServer();
+  }
 
   useEffect(() => {
     if (!server?.ipAddress) {
@@ -115,13 +120,9 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
           <div className="relative flex flex-auto py-8">
             <div className="flex flex-col flex-auto">
               <div className="flex items-start">
-                <Link href={`/play/${server.ipAddress}/${server.gamePort}`}>
-                  <a>
-                    <Button type="success-light" icon={<Play />} scale={4 / 3}>
-                      Play
-                    </Button>
-                  </a>
-                </Link>
+                <Button onClick={onPlayClick} type="success-light" icon={<Play />} scale={4 / 3}>
+                  Play
+                </Button>
               </div>
 
               <Spacer h={1} />

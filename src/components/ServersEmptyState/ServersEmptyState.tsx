@@ -1,4 +1,4 @@
-import { Button, Text, useTheme } from '@geist-ui/react';
+import { Button, Text, useTheme } from '@geist-ui/core';
 import { Frown } from '@geist-ui/react-icons';
 import React from 'react';
 

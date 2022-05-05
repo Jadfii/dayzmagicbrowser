@@ -1,4 +1,4 @@
-import { Text } from '@geist-ui/react';
+import { Text } from '@geist-ui/core';
 
 const Offline: React.FC = () => {
   return (

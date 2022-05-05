@@ -23,3 +23,15 @@ export const openDayzGame = (appId: number, params: string[]): boolean => {
 
 export const generateConnectParam = (ip: string, port: number) => `+connect ${ip}:${port}`;
 export const generateServerParams = (server: Server): string[] => [generateConnectParam(server.ipAddress, server.gamePort)];
+export const getSteamConnectURI = (ip: string, port: number) => `steam://connect/${ip}:${port}`;
+export const openSteamConnect = (ip: string, port: number) => {
+  const connectURI = getSteamConnectURI(ip, port);
+
+  try {
+    window.location.assign(connectURI);
+    return true;
+  } catch (err) {
+    console.error(err);
+    return false;
+  }
+};

@@ -1,4 +1,4 @@
-import { Card, Spacer, Tag, Text } from '@geist-ui/react';
+import { Card, Spacer, Tag, Text } from '@geist-ui/core';
 import { ArrowRight } from '@geist-ui/react-icons';
 import prettyBytes from 'pretty-bytes';
 import React from 'react';
