@@ -16,8 +16,9 @@ import { isMatchingVersion } from '../../../data/Version';
 import useDayzVersion from '../../../hooks/useDayzVersion';
 import useWorkshopMods from '../../../hooks/useWorkshopMods';
 import useConnectServer from '../../../hooks/useConnectServer';
+import { Server } from '../../../types/Types';
 
-export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
+export const getServerSideProps: GetServerSideProps<{ server: Server }> = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
     return {
       notFound: true,
@@ -54,16 +55,16 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
   const theme = useTheme();
   const { connectToServer } = useConnectServer(server);
   const { dayzVersion } = useDayzVersion();
-  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds);
+  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String));
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
   const isExperimental: boolean = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
   const isLatestGameVersion: boolean = useMemo(
     () =>
-      server?.version &&
-      dayzVersion?.stable &&
-      dayzVersion?.exp &&
+      !!server?.version &&
+      !!dayzVersion?.stable &&
+      !!dayzVersion?.exp &&
       isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
     [server?.version, dayzVersion, isExperimental]
   );
