@@ -50,7 +50,7 @@
     "eslint-plugin-react-hooks": "^4.5.0",
     "postcss": "^8.4.13",
     "prettier": "^2.6.2",
-    "prettier-plugin-prisma": "^3.13.0",
+    "prettier-plugin-prisma": "^3.14.0",
     "prisma": "^3.13.0",
     "sass": "^1.51.0",
     "styled-jsx-plugin-postcss": "^4.0.1",
