@@ -4,13 +4,12 @@ import { Button, Divider, Grid, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
-import ServerCard from '../components/ServerCard/ServerCard';
-import { HomeServers, Server } from '../types/Types';
+import { HomeServers } from '../types/Types';
 import { DAYZ_EXP_APPID } from '../constants/game.constant';
 import { sortServersByPlayerCount } from '../utils/server.util';
 import useHomeServers from '../hooks/useHomeServers';
-import ServersEmptyState from '../components/ServersEmptyState/ServersEmptyState';
 import { HOME_SECTION_SERVERS_COUNT } from '../constants/layout.constant';
+import HomeServersSection from '../components/HomeServers/HomeServersSection';
 
 export const getStaticProps = async () => {
   const popularServers = prisma.server.findMany({
@@ -115,83 +114,32 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
 
       <Divider my={0} />
 
-      <div className="relative flex-auto py-10">
-        <div>
-          <Text h3 margin={0}>
-            Popular servers
-          </Text>
-          <Text p type="secondary" className="mb-4 mt-0">
-            What people are playing at the moment
-          </Text>
-        </div>
-
-        <HomeServersSection servers={homeServersList?.popular} isLoading={isLoading} />
-      </div>
+      <HomeServersSection
+        title="Popular servers"
+        description="What people are playing at the moment"
+        servers={homeServersList?.popular}
+        isLoading={isLoading}
+      />
 
       <Divider />
 
-      <div className="relative flex-auto py-10">
-        <div>
-          <Text h3 margin={0}>
-            Official servers
-          </Text>
-          <Text p type="secondary" className="mb-4 mt-0">
-            The most popular official servers
-          </Text>
-        </div>
-
-        <HomeServersSection servers={homeServersList?.official} isLoading={isLoading} />
-      </div>
+      <HomeServersSection
+        title="Official servers"
+        description="The most popular official servers"
+        servers={homeServersList?.official}
+        isLoading={isLoading}
+      />
 
       <Divider />
 
-      <div className="relative flex-auto py-10">
-        <div>
-          <Text h3 margin={0}>
-            Experimental servers
-          </Text>
-          <Text p type="secondary" className="mb-4 mt-0">
-            The most popular experimental branch servers
-          </Text>
-        </div>
-
-        <HomeServersSection servers={homeServersList?.experimental} isLoading={isLoading} />
-      </div>
+      <HomeServersSection
+        title="Experimental servers"
+        description="The most popular experimental branch servers"
+        servers={homeServersList?.experimental}
+        isLoading={isLoading}
+      />
     </>
   );
 };
 
 export default Home;
-
-interface SectionProps {
-  servers?: Server[];
-  isLoading?: boolean;
-}
-
-const HomeServersSection: React.FC<SectionProps> = ({ servers = [], isLoading = false }) => {
-  if (isLoading)
-    return (
-      <>
-        {[...Array(HOME_SECTION_SERVERS_COUNT).keys()].map((_, i) => (
-          <ServerCard imageHeight={100} key={i} />
-        ))}
-      </>
-    );
-
-  if (servers.length === 0)
-    return (
-      <>
-        <ServersEmptyState dim />
-      </>
-    );
-
-  return (
-    <>
-      <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 grid-flow-row gap-6">
-        {servers.map((server, i) => (
-          <ServerCard server={server} key={i} />
-        ))}
-      </div>
-    </>
-  );
-};
