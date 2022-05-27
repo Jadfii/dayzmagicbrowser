@@ -5,6 +5,7 @@ import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
 import { sortServersByPlayerCount } from '../../../utils/server.util';
+import { SERVERS_PAGE_SERVERS_COUNT } from '../../../constants/layout.constant';
 
 const handler = nextConnect();
 
@@ -27,7 +28,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
         queueCount: 'desc',
       },
     ],
-    take: 250,
+    take: SERVERS_PAGE_SERVERS_COUNT,
     where: {
       ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
       ...(typeof island === 'string' ? { island: { contains: island, mode: 'insensitive' } } : {}),

@@ -11,6 +11,7 @@ import useServerFilters from '../hooks/useServerFilters';
 import { Server } from '../types/Types';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { sortServersByPlayerCount } from '../utils/server.util';
+import { SERVERS_PAGE_SERVERS_COUNT } from '../constants/layout.constant';
 
 export const getStaticProps = async () => {
   const servers = await prisma.server.findMany({
@@ -22,7 +23,7 @@ export const getStaticProps = async () => {
         queueCount: 'desc',
       },
     ],
-    take: 250,
+    take: SERVERS_PAGE_SERVERS_COUNT,
     include: {
       relatedIsland: true,
     },
