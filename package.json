@@ -38,7 +38,7 @@
     "@styled-jsx/plugin-sass": "^4.0.2",
     "@types/lambda-rate-limiter": "^3.0.0",
     "@types/react": "^18.0.8",
-    "@types/react-dom": "^18.0.3",
+    "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "autoprefixer": "^10.4.7",
