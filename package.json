@@ -37,7 +37,7 @@
     "@next/eslint-plugin-next": "^12.1.6",
     "@styled-jsx/plugin-sass": "^4.0.2",
     "@types/lambda-rate-limiter": "^3.0.0",
-    "@types/react": "^18.0.9",
+    "@types/react": "^18.0.12",
     "@types/react-dom": "^18.0.5",
     "@typescript-eslint/eslint-plugin": "^5.26.0",
     "@typescript-eslint/parser": "^5.26.0",
