@@ -17,7 +17,7 @@
   "dependencies": {
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/react-icons": "^1.0.1",
-    "@prisma/client": "^3.14.0",
+    "@prisma/client": "^3.15.1",
     "dayjs": "^1.11.2",
     "ky": "^0.30.0",
     "ky-universal": "^0.10.1",
