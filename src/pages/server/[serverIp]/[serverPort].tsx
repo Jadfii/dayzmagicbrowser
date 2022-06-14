@@ -17,8 +17,9 @@ import useDayzVersion from '../../../hooks/useDayzVersion';
 import useWorkshopMods from '../../../hooks/useWorkshopMods';
 import useConnectServer from '../../../hooks/useConnectServer';
 import { Server } from '../../../types/Types';
+import useCurrentServer from '../../../hooks/useCurrentServer';
 
-export const getServerSideProps: GetServerSideProps<{ server: Server }> = async ({ res, params }) => {
+export const getServerSideProps: GetServerSideProps<{ initialServer: Server }> = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
     return {
       notFound: true,
@@ -46,16 +47,17 @@ export const getServerSideProps: GetServerSideProps<{ server: Server }> = async 
 
   return {
     props: {
-      server: serialiseServer(server),
+      initialServer: serialiseServer(server),
     },
   };
 };
 
-const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ server }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ initialServer }) => {
   const theme = useTheme();
+  const { server } = useCurrentServer(initialServer);
   const { connectToServer } = useConnectServer(server);
   const { dayzVersion } = useDayzVersion();
-  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String));
+  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 
