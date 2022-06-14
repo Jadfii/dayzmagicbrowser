@@ -18,7 +18,7 @@
     "@geist-ui/core": "^2.3.8",
     "@geist-ui/react-icons": "^1.0.1",
     "@prisma/client": "^3.14.0",
-    "dayjs": "^1.11.2",
+    "dayjs": "^1.11.3",
     "ky": "^0.30.0",
     "ky-universal": "^0.10.1",
     "lambda-rate-limiter": "^3.0.1",
