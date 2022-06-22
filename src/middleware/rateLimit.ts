@@ -13,12 +13,18 @@ const rateLimit =
       return res.status(500).json({ error: { message: 'Unable to get client IP Address.' } });
     }
 
+    if (!req?.url) return res.status(500).json({ error: { message: 'Unable to rate limit token.' } });
+
+    const parsedURL = new URL(req.url, `http://${req.headers.host}`);
+
+    const token = `${clientIp}-${parsedURL?.pathname}`;
+
     try {
-      await limiter.check(limitPerTenSeconds, clientIp);
+      await limiter.check(limitPerTenSeconds, token);
 
       return next();
     } catch (err: unknown) {
-      return res.status(429).json({ error: { message: 'Rate limited', token: clientIp } });
+      return res.status(429).json({ error: { message: 'Rate limited', token: token } });
     }
   };
 
