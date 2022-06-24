@@ -3,17 +3,20 @@ import prisma, { serialiseServer } from '../../../lib/prisma';
 import { Server } from '../../../types/Types';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
+import validation, { Joi } from '../../../middleware/validation';
 
 const MAX_SEARCH_RESULTS = 30;
+
+const querySchema = Joi.object({
+  name: Joi.string().required(),
+});
 
 const handler = nextConnect();
 
 handler.use(rateLimit());
 
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
   let searchTerm = req?.query?.name;
-
-  if (!searchTerm) return res.status(400).json({ error: 'No search term provided.' });
 
   if (Array.isArray(searchTerm)) searchTerm = searchTerm?.[0];
   // Trim and replace whitespace with underscores

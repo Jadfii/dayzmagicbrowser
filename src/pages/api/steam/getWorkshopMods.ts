@@ -2,18 +2,21 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
+import validation, { Joi } from '../../../middleware/validation';
+
+const querySchema = Joi.object({
+  modIds: Joi.stringArray(),
+});
 
 const handler = nextConnect();
 
 handler.use(rateLimit(3));
 
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=60');
 
   try {
-    const modIdsQuery = req?.query?.modIds;
-
-    if (!modIdsQuery || typeof modIdsQuery !== 'string') return res.status(400).json({ error: 'Invalid mod IDs provided' });
+    const modIdsQuery = req?.query?.modIds as string;
 
     const fileIds: string[] = modIdsQuery.split(',');
     const modsResult = await getWorkshopMods(fileIds);
