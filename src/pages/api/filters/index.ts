@@ -4,10 +4,16 @@ import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { findIsland } from '../../../utils/server.util';
+import nextConnect from 'next-connect';
+import rateLimit from '../../../middleware/rateLimit';
 
 const INITIAL_MOD_COUNT = 50;
 
-const handler = async (req: NextApiRequest, res: NextApiResponse) => {
+const handler = nextConnect();
+
+handler.use(rateLimit());
+
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   // Caching
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
 
@@ -39,42 +45,22 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   // Get all available mod Ids
-  const allModIds = await prisma.server.groupBy({
-    by: ['modIds'],
-    orderBy: {
-      modIds: 'desc',
-    },
-  });
-
-  // Group and sort by occurence
-  let mappedGroupedMods = allModIds
-    .flatMap((m) => m.modIds)
-    .reduce<SelectOption[]>((acc, curr) => {
-      const currentModId = Number(curr);
-      const foundIdx = acc.findIndex((mod) => mod.value === currentModId);
-
-      if (foundIdx === -1) {
-        acc.push({ value: currentModId, count: 1 });
-      } else {
-        acc[foundIdx].count += 1;
-      }
-
-      return acc;
-    }, [])
-    .sort((a, b) => b.count - a.count);
+  const allModIds = await prisma.$queryRaw<
+    { count: number; modId: number }[]
+  >`SELECT COUNT(*) AS "count", "modId" FROM "Server" AS s CROSS JOIN LATERAL UNNEST(s."modIds") AS modIds("modId") GROUP BY "modId" ORDER BY 1 DESC LIMIT ${INITIAL_MOD_COUNT};`;
 
   // Run queries
   const [islands, groupedIslands, groupedVersions, enrichedGroupedMods, gameVersion] = await Promise.all([
     islandsQuery,
     groupedIslandsQuery,
     groupedVersionsQuery,
-    getWorkshopMods(mappedGroupedMods.slice(0, INITIAL_MOD_COUNT).map((mod) => String(mod.value))),
+    getWorkshopMods(allModIds.map((mod) => String(mod.modId))),
     getGameVersion(),
   ]);
 
   // Map to enriched data (to get mod name/label)
-  mappedGroupedMods = mappedGroupedMods.map((mod) => {
-    const matchedMod = enrichedGroupedMods.find((m) => m.id === String(mod.value));
+  const mappedGroupedMods = allModIds.map((mod, i) => {
+    const matchedMod = enrichedGroupedMods?.[i];
 
     return {
       ...mod,
@@ -113,6 +99,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
   }, []);
 
   return res.status(200).json({ islands: mappedGroupedIslands, versions: mappedGroupedVersions, mods: mappedGroupedMods });
-};
+});
 
 export default handler;
