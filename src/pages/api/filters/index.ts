@@ -64,6 +64,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
 
     return {
       ...mod,
+      value: mod.modId,
       ...(matchedMod?.name ? { label: matchedMod?.name } : {}),
     };
   });
