@@ -5,7 +5,7 @@ import rateLimit from '../../../../middleware/rateLimit';
 import validation, { Joi } from '../../../../middleware/validation';
 
 const querySchema = Joi.object({
-  searchTerm: Joi.string(),
+  term: Joi.string(),
 });
 
 const handler = nextConnect();

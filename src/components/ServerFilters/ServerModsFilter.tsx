@@ -1,32 +1,11 @@
 import { AutoComplete, Spacer, Tag } from '@geist-ui/core';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import useDebounce from '../../hooks/useDebounce';
+import React, { useMemo, useRef, useState } from 'react';
+import { useDebounceWithPending } from '../../hooks/useDebounce';
 import { SelectOption, WorkshopMod } from '../../types/Types';
-import http from '../../services/HTTP';
 import { X } from '@geist-ui/react-icons';
 import FormItemLabel from '../FormItemLabel/FormItemLabel';
-
-const searchWorkshopModsRequest = async (searchTerm: string) =>
-  await http
-    .get(
-      `/api/steam/workshop/search?` +
-        new URLSearchParams({
-          term: searchTerm,
-        })
-    )
-    .then((response) => response.json());
-
-const getWorkshopModsRequest = async (modIds: number[]) =>
-  await http
-    .get(
-      `/api/steam/workshop?` +
-        new URLSearchParams({
-          modIds: modIds.join(','),
-        })
-    )
-    .then((response) => response.json());
-
-const RESULTS_LIMIT = 100;
+import useWorkshopMods from '../../hooks/useWorkshopMods';
+import useSearchWorkshopMods from '../../hooks/useSearchWorkshopMods';
 
 interface Props {
   availableOptions: SelectOption[];
@@ -39,16 +18,19 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
   const inputRef = useRef<HTMLInputElement>(null);
 
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedSearchValue = useDebounce(searchValue, 500);
+  const { value: debouncedSearchValue, isPending: isPendingSearchValue } = useDebounceWithPending(searchValue, 500);
 
-  const [isSearching, setIsSearching] = useState<boolean>(false);
-  const [searchResults, setSearchResults] = useState<WorkshopMod[]>([]);
+  const { workshopMods: enrichedSelectedMods } = useWorkshopMods(selectedMods || []);
+  const { workshopMods: modSearchResults, isLoading: isLoadingModSearchResults } = useSearchWorkshopMods(debouncedSearchValue);
 
-  const [enrichedSelectedMods, setEnrichedSelectedMods] = useState<WorkshopMod[]>([]);
+  const isSearchingMods = useMemo(() => isPendingSearchValue || isLoadingModSearchResults, [isPendingSearchValue, isLoadingModSearchResults]);
 
   const autoCompleteOptions: SelectOption[] = useMemo(
-    () => (searchResults?.length > 0 ? searchResults.map((mod: WorkshopMod) => ({ label: mod.name, value: mod.id, count: 0 })) : availableOptions),
-    [availableOptions, searchResults]
+    () =>
+      searchValue.length > 0 && !isSearchingMods
+        ? modSearchResults.map((mod: WorkshopMod) => ({ label: mod.name, value: mod.id, count: 0 }))
+        : availableOptions,
+    [availableOptions, modSearchResults, searchValue, isSearchingMods]
   );
 
   function changeHandler(value: string) {
@@ -69,33 +51,6 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
     if (onRemoveMod) onRemoveMod(mod.id);
   }
 
-  // @TODO: debounce this
-  useEffect(() => {
-    const modIds = selectedMods?.map(Number) || [];
-    if (selectedMods.length === 0) return setEnrichedSelectedMods([]);
-
-    (async () => {
-      const modResults: WorkshopMod[] = await getWorkshopModsRequest(modIds);
-      setEnrichedSelectedMods(modResults);
-    })();
-  }, [selectedMods]);
-
-  useEffect(() => {
-    if (!debouncedSearchValue) return setSearchResults([]);
-
-    (async () => {
-      setIsSearching(true);
-
-      const modResults: WorkshopMod[] = await searchWorkshopModsRequest(debouncedSearchValue);
-
-      // Search results, sort by players, limit to top 100 results
-      const optionsResult = modResults.slice(0, RESULTS_LIMIT);
-      setSearchResults(optionsResult);
-
-      setIsSearching(false);
-    })();
-  }, [debouncedSearchValue]);
-
   return (
     <>
       <FormItemLabel label="Mods">
@@ -106,10 +61,14 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
           onChange={changeHandler}
           onSelect={selectHandler}
           width="100%"
-          searching={isSearching}
+          searching={isSearchingMods}
           clearable
           ref={inputRef}
-        />
+        >
+          <AutoComplete.Empty>
+            <span>No mods found</span>
+          </AutoComplete.Empty>
+        </AutoComplete>
       </FormItemLabel>
 
       {enrichedSelectedMods.length > 0 && (

@@ -38,6 +38,7 @@ export async function searchWorkshopMods(searchTerm: string): Promise<WorkshopMo
         .map(mapWorkshopModResponse)
         .filter((mod: WorkshopMod) => mod.name)
         .sort((a: WorkshopMod, b: WorkshopMod) => (b?.subscriptions || 0) - (a?.subscriptions || 0))
+        .slice(0, 100)
     );
 
   return modsResponse;
