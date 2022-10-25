@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import nextConnect from 'next-connect';
-import { searchWorkshopMods } from '../../../data/SteamApi';
-import rateLimit from '../../../middleware/rateLimit';
-import validation, { Joi } from '../../../middleware/validation';
+import { searchWorkshopMods } from '../../../../data/SteamApi';
+import rateLimit from '../../../../middleware/rateLimit';
+import validation, { Joi } from '../../../../middleware/validation';
 
 const querySchema = Joi.object({
   searchTerm: Joi.string(),
@@ -16,7 +16,7 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   res.setHeader('Cache-Control', 'public, max-age=120, stale-while-revalidate=60');
 
   try {
-    const searchTerm = req?.query?.searchTerm as string;
+    const searchTerm = req?.query?.term as string;
 
     const modsResult = await searchWorkshopMods(searchTerm);
 

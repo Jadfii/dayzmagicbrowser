@@ -9,9 +9,9 @@ import FormItemLabel from '../FormItemLabel/FormItemLabel';
 const searchWorkshopModsRequest = async (searchTerm: string) =>
   await http
     .get(
-      `/api/steam/searchWorkshopMods?` +
+      `/api/steam/workshop/search?` +
         new URLSearchParams({
-          searchTerm,
+          term: searchTerm,
         })
     )
     .then((response) => response.json());
@@ -19,7 +19,7 @@ const searchWorkshopModsRequest = async (searchTerm: string) =>
 const getWorkshopModsRequest = async (modIds: number[]) =>
   await http
     .get(
-      `/api/steam/getWorkshopMods?` +
+      `/api/steam/workshop?` +
         new URLSearchParams({
           modIds: modIds.join(','),
         })

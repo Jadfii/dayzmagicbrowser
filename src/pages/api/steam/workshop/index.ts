@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { getWorkshopMods } from '../../../data/SteamApi';
+import { getWorkshopMods } from '../../../../data/SteamApi';
 import nextConnect from 'next-connect';
-import rateLimit from '../../../middleware/rateLimit';
-import validation, { Joi } from '../../../middleware/validation';
+import rateLimit from '../../../../middleware/rateLimit';
+import validation, { Joi } from '../../../../middleware/validation';
 
 const querySchema = Joi.object({
   modIds: Joi.stringArray(),

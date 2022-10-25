@@ -7,7 +7,7 @@ export default function useDayzVersion(): {
   isLoading: boolean;
   isError: boolean;
 } {
-  const { data, error } = useSWR<GameVersion>('/api/steam/getDayzVersion', fetcher, {
+  const { data, error } = useSWR<GameVersion>('/api/steam/version', fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
