@@ -11,14 +11,12 @@ const Masthead: React.FC = () => {
     <>
       <div className="container fixed z-20" style={{ background: theme.palette.accents_1 }}>
         <div className="flex items-center h-20 px-8">
-          <Link href="/">
-            <a className="flex items-center">
-              <Logo style={{ color: '#fff' }} />
+          <Link href="/" className="flex items-center">
+            <Logo style={{ color: '#fff' }} />
 
-              <Spacer w={1 / 2} />
+            <Spacer w={1 / 2} />
 
-              <Tag type="lite">ALPHA</Tag>
-            </a>
+            <Tag type="lite">ALPHA</Tag>
           </Link>
 
           <div className="ml-6" style={{ width: '40%' }}>

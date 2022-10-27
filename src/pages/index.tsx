@@ -101,11 +101,9 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
 
             <div className="mt-10" style={{ width: '75%' }}>
               <Link href="/servers">
-                <a>
-                  <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
-                    Browse servers
-                  </Button>
-                </a>
+                <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
+                  Browse servers
+                </Button>
               </Link>
             </div>
           </Grid>

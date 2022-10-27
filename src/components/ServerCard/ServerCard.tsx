@@ -28,81 +28,79 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
   return (
     <>
       <Link href={server?.ipAddress && server?.gamePort ? `/server/${server?.ipAddress}/${server?.gamePort}` : ''}>
-        <a>
-          <Card hoverable className="server-card group">
-            <div className="relative w-full" style={{ height: imageHeight }}>
-              <Image
-                isLoading={!server?.island}
-                maxHeight={imageHeight}
-                alt={`${server?.name} map preview`}
-                layout="fill"
-                src={getIslandImageURL(server?.relatedIsland?.terrainId)}
-                loading="lazy"
-                className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
-              />
-            </div>
+        <Card hoverable className="server-card group">
+          <div className="relative w-full" style={{ height: imageHeight }}>
+            <Image
+              isLoading={!server?.island}
+              maxHeight={imageHeight}
+              alt={`${server?.name} map preview`}
+              fill
+              src={getIslandImageURL(server?.relatedIsland?.terrainId)}
+              loading="lazy"
+              className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
+            />
+          </div>
 
-            <Card.Content>
-              <div className="flex flex-col">
-                <div className="flex items-center">
-                  {server?.name ? (
-                    <Tooltip text={server.name} className="truncate">
-                      <Text h5 width="100%" className="truncate my-0">
-                        {server.name.trim()}
-                      </Text>
+          <Card.Content>
+            <div className="flex flex-col">
+              <div className="flex items-center">
+                {server?.name ? (
+                  <Tooltip text={server.name} className="truncate">
+                    <Text h5 width="100%" className="truncate my-0">
+                      {server.name.trim()}
+                    </Text>
+                  </Tooltip>
+                ) : (
+                  <Skeleton rows={1} />
+                )}
+
+                {server?.queryPort && server?.gamePort && server?.queryPort === server?.gamePort + 1 && (
+                  <>
+                    <Spacer w={1 / 2} />
+                    <Badge type="success">Playable</Badge>
+                  </>
+                )}
+
+                {server?.isPassword && (
+                  <>
+                    <Spacer w={1 / 3} inline />
+                    <Tooltip text="Locked">
+                      <Lock size={20} />
                     </Tooltip>
-                  ) : (
-                    <Skeleton rows={1} />
-                  )}
-
-                  {server?.queryPort && server?.gamePort && server?.queryPort === server?.gamePort + 1 && (
-                    <>
-                      <Spacer w={1 / 2} />
-                      <Badge type="success">Playable</Badge>
-                    </>
-                  )}
-
-                  {server?.isPassword && (
-                    <>
-                      <Spacer w={1 / 3} inline />
-                      <Tooltip text="Locked">
-                        <Lock size={20} />
-                      </Tooltip>
-                    </>
-                  )}
-                </div>
-
-                <Text small className="my-0">
-                  {server?.clockTime ? (
-                    <>
-                      {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
-                    </>
-                  ) : (
-                    <>
-                      <Spacer h={1 / 2} />
-
-                      <Skeleton cols={3} rows={1} />
-                    </>
-                  )}
-                </Text>
-
-                <Spacer h={2} />
-
-                <div className="flex items-center justify-between mt-auto">
-                  {typeof server?.playerCount !== 'undefined' && server?.ipAddress ? (
-                    <PlayerCount server={server} type="h5" />
-                  ) : (
-                    <Skeleton cols={4} rows={1.5} />
-                  )}
-
-                  <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ipAddress} scale={3 / 4} auto>
-                    Play
-                  </Button>
-                </div>
+                  </>
+                )}
               </div>
-            </Card.Content>
-          </Card>
-        </a>
+
+              <Text small className="my-0">
+                {server?.clockTime ? (
+                  <>
+                    {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
+                  </>
+                ) : (
+                  <>
+                    <Spacer h={1 / 2} />
+
+                    <Skeleton cols={3} rows={1} />
+                  </>
+                )}
+              </Text>
+
+              <Spacer h={2} />
+
+              <div className="flex items-center justify-between mt-auto">
+                {typeof server?.playerCount !== 'undefined' && server?.ipAddress ? (
+                  <PlayerCount server={server} type="h5" />
+                ) : (
+                  <Skeleton cols={4} rows={1.5} />
+                )}
+
+                <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ipAddress} scale={3 / 4} auto>
+                  Play
+                </Button>
+              </div>
+            </div>
+          </Card.Content>
+        </Card>
       </Link>
     </>
   );

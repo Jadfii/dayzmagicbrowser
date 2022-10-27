@@ -1,5 +1,4 @@
 /** @type {import('next').NextConfig} */
-const withPWA = require('next-pwa');
 
 const securityHeaders = [
   {
@@ -24,15 +23,7 @@ const securityHeaders = [
   },
 ];
 
-module.exports = withPWA({
-  pwa: {
-    dest: 'public',
-    register: true,
-    skipWaiting: true,
-    disable: process.env.NODE_ENV !== 'production',
-    buildExcludes: [/middleware-manifest\.json$/],
-  },
-  runtime: 'edge',
+module.exports = {
   reactStrictMode: true,
   optimizeFonts: false,
   images: {
@@ -48,4 +39,4 @@ module.exports = withPWA({
       },
     ];
   },
-});
+};
