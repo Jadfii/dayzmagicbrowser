@@ -24,6 +24,9 @@ const securityHeaders = [
 ];
 
 module.exports = {
+  experimental: {
+    fontLoaders: [{ loader: '@next/font/google', options: { subsets: ['latin'] } }],
+  },
   reactStrictMode: true,
   optimizeFonts: false,
   images: {
