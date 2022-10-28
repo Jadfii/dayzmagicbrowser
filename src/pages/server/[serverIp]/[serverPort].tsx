@@ -91,7 +91,14 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
         title={server?.name}
         description={`View information about server "${server?.name}".`}
         openGraph={{
-          images: [{ url: `https://browser.dayzmagiclauncher.com/api/og?serverIp=${server?.ipAddress}&serverPort=${server?.gamePort}` }],
+          images: [
+            {
+              url: `https://browser.dayzmagiclauncher.com/api/og?serverIp=${server?.ipAddress}&serverPort=${server?.gamePort}`,
+              alt: `${server?.name} server card`,
+              height: 600,
+              width: 1200,
+            },
+          ],
         }}
       />
 
