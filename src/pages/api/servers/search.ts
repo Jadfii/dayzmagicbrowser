@@ -20,7 +20,7 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
 
   if (Array.isArray(searchTerm)) searchTerm = searchTerm?.[0];
   // Trim and replace whitespace with underscores
-  searchTerm = searchTerm.trim().replace(/[\s\n\t]/g, '_');
+  searchTerm = (searchTerm || '').trim().replace(/[\s\n\t]/g, '_');
   searchTerm = `%${searchTerm}%`;
 
   // Have to use queryRaw because "LIKE" is not supported in prisma yet

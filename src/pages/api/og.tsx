@@ -8,8 +8,8 @@ export const config = {
   runtime: 'experimental-edge',
 };
 
-const fontRegular = fetch(new URL('../../assets/Inter-Regular.ttf', import.meta.url)).then((res) => res.arrayBuffer());
-const fontBold = fetch(new URL('../../assets/Inter-Bold.ttf', import.meta.url)).then((res) => res.arrayBuffer());
+const fontRegular = fetch(new URL('../../assets/Inter-Regular.ttf', import.meta.url).toString()).then((res) => res.arrayBuffer());
+const fontBold = fetch(new URL('../../assets/Inter-Bold.ttf', import.meta.url).toString()).then((res) => res.arrayBuffer());
 
 export default async function handler(req: NextRequest) {
   try {
