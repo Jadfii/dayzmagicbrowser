@@ -87,7 +87,13 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
 
   return (
     <>
-      <NextSeo title={server?.name} description={`View information about server "${server?.name}".`} />
+      <NextSeo
+        title={server?.name}
+        description={`View information about server "${server?.name}".`}
+        openGraph={{
+          images: [{ url: `https://browser.dayzmagiclauncher.com/api/og?serverIp=${server?.ipAddress}&serverPort=${server?.gamePort}` }],
+        }}
+      />
 
       {server?.name && server?.version ? (
         <>

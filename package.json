@@ -19,6 +19,7 @@
     "@geist-ui/react-icons": "^1.0.1",
     "@next/font": "^13.0.0",
     "@prisma/client": "^4.5.0",
+    "@vercel/og": "^0.0.20",
     "dayjs": "^1.11.6",
     "joi": "^17.6.4",
     "ky": "^0.31.4",
