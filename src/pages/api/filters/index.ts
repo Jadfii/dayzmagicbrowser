@@ -63,7 +63,6 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     const matchedMod = enrichedGroupedMods?.[i];
 
     return {
-      ...mod,
       value: mod.modId,
       ...(matchedMod?.name ? { label: matchedMod?.name } : {}),
     };
