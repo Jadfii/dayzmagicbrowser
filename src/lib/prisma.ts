@@ -1,6 +1,10 @@
 import { PrismaClient, Server as PrismaServer, Island as PrismaIsland } from '@prisma/client';
 import { Server, Island } from '../types/Types';
 
+(BigInt.prototype as any).toJSON = function () {
+  return this.toString();
+};
+
 let prisma: PrismaClient;
 
 if (process.env.NODE_ENV === 'production') {
