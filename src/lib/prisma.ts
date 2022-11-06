@@ -1,6 +1,7 @@
 import { PrismaClient, Server as PrismaServer, Island as PrismaIsland } from '@prisma/client';
 import { Server, Island } from '../types/Types';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 (BigInt.prototype as any).toJSON = function () {
   return this.toString();
 };

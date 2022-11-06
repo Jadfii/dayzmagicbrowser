@@ -1,3 +1,4 @@
+import { IPublishedFileService_GetDetails_Response, IPublishedFileService_QueryFiles_Response } from './../types/ResponseTypes';
 import { WorkshopMod } from '../types/Types';
 import http from '../services/HTTP';
 import { mapWorkshopModResponse } from './Mapper';
@@ -12,8 +13,8 @@ export async function getWorkshopMods(fileIds: string[]): Promise<WorkshopMod[]>
 
   const modsResponse = await http
     .get(`https://api.steampowered.com/IPublishedFileService/GetDetails/v1/?key=${process.env.STEAM_API_KEY}&${modsQueryString}`)
-    .then((response) => response.json())
-    .then((data: any) => data?.response?.publishedfiledetails)
+    .then((response) => response.json<IPublishedFileService_GetDetails_Response>())
+    .then((data) => data?.response?.publishedfiledetails)
     .then((mods) =>
       mods
         .map(mapWorkshopModResponse)
@@ -31,8 +32,8 @@ export async function searchWorkshopMods(searchTerm: string): Promise<WorkshopMo
         process.env.STEAM_API_KEY
       }&query_type=12&page=0&numperpage=20&return_details=true&appid=${DAYZ_APPID}&search_text=${encodeURI(searchTerm)}`
     )
-    .then((response) => response.json())
-    .then((data: any) => data?.response?.publishedfiledetails)
+    .then((response) => response.json<IPublishedFileService_QueryFiles_Response>())
+    .then((data) => data?.response?.publishedfiledetails)
     .then((mods) =>
       mods
         .map(mapWorkshopModResponse)

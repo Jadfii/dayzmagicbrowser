@@ -1,3 +1,20 @@
+export interface IPublishedFileService_GetDetails_Response {
+  response: {
+    publishedfiledetails: WorkshopModResponse[];
+  };
+}
+
+export interface IPublishedFileService_QueryFiles_Response {
+  response: {
+    publishedfiledetails: WorkshopModResponse[];
+  };
+}
+
+export interface MagicLauncher_Version_Response {
+  version: string;
+  version_exp: string;
+}
+
 export interface WorkshopModTagResponse {
   tag: string;
   display_name: string;
