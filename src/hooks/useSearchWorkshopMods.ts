@@ -7,7 +7,7 @@ export default function useSearchWorkshopMods(seachTerm: string): {
   isLoading: boolean;
   isError: boolean;
 } {
-  const { data, error } = useSWR<WorkshopMod[]>(`/api/steam/workshop/search?term=${encodeURI(seachTerm)}`, fetcher, {
+  const { data, error, isLoading } = useSWR<WorkshopMod[]>(`/api/steam/workshop/search?term=${encodeURI(seachTerm)}`, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -16,7 +16,7 @@ export default function useSearchWorkshopMods(seachTerm: string): {
 
   return {
     workshopMods: data || [],
-    isLoading: !error && !data && seachTerm.length > 0,
+    isLoading: isLoading && seachTerm.length > 0,
     isError: error,
   };
 }

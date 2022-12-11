@@ -9,14 +9,14 @@ export default function useHomeServers(initialData?: HomeServers): {
   isLoading: boolean;
   isError: boolean;
 } {
-  const { data, error } = useSWR<HomeServers>('/api/servers/home', fetcher, {
+  const { data, error, isLoading } = useSWR<HomeServers>('/api/servers/home', fetcher, {
     ...(initialData ? { fallbackData: initialData } : {}),
     refreshInterval: 120000,
   });
 
   return {
     homeServersList: data || EMPTY_HOME_SERVERS,
-    isLoading: !error && !data,
+    isLoading: isLoading,
     isError: error,
   };
 }

@@ -10,7 +10,7 @@ export default function useCurrentServer(initialData?: Server): {
 } {
   const router = useRouter();
 
-  const { data, error } = useSWR<Server>(`/api/servers/${router?.query?.serverIp}/${router?.query?.serverPort}`, fetcher, {
+  const { data, error, isLoading } = useSWR<Server>(`/api/servers/${router?.query?.serverIp}/${router?.query?.serverPort}`, fetcher, {
     ...(initialData ? { fallbackData: initialData } : {}),
     isPaused: () => !router?.isReady,
     refreshInterval: 60000,
@@ -18,7 +18,7 @@ export default function useCurrentServer(initialData?: Server): {
 
   return {
     server: data || undefined,
-    isLoading: !error && !data,
+    isLoading: isLoading,
     isError: error,
   };
 }

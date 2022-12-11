@@ -7,7 +7,7 @@ export default function useWorkshopMods(modIds: string[]): {
   isLoading: boolean;
   isError: boolean;
 } {
-  const { data, error } = useSWR<WorkshopMod[]>(`/api/steam/workshop?modIds=${encodeURI(modIds.join(','))}`, fetcher, {
+  const { data, error, isLoading } = useSWR<WorkshopMod[]>(`/api/steam/workshop?modIds=${encodeURI(modIds.join(','))}`, fetcher, {
     revalidateIfStale: false,
     revalidateOnFocus: false,
     revalidateOnReconnect: false,
@@ -16,7 +16,7 @@ export default function useWorkshopMods(modIds: string[]): {
 
   return {
     workshopMods: data || [],
-    isLoading: !error && !data && modIds.length > 0,
+    isLoading: isLoading && modIds.length > 0,
     isError: error,
   };
 }
