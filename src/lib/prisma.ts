@@ -31,8 +31,9 @@ export function excludeFromServer<Server, Key extends keyof Server>(model: Serve
 
 export function serialiseServer(server: PrismaServer): Server {
   return {
-    ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds'),
-    modIds: server.modIds.map((modId) => Number(modId)),
+    ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds', 'timeAcceleration'),
+    modIds: Array.isArray(server?.modIds) ? server.modIds.map((modId) => Number(modId)) : [],
+    timeAcceleration: server.timeAcceleration.split(', ').map(Number),
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     ...(server?.relatedIsland ? { relatedIsland: serialiseIsland(server?.relatedIsland) } : {}),

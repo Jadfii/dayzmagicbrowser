@@ -34,13 +34,13 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
     ],
     take: SERVERS_PAGE_SERVERS_COUNT,
     where: {
-      ...(typeof name === 'string' ? { name: { search: name.split(' ').join(' & ') } } : {}),
-      ...(typeof island === 'string' ? { island: { contains: island, mode: 'insensitive' } } : {}),
+      ...(typeof name === 'string' ? { name: { contains: name } } : {}),
+      ...(typeof island === 'string' ? { island: { contains: island } } : {}),
       ...(typeof version === 'string' ? { version } : {}),
       ...(typeof mods === 'string'
         ? {
             modIds: {
-              hasEvery: mods.split(',').map((modId) => Number(modId.trim())),
+              array_contains: mods.split(',').map((modId) => Number(modId.trim())),
             },
           }
         : {}),

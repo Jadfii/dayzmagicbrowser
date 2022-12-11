@@ -5,8 +5,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Island {
@@ -25,14 +26,14 @@ model Server {
   id                     String   @id @default(uuid())
   createdAt              DateTime @default(now())
   updatedAt              DateTime @updatedAt
-  modIds                 BigInt[]
+  modIds                 Json
   queryPort              Int
   gamePort               Int
   appId                  Int
   playerCount            Int      @default(0)
   maxPlayerCount         Int      @default(0)
   queueCount             Int      @default(0)
-  timeAcceleration       Int[]
+  timeAcceleration       String
   ipAddress              String
   name                   String
   version                String
@@ -49,4 +50,5 @@ model Server {
   isOffline              Boolean
 
   @@unique([ipAddress, queryPort])
+  @@index([relatedIslandTerrainId])
 }

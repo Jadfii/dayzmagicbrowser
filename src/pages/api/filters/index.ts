@@ -45,25 +45,32 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   });
 
   // Get all available mod Ids
-  const allModIds = await prisma.$queryRaw<
-    { count: number; modId: number }[]
-  >`SELECT COUNT(*) AS "count", "modId" FROM "Server" AS s CROSS JOIN LATERAL UNNEST(s."modIds") AS modIds("modId") GROUP BY "modId" ORDER BY 1 DESC LIMIT ${INITIAL_MOD_COUNT};`;
+  const allServers = await prisma.server.findMany();
+  const allModIds = allServers
+    .flatMap((server) => (Array.isArray(server?.modIds) ? server.modIds.map(String) : []))
+    .reduce<{ [modId: string]: number }>((acc, curr) => {
+      return acc[curr] ? ++acc[curr] : (acc[curr] = 1), acc;
+    }, {});
+  const limitedModIds = Object.entries(allModIds)
+    .sort((a, b) => b[1] - a[1])
+    .map(([key]) => key)
+    .slice(0, INITIAL_MOD_COUNT);
 
   // Run queries
   const [islands, groupedIslands, groupedVersions, enrichedGroupedMods, gameVersion] = await Promise.all([
     islandsQuery,
     groupedIslandsQuery,
     groupedVersionsQuery,
-    getWorkshopMods(allModIds.map((mod) => String(mod.modId))),
+    getWorkshopMods(limitedModIds),
     getGameVersion(),
   ]);
 
   // Map to enriched data (to get mod name/label)
-  const mappedGroupedMods = allModIds.map((mod, i) => {
+  const mappedGroupedMods = limitedModIds.map((modId, i) => {
     const matchedMod = enrichedGroupedMods?.[i];
 
     return {
-      value: String(mod.modId),
+      value: modId,
       ...(matchedMod?.name ? { label: matchedMod?.name } : {}),
     };
   });

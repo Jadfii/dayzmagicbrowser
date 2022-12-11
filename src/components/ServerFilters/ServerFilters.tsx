@@ -180,6 +180,7 @@ const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, in
         initialValue={initialValue}
         value={serverNameInput}
         onChange={(e) => setServerNameInput(e.target.value)}
+        spellCheck={false}
       >
         Server name
       </Input>
