@@ -21,7 +21,7 @@ const ServerOption: React.FC<Props> = ({ server, handleClick }) => {
 
   return server?.name ? (
     <>
-      <Link href={`/server/${server.ipAddress}/${server.gamePort}`} className="server-option">
+      <Link href={`/server/${server.ipAddress}/${server.gamePort}`} className="w-full" style={{ color: theme.palette.foreground }}>
         <Grid.Container className="py-4" onClick={onClick}>
           <Grid xs={24} className="items-center">
             <Text h4 className="truncate">
@@ -55,13 +55,6 @@ const ServerOption: React.FC<Props> = ({ server, handleClick }) => {
           </Grid>
         </Grid.Container>
       </Link>
-
-      <style jsx>{`
-        .server-option {
-          width: 100%;
-          color: ${theme.palette.foreground};
-        }
-      `}</style>
     </>
   ) : (
     <></>

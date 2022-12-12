@@ -21,13 +21,17 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   if (Array.isArray(searchTerm)) searchTerm = searchTerm?.[0];
   // Trim and replace whitespace with underscores
   searchTerm = (searchTerm || '').trim().replace(/[\s\n\t]/g, '_');
-  searchTerm = `%${searchTerm}%`;
-
-  // Have to use queryRaw because "LIKE" is not supported in prisma yet
-  const ids = await prisma.$queryRaw<{ id: string }[]>`SELECT id FROM "Server" WHERE name ILIKE ${searchTerm} LIMIT ${MAX_SEARCH_RESULTS};`;
 
   const servers = await prisma.server.findMany({
-    where: { id: { in: ids.map((row) => row.id) } },
+    where: { name: { search: searchTerm } },
+    orderBy: {
+      _relevance: {
+        fields: ['name'],
+        search: searchTerm,
+        sort: 'desc',
+      },
+    },
+    take: MAX_SEARCH_RESULTS,
     include: {
       relatedIsland: true,
     },

@@ -1,7 +1,7 @@
 generator client {
   provider        = "prisma-client-js"
   engineType      = "library"
-  previewFeatures = ["fullTextSearch"]
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -51,4 +51,5 @@ model Server {
 
   @@unique([ipAddress, queryPort])
   @@index([relatedIslandTerrainId])
+  @@fulltext([name])
 }
