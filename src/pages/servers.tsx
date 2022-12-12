@@ -1,4 +1,4 @@
-import { Button, Spacer, Text } from '@geist-ui/core';
+import { Button, Loading, Spacer, Text } from '@geist-ui/core';
 import React from 'react';
 import { InferGetStaticPropsType } from 'next';
 import ServerList from '../components/ServerList/ServerList';
@@ -53,7 +53,10 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
       <NextSeo title="Servers" />
 
       <div className="relative flex flex-col flex-1 py-10">
-        <Text h2>Servers</Text>
+        <div className="flex items-center justify-between w-44">
+          <Text h2>Servers</Text>
+          {isValidating && <Loading></Loading>}
+        </div>
 
         <div>
           <div className="flex items-center justify-between">
@@ -73,7 +76,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
 
         <Spacer h={1} />
 
-        <ServerList servers={serverList} isLoading={isValidating} onResetFilters={resetFilters} />
+        <ServerList servers={serverList} isLoading={false} onResetFilters={resetFilters} />
       </div>
     </>
   );
