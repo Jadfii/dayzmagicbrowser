@@ -11,10 +11,11 @@ import useConnectServer from '../../hooks/useConnectServer';
 
 interface Props {
   server?: Server;
+  isLoading?: boolean;
   imageHeight?: number;
 }
 
-const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
+const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 150 }) => {
   const { connectToServer } = useConnectServer(server);
 
   function onPlayClick(e: React.MouseEvent<HTMLElement>) {
@@ -31,7 +32,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
         <Card hoverable className="server-card group">
           <div className="relative w-full" style={{ height: imageHeight }}>
             <Image
-              isLoading={!server?.island}
+              isLoading={isLoading}
               maxHeight={imageHeight}
               alt={`${server?.name} map preview`}
               fill
@@ -44,7 +45,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
           <Card.Content>
             <div className="flex flex-col">
               <div className="flex items-center">
-                {server?.name ? (
+                {server?.name && !isLoading ? (
                   <Tooltip text={server.name} className="truncate">
                     <Text h5 width="100%" className="truncate my-0">
                       {server.name.trim()}
@@ -72,7 +73,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
               </div>
 
               <Text small className="my-0">
-                {server?.clockTime ? (
+                {server?.clockTime && !isLoading ? (
                   <>
                     {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
                   </>
@@ -88,7 +89,7 @@ const ServerCard: React.FC<Props> = ({ server, imageHeight = 150 }) => {
               <Spacer h={2} />
 
               <div className="flex items-center justify-between mt-auto">
-                {typeof server?.playerCount !== 'undefined' && server?.ipAddress ? (
+                {typeof server?.playerCount !== 'undefined' && server?.ipAddress && !isLoading ? (
                   <PlayerCount server={server} type="h5" />
                 ) : (
                   <Skeleton cols={4} rows={1.5} />

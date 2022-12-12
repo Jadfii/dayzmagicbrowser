@@ -8,7 +8,6 @@ import { Delete } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
 import useServers from '../hooks/useServers';
 import useServerFilters from '../hooks/useServerFilters';
-import { Server } from '../types/Types';
 import prisma, { serialiseServer } from '../lib/prisma';
 import { sortServersByPlayerCount } from '../utils/server.util';
 import { SERVERS_PAGE_SERVERS_COUNT } from '../constants/layout.constant';
@@ -29,7 +28,7 @@ export const getStaticProps = async () => {
     },
   });
 
-  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
+  const serialisedServers = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return {
     revalidate: 600,
@@ -43,7 +42,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
   const router = useRouter();
 
   const filters = useServerFilters();
-  const { serverList, isLoading } = useServers(servers);
+  const { serverList, isValidating } = useServers(servers);
 
   function resetFilters() {
     router.push({ query: {} });
@@ -74,7 +73,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
 
         <Spacer h={1} />
 
-        <ServerList servers={serverList} isLoading={isLoading} onResetFilters={resetFilters} />
+        <ServerList servers={serverList} isLoading={isValidating} onResetFilters={resetFilters} />
       </div>
     </>
   );

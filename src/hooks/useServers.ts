@@ -4,15 +4,11 @@ import useSWR from 'swr';
 import { fetcher } from '../data/fetcher';
 import { Server } from '../types/Types';
 
-export default function useServers(initialData?: Server[]): {
-  serverList: Server[];
-  isLoading: boolean;
-  isError: boolean;
-} {
+export default function useServers(initialData?: Server[]) {
   const router = useRouter();
   const [queryString, setQueryString] = useState<string>('');
 
-  const { data, error, isLoading } = useSWR<Server[]>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
+  const { data, error, isLoading, isValidating } = useSWR<Server[]>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
     ...(initialData ? { fallbackData: initialData } : {}),
     isPaused: () => !router?.isReady,
     refreshInterval: 120000,
@@ -37,6 +33,7 @@ export default function useServers(initialData?: Server[]): {
   return {
     serverList: data || [],
     isLoading: isLoading,
+    isValidating: isValidating && !isLoading,
     isError: error,
   };
 }
