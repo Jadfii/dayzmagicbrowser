@@ -23,7 +23,7 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   searchTerm = (searchTerm || '').trim().replace(/[\s\n\t]/g, '_');
 
   const servers = await prisma.server.findMany({
-    where: { name: { search: searchTerm } },
+    where: { OR: [{ name: { search: searchTerm } }, { ipAddress: { contains: searchTerm } }] },
     orderBy: {
       _relevance: {
         fields: ['name'],
