@@ -1,75 +1,14 @@
 import { InferGetStaticPropsType } from 'next';
-import prisma, { serialiseServer } from '../lib/prisma';
 import { Button, Divider, Grid, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
-import { HomeServers } from '../types/Types';
-import { DAYZ_EXP_APPID } from '../constants/game.constant';
-import { sortServersByPlayerCount } from '../utils/server.util';
 import useHomeServers from '../hooks/useHomeServers';
-import { HOME_SECTION_SERVERS_COUNT } from '../constants/layout.constant';
 import HomeServersSection from '../components/HomeServers/HomeServersSection';
+import { getHomePageData } from './api/servers/home';
 
 export const getStaticProps = async () => {
-  const popularServers = prisma.server.findMany({
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
-      relatedIsland: true,
-    },
-  });
-
-  const officialServers = prisma.server.findMany({
-    where: {
-      isPublicHive: true,
-    },
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
-      relatedIsland: true,
-    },
-  });
-
-  const experimentalServers = prisma.server.findMany({
-    where: {
-      appId: DAYZ_EXP_APPID,
-    },
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
-      relatedIsland: true,
-    },
-  });
-
-  const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);
-
-  const homeServers: HomeServers = {
-    popular: sortServersByPlayerCount(popular.map(serialiseServer)),
-    official: sortServersByPlayerCount(official.map(serialiseServer)),
-    experimental: sortServersByPlayerCount(experimental.map(serialiseServer)),
-  };
+  const homeServers = await getHomePageData();
 
   return {
     revalidate: 600,

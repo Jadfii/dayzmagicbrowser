@@ -1,6 +1,6 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import prisma, { serialiseServer } from '../../../lib/prisma';
-import { Server, SERVER_FILTERS } from '../../../types/Types';
+import { SERVER_FILTERS } from '../../../types/Types';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
@@ -9,18 +9,9 @@ import { SERVERS_PAGE_SERVERS_COUNT } from '../../../constants/layout.constant';
 import validation, { Joi } from '../../../middleware/validation';
 import { getEnumValues } from '../../../utils/enum.util';
 
-const querySchema = Joi.object(Object.fromEntries(getEnumValues(SERVER_FILTERS).map((key) => [key, Joi.string()])));
-
-const handler = nextConnect();
-
-handler.use(rateLimit());
-
-handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
-
+export const getServersPageData = async (queryParams: NextApiRequest['query'] = {}) => {
   // Get query params
-  const { name, island, version, mods, firstperson, official, experimental, noqueue } = req.query;
+  const { name, island, version, mods, firstperson, official, experimental, noqueue } = queryParams;
 
   // Get servers
   const servers = await prisma.server.findMany({
@@ -55,9 +46,22 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   });
 
   // Serialise servers so they can be passed to component
-  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
+  return sortServersByPlayerCount(servers.map(serialiseServer));
+};
 
-  return res.status(200).json(serialisedServers);
+const querySchema = Joi.object(Object.fromEntries(getEnumValues(SERVER_FILTERS).map((key) => [key, Joi.string()])));
+
+const handler = nextConnect();
+
+handler.use(rateLimit());
+
+handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
+
+  // Get servers
+  const servers = await getServersPageData(req.query);
+  return res.status(200).json(servers);
 });
 
 export default handler;

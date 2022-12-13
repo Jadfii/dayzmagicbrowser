@@ -7,14 +7,7 @@ import { HOME_SECTION_SERVERS_COUNT } from '../../../constants/layout.constant';
 import { HomeServers } from '../../../types/Types';
 import { sortServersByPlayerCount } from '../../../utils/server.util';
 
-const handler = nextConnect();
-
-handler.use(rateLimit());
-
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
-
+export const getHomePageData = async (): Promise<HomeServers> => {
   const popularServers = prisma.server.findMany({
     take: HOME_SECTION_SERVERS_COUNT,
     orderBy: [
@@ -68,12 +61,22 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
 
   const [popular, official, experimental] = await Promise.all([popularServers, officialServers, experimentalServers]);
 
-  const homeServers: HomeServers = {
+  return {
     popular: sortServersByPlayerCount(popular.map(serialiseServer)),
     official: sortServersByPlayerCount(official.map(serialiseServer)),
     experimental: sortServersByPlayerCount(experimental.map(serialiseServer)),
   };
+};
 
+const handler = nextConnect();
+
+handler.use(rateLimit());
+
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
+
+  const homeServers = await getHomePageData();
   return res.status(200).json(homeServers);
 });
 

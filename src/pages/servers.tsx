@@ -8,32 +8,15 @@ import { Delete } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
 import useServers from '../hooks/useServers';
 import useServerFilters from '../hooks/useServerFilters';
-import prisma, { serialiseServer } from '../lib/prisma';
-import { sortServersByPlayerCount } from '../utils/server.util';
-import { SERVERS_PAGE_SERVERS_COUNT } from '../constants/layout.constant';
+import { getServersPageData } from './api/servers';
 
 export const getStaticProps = async () => {
-  const servers = await prisma.server.findMany({
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    take: SERVERS_PAGE_SERVERS_COUNT,
-    include: {
-      relatedIsland: true,
-    },
-  });
-
-  const serialisedServers = sortServersByPlayerCount(servers.map(serialiseServer));
+  const servers = await getServersPageData();
 
   return {
     revalidate: 600,
     props: {
-      servers: serialisedServers,
+      servers: servers,
     },
   };
 };
