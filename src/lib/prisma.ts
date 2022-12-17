@@ -19,7 +19,7 @@ if (process.env.NODE_ENV === 'production') {
 
 export default prisma;
 
-export function excludeFromServer<Server, Key extends keyof Server>(model: Server, ...keys: Key[]): Omit<Server, Key> {
+export function excludeFromServer<PrismaServer, Key extends keyof PrismaServer>(model: PrismaServer, ...keys: Key[]): Omit<PrismaServer, Key> {
   const modelCopy = { ...model };
 
   for (const key of keys) {
@@ -29,18 +29,22 @@ export function excludeFromServer<Server, Key extends keyof Server>(model: Serve
   return modelCopy;
 }
 
-export function serialiseServer(server: PrismaServer): Server {
+export function serialiseServer(
+  server: PrismaServer & {
+    relatedIsland?: PrismaIsland | null;
+  }
+): Server {
   return {
-    ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds', 'timeAcceleration'),
+    ...excludeFromServer(server, 'createdAt', 'updatedAt', 'modIds', 'timeAcceleration', 'relatedIsland'),
     modIds: Array.isArray(server?.modIds) ? server.modIds.map((modId) => Number(modId)) : [],
     timeAcceleration: server.timeAcceleration.split(', ').map(Number),
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
+    createdAt: server.createdAt.toISOString(),
+    updatedAt: server.updatedAt.toISOString(),
     ...(server?.relatedIsland ? { relatedIsland: serialiseIsland(server?.relatedIsland) } : {}),
   };
 }
 
-export function excludeFromIsland<Island, Key extends keyof Island>(model: Island, ...keys: Key[]): Omit<Island, Key> {
+export function excludeFromIsland<PrismaIsland, Key extends keyof PrismaIsland>(model: PrismaIsland, ...keys: Key[]): Omit<PrismaIsland, Key> {
   const modelCopy = { ...model };
 
   for (const key of keys) {
@@ -53,5 +57,7 @@ export function excludeFromIsland<Island, Key extends keyof Island>(model: Islan
 export function serialiseIsland(island: PrismaIsland): Island {
   return {
     ...excludeFromIsland(island, 'createdAt', 'updatedAt'),
+    createdAt: island.createdAt.toISOString(),
+    updatedAt: island.updatedAt.toISOString(),
   };
 }

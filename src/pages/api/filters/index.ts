@@ -1,7 +1,7 @@
 import { SelectOption } from './../../../types/Types';
 import { getGameVersion, isMatchingVersion } from './../../../data/Version';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '../../../lib/prisma';
+import prisma, { serialiseIsland } from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { findIsland } from '../../../utils/server.util';
 import nextConnect from 'next-connect';
@@ -18,7 +18,7 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
 
   // Get all islands
-  const islandsQuery = prisma.island.findMany();
+  const islandsQuery = prisma.island.findMany().then((res) => res.map(serialiseIsland));
 
   // Get all available islands
   const groupedIslandsQuery = prisma.server.groupBy({

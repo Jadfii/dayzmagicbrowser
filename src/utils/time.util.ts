@@ -1,10 +1,14 @@
 import dayjs from 'dayjs';
 import duration from 'dayjs/plugin/duration';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import calendar from 'dayjs/plugin/calendar';
 import { Server, ServerTimeAcceleration, ServerTimeDuration, ServerTime } from '../types/Types';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
+dayjs.extend(calendar);
+
+export default dayjs;
 
 const HOUR_IN_MS = 3600000;
 const MINUTE_IN_MS = HOUR_IN_MS / 60;

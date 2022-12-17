@@ -16,8 +16,8 @@ export interface ServerGeoData {
 
 export interface Server {
   id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   modIds: number[];
   queryPort: number;
   gamePort: number;
@@ -60,8 +60,8 @@ export interface ServerSearchOption extends Server {
 
 export interface Island {
   id: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+  createdAt?: string;
+  updatedAt?: string;
   terrainId: string;
   name: string;
   description: string | null;
