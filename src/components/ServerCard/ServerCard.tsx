@@ -38,7 +38,7 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
               fill
               src={getIslandImageURL(server?.relatedIsland?.terrainId)}
               loading="lazy"
-              className="object-cover opacity-40 group-hover:opacity-70 transition-opacity duration-300"
+              className="object-cover opacity-40 transition-opacity duration-300 group-hover:opacity-70"
             />
           </div>
 
@@ -47,7 +47,7 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
               <div className="flex items-center">
                 {server?.name && !isLoading ? (
                   <Tooltip text={server.name} className="truncate">
-                    <Text h5 width="100%" className="truncate my-0">
+                    <Text h5 width="100%" className="my-0 truncate">
                       {server.name.trim()}
                     </Text>
                   </Tooltip>
@@ -88,7 +88,7 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
 
               <Spacer h={2} />
 
-              <div className="flex items-center justify-between mt-auto">
+              <div className="mt-auto flex items-center justify-between">
                 {typeof server?.playerCount !== 'undefined' && server?.ipAddress && !isLoading ? (
                   <PlayerCount server={server} type="h5" />
                 ) : (

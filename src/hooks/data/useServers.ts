@@ -1,19 +1,21 @@
+import { Endpoint } from './../../types/Endpoints';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
 import { getServersPageData } from '../../pages/api/servers';
 
 type Data = Awaited<ReturnType<typeof getServersPageData>>;
 
-export default function useServers(initialData?: Data) {
+export default function useServers() {
   const router = useRouter();
-  const [queryString, setQueryString] = useState<string>('');
+  const [filters, setFilters] = useState<string>('');
 
-  const res = useSWR<Data>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
-    ...(initialData ? { fallbackData: initialData } : {}),
-    isPaused: () => !router?.isReady,
-    refreshInterval: 120000,
+  const query = useQuery<Data>({
+    queryKey: [`${Endpoint.SERVERS}`, ...(filters && [`${filters}`])],
+    enabled: router?.isReady,
+    keepPreviousData: true,
+    refetchOnMount: false,
+    refetchInterval: 120000,
   });
 
   useEffect(() => {
@@ -29,8 +31,8 @@ export default function useServers(initialData?: Data) {
 
     searchParams.sort();
 
-    setQueryString(searchParams.toString());
+    setFilters(searchParams.toString());
   }, [router?.query]);
 
-  return res;
+  return query;
 }

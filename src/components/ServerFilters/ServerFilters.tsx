@@ -17,7 +17,7 @@ interface Props {
 }
 
 const ServerFilters: React.FC<Props> = ({ filters }) => {
-  const { availableFilters } = useAvailableServerFilters();
+  const { data: availableFilters } = useAvailableServerFilters();
 
   return (
     <>

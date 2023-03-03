@@ -3,7 +3,7 @@ import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-u
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { NextSeo } from 'next-seo';
-import prisma, { serialiseServer } from '../../../lib/prisma';
+import prisma from '../../../lib/prisma';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
@@ -16,10 +16,11 @@ import { isMatchingVersion } from '../../../data/Version';
 import useDayzVersion from '../../../hooks/data/useDayzVersion';
 import useWorkshopMods from '../../../hooks/data/useWorkshopMods';
 import useConnectServer from '../../../hooks/useConnectServer';
-import { Server } from '../../../types/Types';
 import useCurrentServer from '../../../hooks/data/useCurrentServer';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { Endpoint } from '../../../types/Endpoints';
 
-export const getServerSideProps: GetServerSideProps<{ initialServer: Server }> = async ({ res, params }) => {
+export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
     return {
       notFound: true,
@@ -42,22 +43,25 @@ export const getServerSideProps: GetServerSideProps<{ initialServer: Server }> =
     };
   }
 
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([`${Endpoint.SERVERS}/${params.serverIp}/${params.serverPort}`], () => server);
+
   // Caching
   res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
 
   return {
     props: {
-      initialServer: serialiseServer(server),
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = ({ initialServer }) => {
+const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
   const theme = useTheme();
-  const { server } = useCurrentServer(initialServer);
+  const { data: server } = useCurrentServer();
   const { connectToServer } = useConnectServer(server);
-  const { dayzVersion } = useDayzVersion();
-  const { workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
+  const { data: dayzVersion } = useDayzVersion();
+  const { data: workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
 
   const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
 

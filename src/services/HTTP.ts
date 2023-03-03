@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 const http = async <T = unknown>(...args: Parameters<typeof fetch>) => {
   const response = await fetch(...args).then((res) => res.json());
 

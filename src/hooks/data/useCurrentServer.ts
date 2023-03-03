@@ -1,24 +1,16 @@
+import { Endpoint } from './../../types/Endpoints';
+import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/router';
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
 import { Server } from '../../types/Types';
 
-export default function useCurrentServer(initialData?: Server): {
-  server: Server | undefined;
-  isLoading: boolean;
-  isError: boolean;
-} {
+export default function useCurrentServer() {
   const router = useRouter();
 
-  const { data, error, isLoading } = useSWR<Server>(`/api/servers/${router?.query?.serverIp}/${router?.query?.serverPort}`, fetcher, {
-    ...(initialData ? { fallbackData: initialData } : {}),
-    isPaused: () => !router?.isReady,
-    refreshInterval: 60000,
+  const query = useQuery<Server>({
+    queryKey: [`${Endpoint.SERVERS}/${router?.query?.serverIp}/${router?.query?.serverPort}`],
+    enabled: router?.isReady,
+    refetchInterval: 60000,
   });
 
-  return {
-    server: data || undefined,
-    isLoading: isLoading,
-    isError: error,
-  };
+  return query;
 }

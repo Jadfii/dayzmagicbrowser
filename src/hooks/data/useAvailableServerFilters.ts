@@ -1,13 +1,9 @@
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
+import { Endpoint } from './../../types/Endpoints';
+import { useQuery } from '@tanstack/react-query';
 import { AvailableServerFilters } from '../../types/Types';
 
-export default function useAvailableServerFilters(): { availableFilters: AvailableServerFilters | undefined; isLoading: boolean; isError: boolean } {
-  const { data, error, isLoading } = useSWR<AvailableServerFilters>(`/api/filters`, fetcher);
+export default function useAvailableServerFilters() {
+  const query = useQuery<AvailableServerFilters>([Endpoint.SERVER_FILTERS]);
 
-  return {
-    availableFilters: data,
-    isLoading: isLoading,
-    isError: error,
-  };
+  return query;
 }

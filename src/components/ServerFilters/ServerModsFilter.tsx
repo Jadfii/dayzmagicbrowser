@@ -20,15 +20,15 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
   const [searchValue, setSearchValue] = useState<string>('');
   const { value: debouncedSearchValue, isPending: isPendingSearchValue } = useDebounceWithPending(searchValue, 500);
 
-  const { workshopMods: enrichedSelectedMods } = useWorkshopMods(selectedMods || []);
-  const { workshopMods: modSearchResults, isLoading: isLoadingModSearchResults } = useSearchWorkshopMods(debouncedSearchValue);
+  const { data: enrichedSelectedMods } = useWorkshopMods(selectedMods || []);
+  const { data: modSearchResults, isFetching: isLoadingModSearchResults } = useSearchWorkshopMods(debouncedSearchValue);
 
   const isSearchingMods = useMemo(() => isPendingSearchValue || isLoadingModSearchResults, [isPendingSearchValue, isLoadingModSearchResults]);
 
   const autoCompleteOptions: SelectOption[] = useMemo(
     () =>
-      searchValue.length > 0 && !isSearchingMods
-        ? modSearchResults.map((mod: WorkshopMod) => ({ label: mod.name, value: mod.id, count: 0 }))
+      searchValue.length > 0 && !isSearchingMods && modSearchResults
+        ? modSearchResults?.map((mod: WorkshopMod) => ({ label: mod.name, value: mod.id, count: 0 }))
         : availableOptions,
     [availableOptions, modSearchResults, searchValue, isSearchingMods]
   );
@@ -71,7 +71,7 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
         </AutoComplete>
       </FormItemLabel>
 
-      {enrichedSelectedMods.length > 0 && (
+      {enrichedSelectedMods?.length && (
         <div className="mt-2 space-y-2">
           {enrichedSelectedMods
             .filter((mod) => mod?.name)

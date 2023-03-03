@@ -1,22 +1,12 @@
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
+import { useQuery } from '@tanstack/react-query';
+import { Endpoint } from '../../types/Endpoints';
 import { HomeServers } from '../../types/Types';
 
-const EMPTY_HOME_SERVERS: HomeServers = { popular: [], official: [], experimental: [] };
-
-export default function useHomeServers(initialData?: HomeServers): {
-  homeServersList: HomeServers;
-  isLoading: boolean;
-  isError: boolean;
-} {
-  const { data, error, isLoading } = useSWR<HomeServers>('/api/servers/home', fetcher, {
-    ...(initialData ? { fallbackData: initialData } : {}),
-    refreshInterval: 120000,
+export default function useHomeServers() {
+  const query = useQuery<HomeServers>({
+    queryKey: [Endpoint.HOME_SERVERS],
+    refetchInterval: 120000,
   });
 
-  return {
-    homeServersList: data || EMPTY_HOME_SERVERS,
-    isLoading: isLoading,
-    isError: error,
-  };
+  return query;
 }

@@ -1,6 +1,6 @@
 import { Button, Spacer, Text } from '@geist-ui/core';
 import React from 'react';
-import { InferGetStaticPropsType } from 'next';
+import { GetServerSideProps } from 'next';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
@@ -9,23 +9,31 @@ import { useRouter } from 'next/router';
 import useServers from '../hooks/data/useServers';
 import useServerFilters from '../hooks/useServerFilters';
 import { getServersPageData } from './api/servers';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { Endpoint } from '../types/Endpoints';
+import { encode } from 'querystring';
 
-export const getStaticProps = async () => {
-  const servers = await getServersPageData();
+export const getServerSideProps: GetServerSideProps = async ({ res, query }) => {
+  const encodedQuery = encode(query);
+
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery([Endpoint.SERVERS, ...(encodedQuery && [`${encodedQuery}`])], () => getServersPageData(query));
+
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
 
   return {
-    revalidate: 600,
     props: {
-      servers: servers,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ servers }) => {
+const Servers: React.FC = () => {
   const router = useRouter();
 
   const filters = useServerFilters();
-  const { data } = useServers(servers);
+  const { data, isLoading } = useServers();
 
   function resetFilters() {
     router.push({ query: {} });
@@ -58,7 +66,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
 
         <Spacer h={1} />
 
-        <ServerList servers={data?.servers || []} isLoading={false} onResetFilters={resetFilters} />
+        <ServerList servers={data?.servers || []} isLoading={isLoading} onResetFilters={resetFilters} />
       </div>
     </>
   );

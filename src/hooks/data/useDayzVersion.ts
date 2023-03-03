@@ -1,21 +1,11 @@
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
+import { useQuery } from '@tanstack/react-query';
 import { GameVersion } from '../../types/Types';
 
-export default function useDayzVersion(): {
-  dayzVersion: GameVersion | undefined;
-  isLoading: boolean;
-  isError: boolean;
-} {
-  const { data, error, isLoading } = useSWR<GameVersion>('/api/steam/version', fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
+export default function useDayzVersion() {
+  const query = useQuery<GameVersion>({
+    queryKey: ['/api/steam/version'],
+    refetchOnWindowFocus: false,
   });
 
-  return {
-    dayzVersion: data,
-    isLoading: isLoading,
-    isError: error,
-  };
+  return query;
 }

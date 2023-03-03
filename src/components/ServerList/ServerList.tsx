@@ -15,7 +15,7 @@ const ServerList: React.FC<Props> = ({ servers, isLoading = false, onResetFilter
   if (!isLoading && servers.length === 0) return <ServersEmptyState onResetFilters={onResetFilters} />;
 
   return (
-    <div className="grid xs:grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 grid-flow-row gap-6">
+    <div className="xs:grid-cols-1 grid grid-flow-row gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
       {!isLoading
         ? servers.slice(0, MAX_SERVERS).map((server, i) => <ServerCard server={server} imageHeight={100} key={i} />)
         : [...Array(MAX_SERVERS).keys()].map((_, i) => <ServerCard imageHeight={100} isLoading key={i} />)}

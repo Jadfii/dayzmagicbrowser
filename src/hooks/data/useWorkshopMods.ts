@@ -1,22 +1,13 @@
-import useSWR from 'swr';
-import { fetcher } from '../../data/fetcher';
+import { Endpoint } from './../../types/Endpoints';
+import { useQuery } from '@tanstack/react-query';
 import { WorkshopMod } from '../../types/Types';
 
-export default function useWorkshopMods(modIds: string[]): {
-  workshopMods: WorkshopMod[];
-  isLoading: boolean;
-  isError: boolean;
-} {
-  const { data, error, isLoading } = useSWR<WorkshopMod[]>(`/api/steam/workshop?modIds=${encodeURI(modIds.join(','))}`, fetcher, {
-    revalidateIfStale: false,
-    revalidateOnFocus: false,
-    revalidateOnReconnect: false,
-    isPaused: () => modIds.length === 0,
+export default function useWorkshopMods(modIds: string[]) {
+  const query = useQuery<WorkshopMod[]>({
+    queryKey: [`${Endpoint.WORKSHOP_MODS}`, `modIds=${encodeURI(modIds.join(','))}`],
+    refetchOnWindowFocus: false,
+    enabled: modIds.length > 0,
   });
 
-  return {
-    workshopMods: data || [],
-    isLoading: isLoading && modIds.length > 0,
-    isError: error,
-  };
+  return query;
 }

@@ -1,4 +1,4 @@
-import { InferGetStaticPropsType } from 'next';
+import { GetStaticProps, InferGetStaticPropsType } from 'next';
 import { Button, Divider, Grid, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
@@ -6,20 +6,24 @@ import Link from 'next/link';
 import useHomeServers from '../hooks/data/useHomeServers';
 import HomeServersSection from '../components/HomeServers/HomeServersSection';
 import { getHomePageData } from './api/servers/home';
+import { dehydrate, QueryClient } from '@tanstack/react-query';
+import { Endpoint } from '../types/Endpoints';
 
-export const getStaticProps = async () => {
-  const homeServers = await getHomePageData();
+export const getStaticProps: GetStaticProps = async () => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery([Endpoint.HOME_SERVERS], getHomePageData);
 
   return {
     revalidate: 600,
     props: {
-      homeServers,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeServers }) => {
-  const { homeServersList, isLoading } = useHomeServers(homeServers);
+const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = () => {
+  const { data: homeServersList, isLoading } = useHomeServers();
 
   return (
     <>
