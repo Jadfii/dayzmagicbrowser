@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { fetcher } from '../data/fetcher';
-import { HomeServers } from '../types/Types';
+import { fetcher } from '../../data/fetcher';
+import { HomeServers } from '../../types/Types';
 
 const EMPTY_HOME_SERVERS: HomeServers = { popular: [], official: [], experimental: [] };
 

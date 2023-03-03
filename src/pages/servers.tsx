@@ -6,7 +6,7 @@ import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
-import useServers from '../hooks/useServers';
+import useServers from '../hooks/data/useServers';
 import useServerFilters from '../hooks/useServerFilters';
 import { getServersPageData } from './api/servers';
 

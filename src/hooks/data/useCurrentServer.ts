@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import useSWR from 'swr';
-import { fetcher } from '../data/fetcher';
-import { Server } from '../types/Types';
+import { fetcher } from '../../data/fetcher';
+import { Server } from '../../types/Types';
 
 export default function useCurrentServer(initialData?: Server): {
   server: Server | undefined;

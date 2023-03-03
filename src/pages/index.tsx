@@ -3,7 +3,7 @@ import { Button, Divider, Grid, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
-import useHomeServers from '../hooks/useHomeServers';
+import useHomeServers from '../hooks/data/useHomeServers';
 import HomeServersSection from '../components/HomeServers/HomeServersSection';
 import { getHomePageData } from './api/servers/home';
 
@@ -23,10 +23,10 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ homeSe
 
   return (
     <>
-      <div className="relative flex items-center flex-auto" style={{ height: '75vh' }}>
+      <div className="relative flex flex-auto items-center" style={{ height: '75vh' }}>
         <BackgroundImage src={`/images/home.jpg`} />
 
-        <Grid.Container className="px-8 my-auto">
+        <Grid.Container className="my-auto px-8">
           <Grid sm={24} md={18} lg={10} className="relative flex-col">
             <Text h1 margin={'0 0 1rem 0'} style={{ lineHeight: '1.25' }}>
               Find your next favourite DayZ server

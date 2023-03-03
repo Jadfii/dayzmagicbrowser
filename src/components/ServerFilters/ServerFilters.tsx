@@ -1,6 +1,6 @@
 import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/core';
 import React, { useEffect, useState } from 'react';
-import useAvailableServerFilters from '../../hooks/useAvailableServerFilters';
+import useAvailableServerFilters from '../../hooks/data/useAvailableServerFilters';
 import useDebounce from '../../hooks/useDebounce';
 import { usePrevious } from '../../hooks/usePrevious';
 import useServerFilters from '../../hooks/useServerFilters';

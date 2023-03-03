@@ -1,8 +1,8 @@
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
-import { fetcher } from '../data/fetcher';
-import { getServersPageData } from '../pages/api/servers';
+import { fetcher } from '../../data/fetcher';
+import { getServersPageData } from '../../pages/api/servers';
 
 type Data = Awaited<ReturnType<typeof getServersPageData>>;
 

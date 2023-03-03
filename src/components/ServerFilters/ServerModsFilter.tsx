@@ -4,8 +4,8 @@ import { useDebounceWithPending } from '../../hooks/useDebounce';
 import { SelectOption, WorkshopMod } from '../../types/Types';
 import { X } from '@geist-ui/react-icons';
 import FormItemLabel from '../FormItemLabel/FormItemLabel';
-import useWorkshopMods from '../../hooks/useWorkshopMods';
-import useSearchWorkshopMods from '../../hooks/useSearchWorkshopMods';
+import useWorkshopMods from '../../hooks/data/useWorkshopMods';
+import useSearchWorkshopMods from '../../hooks/data/useSearchWorkshopMods';
 
 interface Props {
   availableOptions: SelectOption[];
@@ -72,7 +72,7 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
       </FormItemLabel>
 
       {enrichedSelectedMods.length > 0 && (
-        <div className="space-y-2 mt-2">
+        <div className="mt-2 space-y-2">
           {enrichedSelectedMods
             .filter((mod) => mod?.name)
             .map((mod, i) => (

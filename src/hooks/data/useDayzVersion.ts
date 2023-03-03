@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { fetcher } from '../data/fetcher';
-import { GameVersion } from '../types/Types';
+import { fetcher } from '../../data/fetcher';
+import { GameVersion } from '../../types/Types';
 
 export default function useDayzVersion(): {
   dayzVersion: GameVersion | undefined;

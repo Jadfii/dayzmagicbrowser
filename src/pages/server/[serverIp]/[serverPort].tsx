@@ -13,11 +13,11 @@ import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
 import { getIslandImageURL } from '../../../constants/links.constant';
 import { isMatchingVersion } from '../../../data/Version';
-import useDayzVersion from '../../../hooks/useDayzVersion';
-import useWorkshopMods from '../../../hooks/useWorkshopMods';
+import useDayzVersion from '../../../hooks/data/useDayzVersion';
+import useWorkshopMods from '../../../hooks/data/useWorkshopMods';
 import useConnectServer from '../../../hooks/useConnectServer';
 import { Server } from '../../../types/Types';
-import useCurrentServer from '../../../hooks/useCurrentServer';
+import useCurrentServer from '../../../hooks/data/useCurrentServer';
 
 export const getServerSideProps: GetServerSideProps<{ initialServer: Server }> = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -104,12 +104,12 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
 
       {server?.name && server?.version ? (
         <>
-          <div className="relative flex items-end h-48 py-4">
+          <div className="relative flex h-48 items-end py-4">
             <BackgroundImage src={getIslandImageURL(server?.relatedIsland?.terrainId)} />
 
             <Grid.Container className="z-10">
               <Grid xs={24} className="flex flex-col items-start">
-                <Text h1 margin={0} width="100%" className="leading-tight break-words">
+                <Text h1 margin={0} width="100%" className="break-words leading-tight">
                   {server.name}
                 </Text>
 
@@ -134,7 +134,7 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
           </div>
 
           <div className="relative flex flex-auto py-8">
-            <div className="flex flex-col flex-auto">
+            <div className="flex flex-auto flex-col">
               <div className="flex items-start">
                 <Button onClick={onPlayClick} type="success-light" icon={<Play />} scale={4 / 3}>
                   Play
@@ -144,10 +144,10 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
               <Spacer h={1} />
 
               <div className="flex flex-auto space-x-6">
-                <div className="flex flex-col flex-auto">
+                <div className="flex flex-auto flex-col">
                   <Text h3>Server details</Text>
 
-                  <div className="grid grid-cols-3 grid-flow-row gap-6 w-full">
+                  <div className="grid w-full grid-flow-row grid-cols-3 gap-6">
                     <ServerInfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
 
                     <ServerInfoCard
@@ -192,7 +192,7 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                   </div>
                 </div>
 
-                <div className="flex flex-auto w-3/12">{workshopMods && <ServerModList mods={workshopMods} isLoading={isLoadingMods} />}</div>
+                <div className="flex w-3/12 flex-auto">{workshopMods && <ServerModList mods={workshopMods} isLoading={isLoadingMods} />}</div>
               </div>
             </div>
           </div>

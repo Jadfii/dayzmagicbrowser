@@ -1,6 +1,6 @@
 import useSWR from 'swr';
-import { fetcher } from '../data/fetcher';
-import { WorkshopMod } from '../types/Types';
+import { fetcher } from '../../data/fetcher';
+import { WorkshopMod } from '../../types/Types';
 
 export default function useWorkshopMods(modIds: string[]): {
   workshopMods: WorkshopMod[];
