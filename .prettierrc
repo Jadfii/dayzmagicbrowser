@@ -1,5 +1,6 @@
 {
   "singleQuote": true,
   "trailingComma": "es5",
-  "printWidth": 150
+  "printWidth": 150,
+  "tailwindConfig": "./tailwind.config.js"
 }
