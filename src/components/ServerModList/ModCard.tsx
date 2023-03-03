@@ -36,7 +36,7 @@ const ModCard: React.FC<Props> = ({ mod }) => {
           </div>
         </div>
 
-        <ArrowRight className="flex-shrink-0 ml-auto" />
+        <ArrowRight className="ml-auto flex-shrink-0" />
       </Card.Content>
     </Card>
   );

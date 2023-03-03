@@ -16,7 +16,7 @@ const ServersEmptyState: React.FC<Props> = ({ dim = false, onResetFilters }) => 
   }
 
   return (
-    <div className="flex flex-col items-center justify-center mt-24">
+    <div className="mt-24 flex flex-col items-center justify-center">
       <Frown size={48} color={dim ? dimColour : undefined} />
       <Text h2 my={0} style={{ ...(dim ? { color: dimColour } : {}) }}>
         No servers found

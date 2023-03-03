@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   const theme = useTheme();
 
   return (
-    <div className="flex w-full pt-12 py-24 mt-auto" style={{ background: theme.palette.background }}>
+    <div className="mt-auto flex w-full py-24 pt-12" style={{ background: theme.palette.background }}>
       <div>
         <Logo />
 

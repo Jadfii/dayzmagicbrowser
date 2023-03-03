@@ -10,7 +10,7 @@ const Masthead: React.FC = () => {
   return (
     <>
       <div className="container fixed z-20" style={{ background: theme.palette.accents_1 }}>
-        <div className="flex items-center h-20 px-8">
+        <div className="flex h-20 items-center px-8">
           <Link href="/" className="flex items-center">
             <Logo style={{ color: '#fff' }} />
 

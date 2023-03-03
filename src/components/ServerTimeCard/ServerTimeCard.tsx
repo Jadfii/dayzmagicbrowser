@@ -10,8 +10,8 @@ interface Props {
 
 const ServerTimeCard: React.FC<Props> = ({ server }) => {
   return (
-    <Card className="self-start col-span-3">
-      <div className="flex items-center h-16">
+    <Card className="col-span-3 self-start">
+      <div className="flex h-16 items-center">
         <Tooltip text="Server time">
           <Clock size={40} />
         </Tooltip>
@@ -22,7 +22,7 @@ const ServerTimeCard: React.FC<Props> = ({ server }) => {
           {server.clockTime}
         </Text>
 
-        <div className="flex items-center ml-auto">
+        <div className="ml-auto flex items-center">
           <Tooltip text="Day time length">
             <Sun />
           </Tooltip>

@@ -10,7 +10,7 @@ interface Props extends React.HTMLProps<HTMLDivElement> {
 const ServerInfoCard: React.FC<Props> = ({ icon, iconDescription, item, className }) => {
   return (
     <Card className={`self-start ${className}`}>
-      <div className="flex items-center h-16">
+      <div className="flex h-16 items-center">
         <Tooltip text={iconDescription}>{React.cloneElement(icon, { size: 40 })}</Tooltip>
 
         <Spacer w={1} />
