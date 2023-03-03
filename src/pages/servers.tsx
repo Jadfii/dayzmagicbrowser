@@ -1,4 +1,4 @@
-import { Button, Loading, Spacer, Text } from '@geist-ui/core';
+import { Button, Spacer, Text } from '@geist-ui/core';
 import React from 'react';
 import { InferGetStaticPropsType } from 'next';
 import ServerList from '../components/ServerList/ServerList';
@@ -25,7 +25,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
   const router = useRouter();
 
   const filters = useServerFilters();
-  const { serverList, isValidating } = useServers(servers);
+  const { data } = useServers(servers);
 
   function resetFilters() {
     router.push({ query: {} });
@@ -35,10 +35,9 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
     <>
       <NextSeo title="Servers" />
 
-      <div className="relative flex flex-col flex-1 py-10">
-        <div className="flex items-center justify-between w-44">
+      <div className="relative flex flex-1 flex-col py-10">
+        <div className="flex w-44 items-center justify-between">
           <Text h2>Servers</Text>
-          {isValidating && <Loading></Loading>}
         </div>
 
         <div>
@@ -50,7 +49,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
             </div>
 
             <Text p margin={0}>
-              Showing {serverList.length} servers
+              Showing {data?.servers.length ?? 0} of {data?.count ?? 0} servers
             </Text>
           </div>
 
@@ -59,7 +58,7 @@ const Servers: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = ({ ser
 
         <Spacer h={1} />
 
-        <ServerList servers={serverList} isLoading={false} onResetFilters={resetFilters} />
+        <ServerList servers={data?.servers || []} isLoading={false} onResetFilters={resetFilters} />
       </div>
     </>
   );

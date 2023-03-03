@@ -2,13 +2,15 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../data/fetcher';
-import { Server } from '../types/Types';
+import { getServersPageData } from '../pages/api/servers';
 
-export default function useServers(initialData?: Server[]) {
+type Data = Awaited<ReturnType<typeof getServersPageData>>;
+
+export default function useServers(initialData?: Data) {
   const router = useRouter();
   const [queryString, setQueryString] = useState<string>('');
 
-  const { data, error, isLoading, isValidating } = useSWR<Server[]>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
+  const res = useSWR<Data>(`/api/servers${queryString ? `?${queryString}` : ''}`, fetcher, {
     ...(initialData ? { fallbackData: initialData } : {}),
     isPaused: () => !router?.isReady,
     refreshInterval: 120000,
@@ -30,10 +32,5 @@ export default function useServers(initialData?: Server[]) {
     setQueryString(searchParams.toString());
   }, [router?.query]);
 
-  return {
-    serverList: data || [],
-    isLoading: isLoading,
-    isValidating: isValidating && !isLoading,
-    isError: error,
-  };
+  return res;
 }
