@@ -1,8 +1,15 @@
 {
   "root": true,
   "parser": "@typescript-eslint/parser",
-  "plugins": ["@typescript-eslint", "eslint-plugin-prettier"],
-  "extends": ["eslint:recommended", "plugin:@typescript-eslint/eslint-recommended", "plugin:@typescript-eslint/recommended", "next", "prettier"],
+  "plugins": ["@typescript-eslint", "eslint-plugin-prettier", "@tanstack/query"],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/eslint-recommended",
+    "plugin:@typescript-eslint/recommended",
+    "next",
+    "prettier",
+    "plugin:@tanstack/eslint-plugin-query/recommended"
+  ],
   "rules": {
     "@next/next/no-document-import-in-page": "off",
     "react-hooks/exhaustive-deps": 0,
