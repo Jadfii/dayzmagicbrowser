@@ -12,11 +12,8 @@ const GLOBAL_SETSTATE_OPTIONS = {
   shallow: true,
 };
 
-interface Props {
-  filters: ReturnType<typeof useServerFilters>;
-}
-
-const ServerFilters: React.FC<Props> = ({ filters }) => {
+const ServerFilters: React.FC = () => {
+  const filters = useServerFilters();
   const { data: availableFilters } = useAvailableServerFilters();
 
   return (

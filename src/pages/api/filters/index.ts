@@ -9,14 +9,7 @@ import rateLimit from '../../../middleware/rateLimit';
 
 const INITIAL_MOD_COUNT = 50;
 
-const handler = nextConnect();
-
-handler.use(rateLimit());
-
-handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
-
+export const getAvailableFiltersData = async () => {
   // Get all islands
   const islandsQuery = prisma.island.findMany().then((res) => res.map(serialiseIsland));
 
@@ -105,7 +98,19 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
     return acc;
   }, []);
 
-  return res.status(200).json({ islands: mappedGroupedIslands, versions: mappedGroupedVersions, mods: mappedGroupedMods });
+  return { islands: mappedGroupedIslands, versions: mappedGroupedVersions, mods: mappedGroupedMods };
+};
+
+const handler = nextConnect();
+
+handler.use(rateLimit());
+
+handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
+  // Caching
+  res.setHeader('Cache-Control', `s-maxage=120, stale-while-revalidate`);
+
+  const data = await getAvailableFiltersData();
+  return res.status(200).json(data);
 });
 
 export default handler;

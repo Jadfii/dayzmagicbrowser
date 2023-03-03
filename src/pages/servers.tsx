@@ -7,7 +7,6 @@ import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
 import useServers from '../hooks/data/useServers';
-import useServerFilters from '../hooks/useServerFilters';
 import { getServersPageData } from './api/servers';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../types/Endpoints';
@@ -17,7 +16,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, query }) => 
   const encodedQuery = encode(query);
 
   const queryClient = new QueryClient();
-  await queryClient.prefetchQuery([Endpoint.SERVERS, ...(encodedQuery && [`${encodedQuery}`])], () => getServersPageData(query));
+  await Promise.all([queryClient.prefetchQuery([Endpoint.SERVERS, ...(encodedQuery && [`${encodedQuery}`])], () => getServersPageData(query))]);
 
   // Caching
   res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
@@ -32,7 +31,6 @@ export const getServerSideProps: GetServerSideProps = async ({ res, query }) => 
 const Servers: React.FC = () => {
   const router = useRouter();
 
-  const filters = useServerFilters();
   const { data, isLoading } = useServers();
 
   function resetFilters() {
@@ -61,7 +59,7 @@ const Servers: React.FC = () => {
             </Text>
           </div>
 
-          <ServerFilters filters={filters} />
+          <ServerFilters />
         </div>
 
         <Spacer h={1} />

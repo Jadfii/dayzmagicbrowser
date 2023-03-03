@@ -14,7 +14,6 @@ export default function useServers() {
     queryKey: [`${Endpoint.SERVERS}`, ...(filters && [`${filters}`])],
     enabled: router?.isReady,
     keepPreviousData: true,
-    refetchOnMount: false,
     refetchInterval: 120000,
   });
 
