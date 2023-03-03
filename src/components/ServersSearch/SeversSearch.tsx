@@ -6,7 +6,6 @@ import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
 import { Server } from '../../types/Types';
 import { sortServersByPlayerCount } from '../../utils/server.util';
-import http from '../../services/HTTP';
 
 const ELEMENT_ID = 'servers-search';
 const RESULTS_LIMIT = 100;
@@ -41,14 +40,12 @@ const ServersSearch: React.FC = () => {
     (async () => {
       setIsSearching(true);
 
-      const serverResults: Server[] = await http
-        .get(
-          `/api/servers/search?` +
-            new URLSearchParams({
-              name: debouncedSearchValue,
-            })
-        )
-        .then((response) => response.json());
+      const serverResults: Server[] = await fetch(
+        `/api/servers/search?` +
+          new URLSearchParams({
+            name: debouncedSearchValue,
+          })
+      ).then((response) => response.json());
 
       // Search results, sort by players, limit to top 100 results
       const optionsResult = sortServersByPlayerCount(serverResults).slice(0, RESULTS_LIMIT);
