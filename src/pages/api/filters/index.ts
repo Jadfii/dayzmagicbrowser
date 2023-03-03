@@ -91,8 +91,8 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
 
   // Map versions to correct format
   const mappedGroupedVersions = groupedVersions.reduce<SelectOption[]>((acc, curr) => {
-    const isLatestStableVersion = isMatchingVersion(curr.version, gameVersion.stable);
-    const isLatestExpVersion = !isLatestStableVersion && isMatchingVersion(curr.version, gameVersion.exp);
+    const isLatestStableVersion = isMatchingVersion(curr.version, gameVersion?.stable);
+    const isLatestExpVersion = !isLatestStableVersion && isMatchingVersion(curr.version, gameVersion?.exp);
 
     acc.push({
       label: curr?.version,

@@ -13,6 +13,8 @@ handler.get(async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     const dayzVersion = await getGameVersion();
 
+    if (dayzVersion === undefined) throw new Error('timeout');
+
     return res.status(200).json(dayzVersion);
   } catch (err) {
     console.error(err);
