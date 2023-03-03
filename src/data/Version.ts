@@ -6,7 +6,7 @@ export const EMPTY_GAME_VERSION: GameVersion = { stable: '', exp: '' };
 
 export const getGameVersion = async (): Promise<GameVersion | undefined> => {
   const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconds
+  const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 seconds
 
   try {
     const res = await http<MagicLauncher_Version_Response>('https://dayzmagiclauncher.com/version', { signal: controller.signal }).then((data) => ({
