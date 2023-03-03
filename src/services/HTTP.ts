@@ -1,9 +1,9 @@
-import ky from 'ky-universal';
+import fetch from 'node-fetch';
 
-const config = { timeout: 5000 };
+const http = async <T = unknown>(...args: Parameters<typeof fetch>) => {
+  const response = await fetch(...args).then((res) => res.json());
 
-const instance = ky.create({
-  ...config,
-});
+  return response as T;
+};
 
-export default instance;
+export default http;

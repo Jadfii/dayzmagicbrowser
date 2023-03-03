@@ -11,9 +11,9 @@ export async function getWorkshopMods(fileIds: string[]): Promise<WorkshopMod[]>
     .map(([key, val]) => `${key}=${val}`)
     .join('&');
 
-  const modsResponse = await http
-    .get(`https://api.steampowered.com/IPublishedFileService/GetDetails/v1/?key=${process.env.STEAM_API_KEY}&${modsQueryString}`)
-    .then((response) => response.json<IPublishedFileService_GetDetails_Response>())
+  const modsResponse = await http<IPublishedFileService_GetDetails_Response>(
+    `https://api.steampowered.com/IPublishedFileService/GetDetails/v1/?key=${process.env.STEAM_API_KEY}&${modsQueryString}`
+  )
     .then((data) => data?.response?.publishedfiledetails)
     .then((mods) =>
       mods
@@ -26,13 +26,11 @@ export async function getWorkshopMods(fileIds: string[]): Promise<WorkshopMod[]>
 }
 
 export async function searchWorkshopMods(searchTerm: string): Promise<WorkshopMod[]> {
-  const modsResponse = await http
-    .get(
-      `https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key=${
-        process.env.STEAM_API_KEY
-      }&query_type=12&page=0&numperpage=20&return_details=true&appid=${DAYZ_APPID}&search_text=${encodeURI(searchTerm)}`
-    )
-    .then((response) => response.json<IPublishedFileService_QueryFiles_Response>())
+  const modsResponse = await http<IPublishedFileService_QueryFiles_Response>(
+    `https://api.steampowered.com/IPublishedFileService/QueryFiles/v1/?key=${
+      process.env.STEAM_API_KEY
+    }&query_type=12&page=0&numperpage=20&return_details=true&appid=${DAYZ_APPID}&search_text=${encodeURI(searchTerm)}`
+  )
     .then((data) => data?.response?.publishedfiledetails)
     .then((mods) =>
       mods

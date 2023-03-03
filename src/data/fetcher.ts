@@ -1,5 +1,3 @@
-import http from '../services/HTTP';
-
-export async function fetcher<JSON = unknown>(input: RequestInfo, init?: RequestInit): Promise<JSON> {
-  return await http(input, init).then((res) => res.json());
+export async function fetcher<JSON = unknown>(input: RequestInfo | URL, init?: RequestInit): Promise<JSON> {
+  return await fetch(input, init).then((res) => res.json() as JSON);
 }
