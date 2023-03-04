@@ -1,7 +1,6 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
-import { useEffect } from 'react';
+import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle, ExternalLink } from '@geist-ui/react-icons';
 import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
@@ -21,6 +20,8 @@ import { Endpoint } from '../../../types/Endpoints';
 import { getServerPageData } from '../../api/servers/[serverIp]/[serverPort]';
 import prisma from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
+import { getServerWebsite } from '../../../utils/server.util';
+import { useMemo } from 'react';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get all servers that are not empty
@@ -94,6 +95,8 @@ const ServerPage: React.FC = () => {
 
   const { connectToServer } = useConnectServer(server);
 
+  const websiteUrl = useMemo(() => getServerWebsite(server?.name), [server?.name]);
+
   const isExperimental = server?.appId === DAYZ_EXP_APPID;
   const isLatestGameVersion =
     !!server?.version &&
@@ -104,14 +107,6 @@ const ServerPage: React.FC = () => {
   function onPlayClick() {
     connectToServer();
   }
-
-  useEffect(() => {
-    if (!server?.ipAddress) {
-      return;
-    }
-
-    console.log(server);
-  }, [server]);
 
   return (
     <>
@@ -163,10 +158,20 @@ const ServerPage: React.FC = () => {
 
           <div className="relative flex flex-auto py-8">
             <div className="flex flex-auto flex-col">
-              <div className="flex items-start">
+              <div className="flex items-start space-x-4">
                 <Button onClick={onPlayClick} type="success-light" icon={<Play />} scale={4 / 3}>
                   Play
                 </Button>
+
+                {websiteUrl && (
+                  <Tooltip text={'Experimental. May be incorrect.'}>
+                    <a href={websiteUrl} target="_blank" rel="noreferrer">
+                      <Button type="default" icon={<ExternalLink />} scale={4 / 3} auto>
+                        Website
+                      </Button>
+                    </a>
+                  </Tooltip>
+                )}
               </div>
 
               <Spacer h={1} />
