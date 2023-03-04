@@ -5,7 +5,7 @@ import { getIslandImageURL, IMAGE_CDN_URL } from '../../constants/links.constant
 import { Server } from '../../types/Types';
 
 export const config = {
-  runtime: 'experimental-edge',
+  runtime: 'edge',
 };
 
 const fontRegular = fetch(new URL('../../assets/Inter-Regular.ttf', import.meta.url).toString()).then((res) => res.arrayBuffer());
