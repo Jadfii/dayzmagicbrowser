@@ -1,6 +1,6 @@
 import { Button, Spacer, Text } from '@geist-ui/core';
 import React from 'react';
-import { GetServerSideProps } from 'next';
+import { GetStaticProps } from 'next';
 import ServerList from '../components/ServerList/ServerList';
 import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
@@ -10,18 +10,17 @@ import useServers from '../hooks/data/useServers';
 import { getServersPageData } from './api/servers';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../types/Endpoints';
-import { encode } from 'querystring';
+import { getAvailableFiltersData } from './api/filters';
 
-export const getServerSideProps: GetServerSideProps = async ({ res, query }) => {
-  const encodedQuery = encode(query);
-
+export const getStaticProps: GetStaticProps = async () => {
   const queryClient = new QueryClient();
-  await Promise.all([queryClient.prefetchQuery([Endpoint.SERVERS, ...(encodedQuery && [`${encodedQuery}`])], () => getServersPageData(query))]);
-
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
+  await Promise.all([
+    queryClient.prefetchQuery([Endpoint.SERVERS], () => getServersPageData()),
+    queryClient.prefetchQuery([Endpoint.SERVER_FILTERS], () => getAvailableFiltersData()),
+  ]);
 
   return {
+    revalidate: 1800,
     props: {
       dehydratedState: dehydrate(queryClient),
     },

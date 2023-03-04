@@ -15,7 +15,7 @@ export const getStaticProps: GetStaticProps = async () => {
   await queryClient.prefetchQuery([Endpoint.HOME_SERVERS], getHomePageData);
 
   return {
-    revalidate: 600,
+    revalidate: 1800,
     props: {
       dehydratedState: dehydrate(queryClient),
     },
