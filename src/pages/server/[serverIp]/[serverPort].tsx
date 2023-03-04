@@ -1,7 +1,7 @@
 import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
@@ -50,22 +50,19 @@ export const getServerSideProps: GetServerSideProps = async ({ res, params }) =>
 
 const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
   const theme = useTheme();
-  const { data: server } = useCurrentServer();
-  const { connectToServer } = useConnectServer(server);
+
+  const { data: server, isFetching: isLoadingServer } = useCurrentServer();
   const { data: dayzVersion } = useDayzVersion();
-  const { data: workshopMods, isLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
+  const { data: workshopMods, isInitialLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
 
-  const [isLoadingServer, setIsLoadingServer] = useState<boolean>(true);
+  const { connectToServer } = useConnectServer(server);
 
-  const isExperimental: boolean = useMemo(() => server?.appId === DAYZ_EXP_APPID, [server?.appId]);
-  const isLatestGameVersion: boolean = useMemo(
-    () =>
-      !!server?.version &&
-      !!dayzVersion?.stable &&
-      !!dayzVersion?.exp &&
-      isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable),
-    [server?.version, dayzVersion, isExperimental]
-  );
+  const isExperimental = server?.appId === DAYZ_EXP_APPID;
+  const isLatestGameVersion =
+    !!server?.version &&
+    !!dayzVersion?.stable &&
+    !!dayzVersion?.exp &&
+    isMatchingVersion(server?.version, isExperimental ? dayzVersion?.exp : dayzVersion?.stable);
 
   function onPlayClick() {
     connectToServer();
@@ -77,8 +74,6 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
     }
 
     console.log(server);
-
-    setIsLoadingServer(false);
   }, [server]);
 
   return (
@@ -188,7 +183,9 @@ const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps
                   </div>
                 </div>
 
-                <div className="flex w-3/12 flex-auto">{workshopMods && <ServerModList mods={workshopMods} isLoading={isLoadingMods} />}</div>
+                <div className="flex w-3/12 flex-auto">
+                  <ServerModList mods={workshopMods ?? []} isLoading={isLoadingMods} />
+                </div>
               </div>
             </div>
           </div>
