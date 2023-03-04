@@ -9,10 +9,14 @@ export const getGameVersion = async () => {
   const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 seconds
 
   try {
-    const res = await http<MagicLauncher_Version_Response>('https://dayzmagiclauncher.com/version', { signal: controller.signal }).then((data) => ({
-      stable: data?.version,
-      exp: data?.version_exp,
-    }));
+    const res = await http<MagicLauncher_Version_Response>('https://dayzmagiclauncher.com/version', { signal: controller.signal }).then((data) =>
+      data
+        ? {
+            stable: data?.version,
+            exp: data?.version_exp,
+          }
+        : null
+    );
 
     return res;
   } catch (err) {
