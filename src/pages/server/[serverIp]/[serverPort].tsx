@@ -47,7 +47,14 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery([`${Endpoint.SERVERS}/${params.serverIp}/${params.serverPort}`], () => server);
-  await queryClient.prefetchQuery([Endpoint.GAME_VERSION], () => getGameVersion());
+  await queryClient.prefetchQuery([Endpoint.GAME_VERSION], async () => {
+    try {
+      const data = await getGameVersion();
+      return data;
+    } catch (err) {
+      return undefined;
+    }
+  });
   await queryClient.prefetchQuery([`${Endpoint.WORKSHOP_MODS}`, `modIds=${encodeURI(server.modIds.join(','))}`], () =>
     getWorkshopMods(server.modIds.map((id) => id.toString()))
   );
