@@ -37,7 +37,8 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
               alt={`${server?.name} map preview`}
               fill
               src={getIslandImageURL(server?.relatedIsland?.terrainId)}
-              loading="lazy"
+              priority
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               className="object-cover opacity-40 transition-opacity duration-300 group-hover:opacity-70"
             />
           </div>
