@@ -44,3 +44,26 @@ export function getServerWebsite(serverName?: string) {
 
   return undefined;
 }
+
+export const indexOfMultiple = (str: string, searchStrings: string[]) =>
+  searchStrings.reduce<number | undefined>((acc, curr) => {
+    const foundIdx = str.indexOf(curr);
+    if (foundIdx > -1) acc = foundIdx;
+
+    return acc;
+  }, undefined);
+
+export function getServerDiscord(serverName?: string) {
+  if (!serverName) return undefined;
+
+  const discordUrlIdx = serverName.toLowerCase().indexOf('discord.gg');
+
+  if (discordUrlIdx === -1) return undefined;
+
+  const trimmedName = serverName.slice(discordUrlIdx);
+  const discordUrl = trimmedName.slice(0, indexOfMultiple(trimmedName.toLowerCase(), [' ', '-', '|']));
+
+  if (discordUrl) return `https://${discordUrl}`;
+
+  return undefined;
+}

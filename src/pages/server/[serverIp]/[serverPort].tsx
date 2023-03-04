@@ -20,8 +20,9 @@ import { Endpoint } from '../../../types/Endpoints';
 import { getServerPageData } from '../../api/servers/[serverIp]/[serverPort]';
 import prisma from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
-import { getServerWebsite } from '../../../utils/server.util';
+import { getServerDiscord, getServerWebsite } from '../../../utils/server.util';
 import { useMemo } from 'react';
+import { DiscordIcon } from '../../../components/Icons/DiscordIcon';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get all servers that are not empty
@@ -96,6 +97,7 @@ const ServerPage: React.FC = () => {
   const { connectToServer } = useConnectServer(server);
 
   const websiteUrl = useMemo(() => getServerWebsite(server?.name), [server?.name]);
+  const discordUrl = useMemo(() => getServerDiscord(server?.name), [server?.name]);
 
   const isExperimental = server?.appId === DAYZ_EXP_APPID;
   const isLatestGameVersion =
@@ -168,6 +170,16 @@ const ServerPage: React.FC = () => {
                     <a href={websiteUrl} target="_blank" rel="noreferrer">
                       <Button type="default" icon={<ExternalLink />} scale={4 / 3} auto>
                         Website
+                      </Button>
+                    </a>
+                  </Tooltip>
+                )}
+
+                {discordUrl && (
+                  <Tooltip text={'Experimental. May be incorrect.'}>
+                    <a href={discordUrl} target="_blank" rel="noreferrer">
+                      <Button type="default" icon={<DiscordIcon className="fill-white" />} scale={4 / 3} auto className="bg-blurple text-white">
+                        Discord
                       </Button>
                     </a>
                   </Tooltip>
