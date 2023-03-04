@@ -1,4 +1,4 @@
-import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
 import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect } from 'react';
@@ -11,7 +11,7 @@ import ServerFeatureBadge from '../../../components/ServerFeatureBadge/ServerFea
 import ServerInfoCard from '../../../components/ServerInfoCard/ServerInfoCard';
 import ServerTimeCard from '../../../components/ServerTimeCard/ServerTimeCard';
 import { getIslandImageURL } from '../../../constants/links.constant';
-import { isMatchingVersion } from '../../../data/Version';
+import { getGameVersion, isMatchingVersion } from '../../../data/Version';
 import useDayzVersion from '../../../hooks/data/useDayzVersion';
 import useWorkshopMods from '../../../hooks/data/useWorkshopMods';
 import useConnectServer from '../../../hooks/useConnectServer';
@@ -19,8 +19,18 @@ import useCurrentServer from '../../../hooks/data/useCurrentServer';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../../../types/Endpoints';
 import { getServerPageData } from '../../api/servers/[serverIp]/[serverPort]';
+import prisma from '../../../lib/prisma';
+import { getWorkshopMods } from '../../../data/SteamApi';
 
-export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const servers = await prisma.server.findMany({ select: { ipAddress: true, gamePort: true } });
+
+  const paths = servers.map((server) => ({ params: { serverIp: server.ipAddress, serverPort: server.gamePort.toString() } }));
+
+  return { paths, fallback: 'blocking' };
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   if (!params?.serverIp || !params?.serverPort) {
     return {
       notFound: true,
@@ -37,18 +47,20 @@ export const getServerSideProps: GetServerSideProps = async ({ res, params }) =>
 
   const queryClient = new QueryClient();
   await queryClient.prefetchQuery([`${Endpoint.SERVERS}/${params.serverIp}/${params.serverPort}`], () => server);
-
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=60, stale-while-revalidate`);
+  await queryClient.prefetchQuery([Endpoint.GAME_VERSION], () => getGameVersion());
+  await queryClient.prefetchQuery([`${Endpoint.WORKSHOP_MODS}`, `modIds=${encodeURI(server.modIds.join(','))}`], () =>
+    getWorkshopMods(server.modIds.map((id) => id.toString()))
+  );
 
   return {
+    revalidate: 600,
     props: {
       dehydratedState: dehydrate(queryClient),
     },
   };
 };
 
-const ServerPage: React.FC<InferGetServerSidePropsType<typeof getServerSideProps>> = () => {
+const ServerPage: React.FC = () => {
   const theme = useTheme();
 
   const { data: server, isFetching: isLoadingServer } = useCurrentServer();
