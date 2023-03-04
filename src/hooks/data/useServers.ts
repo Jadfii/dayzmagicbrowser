@@ -10,7 +10,7 @@ export default function useServers() {
   const router = useRouter();
 
   const query = useQuery<Data>({
-    queryKey: [`${Endpoint.SERVERS}`, ...(router?.query ? [`${encode(router.query)}`] : [])],
+    queryKey: [`${Endpoint.SERVERS}`, ...(Object.keys(router?.query ?? {}).length > 0 ? [`${encode(router.query)}`] : [])],
     enabled: router?.isReady,
     keepPreviousData: true,
     refetchInterval: 120000,
