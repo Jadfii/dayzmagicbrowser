@@ -4,18 +4,15 @@ import { AutoComplete } from '@geist-ui/core';
 import ServerOption from './ServerOption';
 import useDebounce from '../../hooks/useDebounce';
 import { Search } from '@geist-ui/react-icons';
-import { Server } from '../../types/Types';
-import { sortServersByPlayerCount } from '../../utils/server.util';
+import useSearchServers from '../../hooks/data/useSearchServers';
 
 const ELEMENT_ID = 'servers-search';
-const RESULTS_LIMIT = 100;
 
 const ServersSearch: React.FC = () => {
-  const [searchResults, setSearchResults] = useState<Server[]>([]);
   const [searchValue, setSearchValue] = useState<string>('');
   const debouncedSearchValue: string = useDebounce(searchValue, 500);
 
-  const [isSearching, setIsSearching] = useState<boolean>(false);
+  const { data, isFetching } = useSearchServers(debouncedSearchValue);
 
   const hasInsertedIcon = useRef<boolean>(false);
 
@@ -33,29 +30,6 @@ const ServersSearch: React.FC = () => {
       inputEl?.blur();
     }, 50);
   }
-
-  useEffect(() => {
-    if (!debouncedSearchValue) return setSearchResults([]);
-
-    (async () => {
-      setIsSearching(true);
-
-      const serverResults: Server[] = await fetch(
-        `/api/servers/search?` +
-          new URLSearchParams({
-            name: debouncedSearchValue,
-          })
-      ).then((response) => response.json());
-
-      // Search results, sort by players, limit to top 100 results
-      const optionsResult = sortServersByPlayerCount(serverResults).slice(0, RESULTS_LIMIT);
-      setSearchResults(optionsResult);
-
-      setIsSearching(false);
-    })();
-
-    return undefined;
-  }, [debouncedSearchValue]);
 
   // Inject the custom icon
   // Workaround since AutoComplete doesn't accept an icon ??
@@ -90,16 +64,18 @@ const ServersSearch: React.FC = () => {
     <>
       <AutoComplete
         placeholder="Search server"
-        options={searchResults.map((server: Server, i: number) => (
-          <AutoComplete.Option value={server.id} key={i}>
-            <ServerOption server={server} handleClick={handleOptionClick} />
-          </AutoComplete.Option>
-        ))}
+        options={
+          data?.map((server) => (
+            <AutoComplete.Option value={server.id} key={`${server.ipAddress}:${server.gamePort}-result`}>
+              <ServerOption server={server} handleClick={handleOptionClick} />
+            </AutoComplete.Option>
+          )) ?? []
+        }
         value={searchValue}
         onSearch={searchHandler}
         scale={4 / 3}
         width="100%"
-        searching={isSearching}
+        searching={isFetching}
         clearable
         id={ELEMENT_ID}
       />
