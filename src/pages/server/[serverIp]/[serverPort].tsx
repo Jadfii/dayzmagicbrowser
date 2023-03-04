@@ -3,7 +3,6 @@ import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-u
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle } from '@geist-ui/react-icons';
 import { useEffect, useMemo, useState } from 'react';
 import { NextSeo } from 'next-seo';
-import prisma from '../../../lib/prisma';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
 import ServerModList from '../../../components/ServerModList/ServerModList';
@@ -19,6 +18,7 @@ import useConnectServer from '../../../hooks/useConnectServer';
 import useCurrentServer from '../../../hooks/data/useCurrentServer';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../../../types/Endpoints';
+import { getServerPageData } from '../../api/servers/[serverIp]/[serverPort]';
 
 export const getServerSideProps: GetServerSideProps = async ({ res, params }) => {
   if (!params?.serverIp || !params?.serverPort) {
@@ -27,15 +27,7 @@ export const getServerSideProps: GetServerSideProps = async ({ res, params }) =>
     };
   }
 
-  const server = await prisma.server.findFirst({
-    where: {
-      ipAddress: String(params?.serverIp),
-      gamePort: Number(params?.serverPort),
-    },
-    include: {
-      relatedIsland: true,
-    },
-  });
+  const server = await getServerPageData(String(params?.serverIp), Number(params?.serverPort));
 
   if (!server?.ipAddress) {
     return {

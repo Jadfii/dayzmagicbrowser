@@ -4,6 +4,22 @@ import nextConnect from 'next-connect';
 import rateLimit from '../../../../middleware/rateLimit';
 import validation, { Joi } from '../../../../middleware/validation';
 
+export const getServerPageData = async (ipAddress: string, gamePort: number) => {
+  const server = await prisma.server.findFirst({
+    where: {
+      ipAddress: ipAddress,
+      gamePort: gamePort,
+    },
+    include: {
+      relatedIsland: true,
+    },
+  });
+
+  if (!server?.ipAddress) return undefined;
+
+  return serialiseServer(server);
+};
+
 const querySchema = Joi.object({
   serverIp: Joi.string().required(),
   serverPort: Joi.string().required(),
@@ -21,24 +37,13 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   const { serverIp, serverPort } = req.query;
 
   // Get servers
-  const server = await prisma.server.findFirst({
-    where: {
-      ipAddress: serverIp as string,
-      gamePort: Number(serverPort),
-    },
-    include: {
-      relatedIsland: true,
-    },
-  });
+  const server = await getServerPageData(serverIp as string, Number(serverPort));
 
   if (!server?.ipAddress) {
     return res.status(404).json({ message: 'Server not found' });
   }
 
-  // Serialise servers so they can be passed to component
-  const serialisedServer = serialiseServer(server);
-
-  return res.status(200).json(serialisedServer);
+  return res.status(200).json(server);
 });
 
 export default handler;
