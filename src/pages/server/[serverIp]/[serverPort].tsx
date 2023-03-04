@@ -23,7 +23,29 @@ import prisma from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const servers = await prisma.server.findMany({ select: { ipAddress: true, gamePort: true } });
+  // Get all servers that are not empty
+  // We use fallback for every other server
+  const servers = await prisma.server.findMany({
+    select: { ipAddress: true, gamePort: true },
+    orderBy: [
+      {
+        playerCount: 'desc',
+      },
+      {
+        queueCount: 'desc',
+      },
+    ],
+    where: {
+      OR: {
+        playerCount: {
+          gt: 0,
+        },
+        queueCount: {
+          gt: 0,
+        },
+      },
+    },
+  });
 
   const paths = servers.map((server) => ({ params: { serverIp: server.ipAddress, serverPort: server.gamePort.toString() } }));
 
