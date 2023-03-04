@@ -50,9 +50,9 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   await queryClient.prefetchQuery([Endpoint.GAME_VERSION], async () => {
     try {
       const data = await getGameVersion();
-      return data;
+      return data ?? null;
     } catch (err) {
-      return undefined;
+      return null;
     }
   });
   await queryClient.prefetchQuery([`${Endpoint.WORKSHOP_MODS}`, `modIds=${encodeURI(server.modIds.join(','))}`], () =>

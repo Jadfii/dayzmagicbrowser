@@ -4,7 +4,7 @@ import { GameVersion } from '../types/Types';
 
 export const EMPTY_GAME_VERSION: GameVersion = { stable: '', exp: '' };
 
-export const getGameVersion = async (): Promise<GameVersion | undefined> => {
+export const getGameVersion = async () => {
   const controller = new AbortController();
   const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 seconds
 
