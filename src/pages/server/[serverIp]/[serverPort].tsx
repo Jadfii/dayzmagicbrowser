@@ -27,23 +27,19 @@ export const getStaticPaths: GetStaticPaths = async () => {
   // We use fallback for every other server
   const servers = await prisma.server.findMany({
     select: { ipAddress: true, gamePort: true },
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
     where: {
-      OR: {
-        playerCount: {
-          gt: 0,
+      OR: [
+        {
+          playerCount: {
+            gt: 0,
+          },
         },
-        queueCount: {
-          gt: 0,
+        {
+          queueCount: {
+            gt: 0,
+          },
         },
-      },
+      ],
     },
   });
 
