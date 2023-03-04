@@ -4,6 +4,7 @@ import { Server } from '../../../types/Types';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import validation, { Joi } from '../../../middleware/validation';
+import { sortServersByPlayerCount } from '../../../utils/server.util';
 
 const MAX_SEARCH_RESULTS = 30;
 
@@ -23,7 +24,7 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
   searchTerm = (searchTerm || '').trim().replace(/[\s\n\t]/g, '_');
 
   const servers = await prisma.server.findMany({
-    where: { OR: [{ name: { search: searchTerm } }, { ipAddress: { contains: searchTerm } }] },
+    where: { OR: [{ name: { search: searchTerm } }, { name: { contains: searchTerm } }, { ipAddress: { contains: searchTerm } }] },
     orderBy: {
       _relevance: {
         fields: ['name'],
@@ -37,7 +38,7 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
     },
   });
 
-  const serialisedServers: Server[] = servers.map(serialiseServer);
+  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return res.status(200).json(serialisedServers);
 });
