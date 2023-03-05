@@ -1,3 +1,6 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const defaultTheme = require('tailwindcss/defaultTheme');
+
 module.exports = {
   mode: 'jit',
   darkMode: 'class', // or 'media' or 'class'
@@ -14,6 +17,10 @@ module.exports = {
     },
     container: {
       center: true,
+    },
+    screens: {
+      xs: '475px',
+      ...defaultTheme.screens,
     },
   },
   plugins: [],

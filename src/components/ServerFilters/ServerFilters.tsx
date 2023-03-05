@@ -21,7 +21,7 @@ const ServerFilters: React.FC = () => {
       <Spacer h={1} />
 
       <Card>
-        <div className="grid grid-cols-4 gap-6 py-4">
+        <div className="grid grid-cols-1 gap-6 py-4 xs:grid-cols-2 lg:grid-cols-4">
           <div>
             <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null, GLOBAL_SETSTATE_OPTIONS)} />
           </div>
@@ -171,7 +171,7 @@ const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, in
   return (
     <>
       <Input
-        placeholder="Search server name"
+        placeholder="Search server"
         clearable
         disabled={disabled}
         initialValue={initialValue}

@@ -30,9 +30,9 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = () => {
       <div className="relative flex flex-auto items-center" style={{ height: '75vh' }}>
         <BackgroundImage src={`/images/home.jpg`} />
 
-        <Grid.Container className="my-auto px-8">
+        <Grid.Container className="my-auto px-0 md:px-8">
           <Grid sm={24} md={18} lg={10} className="relative flex-col">
-            <Text h1 margin={'0 0 1rem 0'} style={{ lineHeight: '1.25' }}>
+            <Text h1 margin={'0 0 1rem 0'} className="leading-[1.25]">
               Find your next favourite DayZ server
             </Text>
 
@@ -42,9 +42,9 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = () => {
               All from your browser. No downloads required.
             </Text>
 
-            <div className="mt-10" style={{ width: '75%' }}>
+            <div className="relative mt-10">
               <Link href="/servers">
-                <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} width="100%">
+                <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} className="w-[60%]">
                   Browse servers
                 </Button>
               </Link>

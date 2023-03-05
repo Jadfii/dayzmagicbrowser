@@ -18,7 +18,7 @@ const HomeServersCardGroup: React.FC<Props> = ({ servers, isLoading }) => {
 
   return (
     <>
-      <div className="xs:grid-cols-1 grid grid-flow-row gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="relative grid grid-flow-row grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
         {isLoading && [...Array(HOME_SECTION_SERVERS_COUNT).keys()].map((_, i) => <ServerCard imageHeight={100} key={i} />)}
 
         {!isLoading && servers.map((server, i) => <ServerCard server={server} key={i} />)}

@@ -46,7 +46,7 @@ const Servers: React.FC = () => {
         </div>
 
         <div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col-reverse justify-between gap-2 sm:flex-row sm:items-center">
             <div className="flex items-center">
               <Button onClick={resetFilters} icon={<Delete />} auto>
                 Reset filters

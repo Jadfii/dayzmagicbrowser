@@ -1,9 +1,10 @@
 import React from 'react';
+import { cn } from '../../utils/css.util';
 
-const Logo: React.FC<React.SVGProps<SVGSVGElement>> = ({ className = 'h-4', ...rest }) => {
+const Logo: React.FC<React.SVGProps<SVGSVGElement>> = ({ className, ...rest }) => {
   return (
     <>
-      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 737.4 60.75" preserveAspectRatio="xMinYMin" className={className} {...rest}>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 737.4 60.75" preserveAspectRatio="xMinYMin" className={cn('h-4', className)} {...rest}>
         <g>
           <g>
             <path

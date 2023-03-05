@@ -29,7 +29,7 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
   return (
     <>
       <Link href={server?.ipAddress && server?.gamePort ? `/server/${server?.ipAddress}/${server?.gamePort}` : ''} prefetch={false}>
-        <Card hoverable className="server-card group">
+        <Card hoverable className="group relative h-full">
           <div className="relative w-full" style={{ height: imageHeight }}>
             <Image
               isLoading={isLoading}
@@ -43,63 +43,61 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
             />
           </div>
 
-          <Card.Content>
-            <div className="flex flex-col">
-              <div className="flex items-center">
-                {server?.name && !isLoading ? (
-                  <Tooltip text={server.name} className="truncate">
-                    <Text h5 width="100%" className="my-0 truncate">
-                      {server.name.trim()}
-                    </Text>
+          <Card.Content className="relative flex flex-col" style={{ height: `calc(100% - ${imageHeight}px)` }}>
+            <div className="flex items-center">
+              {server?.name && !isLoading ? (
+                <Tooltip text={server.name} className="truncate">
+                  <Text h5 width="100%" className="my-0 truncate">
+                    {server.name.trim()}
+                  </Text>
+                </Tooltip>
+              ) : (
+                <Skeleton rows={1} />
+              )}
+
+              {server?.queryPort && server?.gamePort && server?.queryPort === server?.gamePort + 1 && (
+                <>
+                  <Spacer w={1 / 2} />
+                  <Badge type="success">Playable</Badge>
+                </>
+              )}
+
+              {server?.isPassword && (
+                <>
+                  <Spacer w={1 / 3} inline />
+                  <Tooltip text="Locked">
+                    <Lock size={20} />
                   </Tooltip>
-                ) : (
-                  <Skeleton rows={1} />
-                )}
+                </>
+              )}
+            </div>
 
-                {server?.queryPort && server?.gamePort && server?.queryPort === server?.gamePort + 1 && (
-                  <>
-                    <Spacer w={1 / 2} />
-                    <Badge type="success">Playable</Badge>
-                  </>
-                )}
+            <Text small className="my-0">
+              {server?.clockTime && !isLoading ? (
+                <>
+                  {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
+                </>
+              ) : (
+                <>
+                  <Spacer h={1 / 2} />
 
-                {server?.isPassword && (
-                  <>
-                    <Spacer w={1 / 3} inline />
-                    <Tooltip text="Locked">
-                      <Lock size={20} />
-                    </Tooltip>
-                  </>
-                )}
-              </div>
+                  <Skeleton cols={3} rows={1} />
+                </>
+              )}
+            </Text>
 
-              <Text small className="my-0">
-                {server?.clockTime && !isLoading ? (
-                  <>
-                    {server?.relatedIsland?.name || server?.island} - {server?.clockTime}
-                  </>
-                ) : (
-                  <>
-                    <Spacer h={1 / 2} />
+            <Spacer h={2} />
 
-                    <Skeleton cols={3} rows={1} />
-                  </>
-                )}
-              </Text>
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-2">
+              {typeof server?.playerCount !== 'undefined' && server?.ipAddress && !isLoading ? (
+                <PlayerCount server={server} type="h5" />
+              ) : (
+                <Skeleton cols={4} rows={1.5} />
+              )}
 
-              <Spacer h={2} />
-
-              <div className="mt-auto flex items-center justify-between">
-                {typeof server?.playerCount !== 'undefined' && server?.ipAddress && !isLoading ? (
-                  <PlayerCount server={server} type="h5" />
-                ) : (
-                  <Skeleton cols={4} rows={1.5} />
-                )}
-
-                <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ipAddress} scale={3 / 4} auto>
-                  Play
-                </Button>
-              </div>
+              <Button onClick={onPlayClick} icon={<Play />} disabled={!server?.ipAddress} scale={3 / 4} auto>
+                Play
+              </Button>
             </div>
           </Card.Content>
         </Card>
