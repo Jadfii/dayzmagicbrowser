@@ -4,6 +4,8 @@ import { useRouter } from 'next/router';
 import { getServersPageData } from '../../pages/api/servers';
 import { encode } from 'querystring';
 
+export const SERVERS_STALE_TIME = 1800 * 1000;
+
 type Data = Awaited<ReturnType<typeof getServersPageData>>;
 
 export default function useServers() {
@@ -14,7 +16,7 @@ export default function useServers() {
     enabled: router?.isReady,
     keepPreviousData: true,
     refetchInterval: 120000,
-    staleTime: 1800 * 1000,
+    staleTime: SERVERS_STALE_TIME,
   });
 
   return query;

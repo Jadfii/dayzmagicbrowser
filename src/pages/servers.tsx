@@ -6,7 +6,7 @@ import { NextSeo } from 'next-seo';
 import ServerFilters from '../components/ServerFilters/ServerFilters';
 import { Delete } from '@geist-ui/react-icons';
 import { useRouter } from 'next/router';
-import useServers from '../hooks/data/useServers';
+import useServers, { SERVERS_STALE_TIME } from '../hooks/data/useServers';
 import { getServersPageData } from './api/servers';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../types/Endpoints';
@@ -20,7 +20,7 @@ export const getStaticProps: GetStaticProps = async () => {
   ]);
 
   return {
-    revalidate: 1800,
+    revalidate: SERVERS_STALE_TIME / 1000,
     props: {
       dehydratedState: dehydrate(queryClient),
     },
