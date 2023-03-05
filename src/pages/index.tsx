@@ -1,5 +1,5 @@
 import { GetStaticProps, InferGetStaticPropsType } from 'next';
-import { Button, Divider, Grid, Text } from '@geist-ui/core';
+import { Button, Divider, Text } from '@geist-ui/core';
 import BackgroundImage from '../components/BackgroundImage/BackgroundImage';
 import { ArrowRight } from '@geist-ui/react-icons';
 import Link from 'next/link';
@@ -30,27 +30,23 @@ const Home: React.FC<InferGetStaticPropsType<typeof getStaticProps>> = () => {
       <div className="relative flex flex-auto items-center" style={{ height: '75vh' }}>
         <BackgroundImage src={`/images/home.jpg`} />
 
-        <Grid.Container className="my-auto px-0 md:px-8">
-          <Grid sm={24} md={18} lg={10} className="relative flex-col">
-            <Text h1 margin={'0 0 1rem 0'} className="leading-[1.25]">
-              Find your next favourite DayZ server
-            </Text>
-
-            <Text p margin={0}>
-              Browse & refine a full list of DayZ servers and connect directly into the game.
-              <br />
-              All from your browser. No downloads required.
-            </Text>
-
-            <div className="relative mt-10">
-              <Link href="/servers">
-                <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} className="w-[60%]">
-                  Browse servers
-                </Button>
-              </Link>
-            </div>
-          </Grid>
-        </Grid.Container>
+        <div className="my-auto pr-4 sm:pr-8 md:pr-16">
+          <Text h1 margin={'0 0 1rem 0'} className="leading-[1.25]">
+            Find your next favourite DayZ server
+          </Text>
+          <Text p margin={0}>
+            Browse & refine a full list of DayZ servers and connect directly into the game.
+            <br />
+            All from your browser. No downloads required.
+          </Text>
+          <div className="relative mt-10">
+            <Link href="/servers">
+              <Button type="success-light" iconRight={<ArrowRight />} scale={5 / 3} className="w-[60%]">
+                Browse servers
+              </Button>
+            </Link>
+          </div>
+        </div>
       </div>
 
       <Divider my={0} />
