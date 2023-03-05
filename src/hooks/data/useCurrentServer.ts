@@ -8,7 +8,7 @@ export default function useCurrentServer(options?: UseQueryOptions<Server>) {
 
   const query = useQuery<Server>({
     queryKey: [`${Endpoint.SERVERS}/${router?.query?.serverIp}/${router?.query?.serverPort}`],
-    enabled: router?.isReady,
+    enabled: !!router?.query?.serverIp && !!router?.query?.serverPort,
     refetchInterval: 60000,
     ...options,
   });

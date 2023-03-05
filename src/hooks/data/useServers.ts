@@ -13,7 +13,6 @@ export default function useServers() {
 
   const query = useQuery<Data>({
     queryKey: [`${Endpoint.SERVERS}`, ...(Object.keys(router?.query ?? {}).length > 0 ? [`${encode(router.query)}`] : [])],
-    enabled: router?.isReady,
     keepPreviousData: true,
     refetchInterval: 120000,
     staleTime: SERVERS_STALE_TIME,
