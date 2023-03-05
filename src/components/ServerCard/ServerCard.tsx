@@ -28,7 +28,7 @@ const ServerCard: React.FC<Props> = ({ server, isLoading = false, imageHeight = 
 
   return (
     <>
-      <Link href={server?.ipAddress && server?.gamePort ? `/server/${server?.ipAddress}/${server?.gamePort}` : ''}>
+      <Link href={server?.ipAddress && server?.gamePort ? `/server/${server?.ipAddress}/${server?.gamePort}` : ''} prefetch={false}>
         <Card hoverable className="server-card group">
           <div className="relative w-full" style={{ height: imageHeight }}>
             <Image
