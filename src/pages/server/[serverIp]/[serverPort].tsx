@@ -23,6 +23,7 @@ import { getWorkshopMods } from '../../../data/SteamApi';
 import { getServerDiscord, getServerWebsite } from '../../../utils/server.util';
 import { useMemo } from 'react';
 import { DiscordIcon } from '../../../components/Icons/DiscordIcon';
+import Link from 'next/link';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get all servers that are not empty
@@ -167,21 +168,21 @@ const ServerPage: React.FC = () => {
 
                 {websiteUrl && (
                   <Tooltip text={'Experimental. May be incorrect.'}>
-                    <a href={websiteUrl} target="_blank" rel="noreferrer">
+                    <Link href={websiteUrl} target="_blank" rel="noreferrer">
                       <Button type="default" icon={<ExternalLink />} scale={4 / 3} auto>
                         Website
                       </Button>
-                    </a>
+                    </Link>
                   </Tooltip>
                 )}
 
                 {discordUrl && (
                   <Tooltip text={'Experimental. May be incorrect.'}>
-                    <a href={discordUrl} target="_blank" rel="noreferrer">
+                    <Link href={discordUrl} target="_blank" rel="noreferrer">
                       <Button type="default" icon={<DiscordIcon className="fill-white" />} scale={4 / 3} auto className="bg-blurple text-white">
                         Discord
                       </Button>
-                    </a>
+                    </Link>
                   </Tooltip>
                 )}
               </div>
