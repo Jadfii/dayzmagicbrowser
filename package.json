@@ -21,6 +21,7 @@
     "@tanstack/react-query": "^4.24.10",
     "@tanstack/react-query-devtools": "^4.24.12",
     "@vercel/og": "^0.0.20",
+    "clsx": "^1.2.1",
     "dayjs": "^1.11.6",
     "joi": "^17.6.4",
     "lambda-rate-limiter": "^3.0.1",
@@ -35,6 +36,7 @@
     "psl": "^1.9.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "tailwind-merge": "^1.10.0",
     "use-interval": "^1.4.0"
   },
   "devDependencies": {
