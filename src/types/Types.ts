@@ -73,16 +73,10 @@ export interface WorkshopMod {
   id: string;
   banned: boolean;
   appId: number;
-  creatorSteamId: string;
-  description: string;
-  favourited: number;
   fileSize: number;
   subscriptions: number;
-  previewURL: string;
   success: boolean;
-  tags: string[];
   name: string;
-  views: number;
   visibility: number;
 }
 
