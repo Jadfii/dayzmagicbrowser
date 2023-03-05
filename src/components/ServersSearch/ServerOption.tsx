@@ -21,7 +21,7 @@ const ServerOption: React.FC<Props> = ({ server, handleClick }) => {
 
   return server?.name ? (
     <>
-      <Link href={`/server/${server.ipAddress}/${server.gamePort}`} className="w-full" style={{ color: theme.palette.foreground }}>
+      <Link href={`/server/${server.ipAddress}/${server.gamePort}`} className="w-full" style={{ color: theme.palette.foreground }} prefetch={false}>
         <Grid.Container className="py-4" onClick={onClick}>
           <Grid xs={24} className="items-center">
             <Text h4 className="truncate">
