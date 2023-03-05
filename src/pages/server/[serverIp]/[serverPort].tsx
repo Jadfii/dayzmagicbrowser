@@ -187,18 +187,22 @@ const ServerPage: React.FC = () => {
                 )}
               </div>
 
-              <Spacer h={1} />
-
-              <div className="flex flex-auto space-x-6">
+              <div className="mt-8 flex flex-auto flex-wrap gap-x-6 gap-y-8 md:flex-nowrap">
                 <div className="flex flex-auto flex-col">
                   <Text h3>Server details</Text>
 
-                  <div className="grid w-full grid-flow-row grid-cols-3 gap-6">
-                    <ServerInfoCard iconDescription="Players" icon={<Users />} item={<PlayerCount server={server} type="h3" />} />
+                  <div className="grid w-full grid-flow-row grid-cols-1 gap-6 xl:grid-cols-4 2xl:grid-cols-3">
+                    <ServerInfoCard
+                      iconDescription="Players"
+                      icon={<Users />}
+                      className="xl:col-span-2 2xl:col-span-1"
+                      item={<PlayerCount server={server} type="h3" />}
+                    />
 
                     <ServerInfoCard
                       iconDescription="Map"
                       icon={<Map />}
+                      className="xl:col-span-2 2xl:col-span-1"
                       item={
                         <Text h3 margin={0}>
                           {server?.relatedIsland?.name || server.island}
@@ -209,6 +213,7 @@ const ServerPage: React.FC = () => {
                     <ServerInfoCard
                       iconDescription="Version"
                       icon={<Tag />}
+                      className="xl:col-span-4 2xl:col-span-1"
                       item={
                         <div className="flex items-center">
                           <Text h3 margin={0}>
@@ -234,11 +239,11 @@ const ServerPage: React.FC = () => {
                       }
                     />
 
-                    <ServerTimeCard server={server} />
+                    <ServerTimeCard server={server} className="col-span-1 xl:col-span-4 2xl:col-span-3" />
                   </div>
                 </div>
 
-                <div className="flex w-3/12 flex-auto">
+                <div className="flex w-full min-w-[50%] md:max-w-sm xl:min-w-[25%] xl:max-w-md">
                   <ServerModList mods={workshopMods ?? []} isLoading={isLoadingMods} />
                 </div>
               </div>

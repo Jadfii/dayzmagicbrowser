@@ -15,7 +15,7 @@ const ServerModList: React.FC<Props> = ({ mods, isLoading }) => {
       <Card className="flex flex-auto">
         <Card.Content className="flex flex-auto flex-col">
           <div className="flex flex-auto flex-col">
-            <div className="flex h-0 flex-auto flex-col overflow-y-auto">
+            <div className="flex flex-auto flex-col overflow-y-auto xl:h-0">
               {isLoading ? (
                 <Loading>Loading mods...</Loading>
               ) : (
