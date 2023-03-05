@@ -44,6 +44,15 @@ export const getStaticPaths: GetStaticPaths = async () => {
         },
       ],
     },
+    orderBy: [
+      {
+        playerCount: 'desc',
+      },
+      {
+        queueCount: 'desc',
+      },
+    ],
+    take: 750,
   });
 
   const paths = servers.map((server) => ({ params: { serverIp: server.ipAddress, serverPort: server.gamePort.toString() } }));
