@@ -204,7 +204,11 @@ const ServerPage: React.FC = () => {
 
               <div className="mt-8 flex flex-auto flex-wrap gap-x-6 gap-y-8 md:flex-nowrap">
                 <div className="flex flex-auto flex-col">
-                  <Text h3>Server details</Text>
+                  <div className="mb-2">
+                    <Text h3 className="m-0">
+                      Server details
+                    </Text>
+                  </div>
 
                   <div className="grid w-full grid-flow-row grid-cols-1 gap-6 xl:grid-cols-4 2xl:grid-cols-3">
                     <ServerInfoCard

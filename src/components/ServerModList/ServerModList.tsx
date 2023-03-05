@@ -1,4 +1,4 @@
-import { Card, Loading, Text } from '@geist-ui/core';
+import { Badge, Card, Loading, Text } from '@geist-ui/core';
 import React from 'react';
 import { WorkshopMod } from '../../types/Types';
 import ModCard from './ModCard';
@@ -11,7 +11,13 @@ interface Props {
 const ServerModList: React.FC<Props> = ({ mods, isLoading }) => {
   return (
     <div className="flex flex-auto flex-col">
-      <Text h3>Mods</Text>
+      <div className="mb-2 flex items-center gap-2">
+        <Text h3 className="m-0">
+          Mods
+        </Text>
+        <Badge type="secondary">{mods.length}</Badge>
+      </div>
+
       <Card className="flex flex-auto">
         <Card.Content className="flex flex-auto flex-col">
           <div className="flex flex-auto flex-col">
