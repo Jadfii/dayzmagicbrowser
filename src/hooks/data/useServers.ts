@@ -14,7 +14,7 @@ export default function useServers() {
     enabled: router?.isReady,
     keepPreviousData: true,
     refetchInterval: 120000,
-    staleTime: 1800,
+    staleTime: 1800 * 1000,
   });
 
   return query;
