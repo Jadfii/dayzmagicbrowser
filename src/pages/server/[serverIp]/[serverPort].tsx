@@ -1,5 +1,5 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
-import { Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
+import { Badge, Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
 import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle, ExternalLink } from '@geist-ui/react-icons';
 import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
@@ -176,23 +176,29 @@ const ServerPage: React.FC = () => {
                 </Button>
 
                 {websiteUrl && (
-                  <Tooltip text={'Experimental. May be incorrect.'}>
+                  <Badge.Anchor>
+                    <Badge scale={0.85} type="secondary">
+                      Experimental
+                    </Badge>
                     <Link href={websiteUrl} target="_blank" rel="noreferrer">
                       <Button type="default" icon={<ExternalLink />} scale={4 / 3} auto>
                         Website
                       </Button>
                     </Link>
-                  </Tooltip>
+                  </Badge.Anchor>
                 )}
 
                 {discordUrl && (
-                  <Tooltip text={'Experimental. May be incorrect.'}>
+                  <Badge.Anchor>
+                    <Badge scale={0.85} type="secondary">
+                      Experimental
+                    </Badge>
                     <Link href={discordUrl} target="_blank" rel="noreferrer">
                       <Button type="default" icon={<DiscordIcon className="fill-white" />} scale={4 / 3} auto className="bg-blurple text-white">
                         Discord
                       </Button>
                     </Link>
-                  </Tooltip>
+                  </Badge.Anchor>
                 )}
               </div>
 
