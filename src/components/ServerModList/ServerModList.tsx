@@ -28,8 +28,8 @@ const ServerModList: React.FC<Props> = ({ mods, isLoading }) => {
                 <>
                   {mods.length > 0 ? (
                     <div className="grid grid-flow-row grid-cols-1 gap-2 pr-2">
-                      {mods.map((mod, i) => (
-                        <ModCard mod={mod} key={i} />
+                      {mods.map((mod) => (
+                        <ModCard mod={mod} key={String(mod.id)} />
                       ))}
                     </div>
                   ) : (

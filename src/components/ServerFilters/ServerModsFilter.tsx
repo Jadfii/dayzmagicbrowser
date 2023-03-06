@@ -75,10 +75,8 @@ const ServerModsFilter: React.FC<Props> = ({ availableOptions, selectedMods, onA
         <div className="mt-2 space-y-2">
           {enrichedSelectedMods
             .filter((mod) => mod?.name)
-            .map((mod, i) => (
-              <React.Fragment key={i}>
-                <ModTag mod={mod} onDelete={() => deleteHandler(mod)} />
-              </React.Fragment>
+            .map((mod) => (
+              <ModTag mod={mod} onDelete={() => deleteHandler(mod)} key={String(mod.id)} />
             ))}
         </div>
       )}

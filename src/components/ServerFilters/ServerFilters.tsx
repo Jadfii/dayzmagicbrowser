@@ -34,8 +34,8 @@ const ServerFilters: React.FC = () => {
               onChange={(value) => filters.setIsland((value as string) || null, GLOBAL_SETSTATE_OPTIONS)}
             >
               <NoneSelectOption />
-              {availableFilters?.islands?.map((option, i) => (
-                <Select.Option key={i} value={String(option.value)}>
+              {availableFilters?.islands?.map((option) => (
+                <Select.Option key={String(option.value)} value={String(option.value)}>
                   {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                 </Select.Option>
               ))}
@@ -50,8 +50,8 @@ const ServerFilters: React.FC = () => {
               onChange={(value) => filters.setVersion((value as string) || null, GLOBAL_SETSTATE_OPTIONS)}
             >
               <NoneSelectOption />
-              {availableFilters?.versions.map((option, i) => (
-                <Select.Option key={i} value={String(option.value)}>
+              {availableFilters?.versions.map((option) => (
+                <Select.Option key={String(option.value)} value={String(option.value)}>
                   <span>
                     {option?.label || option?.value} {option.count > 0 && <>({option.count})</>}
                   </span>
