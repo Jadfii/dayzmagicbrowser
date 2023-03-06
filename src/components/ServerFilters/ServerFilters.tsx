@@ -1,11 +1,10 @@
-import { Card, Checkbox, Dot, Input, Select, Spacer } from '@geist-ui/core';
-import React, { useEffect, useState } from 'react';
+import { Card, Checkbox, Dot, Input, InputProps, Select, Spacer } from '@geist-ui/core';
+import React, { useCallback } from 'react';
 import useAvailableServerFilters from '../../hooks/data/useAvailableServerFilters';
-import useDebounce from '../../hooks/useDebounce';
-import { usePrevious } from '../../hooks/usePrevious';
 import useServerFilters from '../../hooks/useServerFilters';
 import CustomSelect from './CustomSelect';
 import ServerModsFilter from './ServerModsFilter';
+import debounce from 'lodash/debounce';
 
 const GLOBAL_SETSTATE_OPTIONS = {
   scroll: false,
@@ -23,7 +22,7 @@ const ServerFilters: React.FC = () => {
       <Card>
         <div className="grid grid-cols-1 gap-6 py-4 xs:grid-cols-2 lg:grid-cols-4">
           <div>
-            <ServerNameSearch value={filters.name} onChange={(val: string) => filters.setName(val || null, GLOBAL_SETSTATE_OPTIONS)} />
+            <ServerNameSearch initialValue={filters.name} onChange={(val: string) => filters.setName(val || null, GLOBAL_SETSTATE_OPTIONS)} />
           </div>
 
           <div>
@@ -145,28 +144,17 @@ export default ServerFilters;
 
 interface ServerNameSearchProps {
   disabled?: boolean;
-  value?: string;
   initialValue?: string;
   onChange?: (val: string) => void;
 }
 
-const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, initialValue, onChange }) => {
-  const [serverNameInput, setServerNameInput] = useState<string>('');
-  const debouncedServerNameInput = useDebounce(serverNameInput, 500);
+const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, initialValue, onChange }) => {
+  const handleChange: InputProps['onChange'] = (e) => {
+    const val = e.target.value;
+    onChange?.(val);
+  };
 
-  const previousDebouncedServerNameInput = usePrevious(debouncedServerNameInput);
-
-  useEffect(() => {
-    if (typeof previousDebouncedServerNameInput === 'undefined' || previousDebouncedServerNameInput === debouncedServerNameInput) return;
-
-    if (onChange) onChange(debouncedServerNameInput);
-  }, [debouncedServerNameInput]);
-
-  useEffect(() => {
-    if (typeof value === 'undefined') return;
-
-    setServerNameInput(value);
-  }, [value]);
+  const debouncedHandleChange = useCallback(debounce(handleChange, 500), []);
 
   return (
     <>
@@ -175,8 +163,7 @@ const ServerNameSearch: React.FC<ServerNameSearchProps> = ({ disabled, value, in
         clearable
         disabled={disabled}
         initialValue={initialValue}
-        value={serverNameInput}
-        onChange={(e) => setServerNameInput(e.target.value)}
+        onChange={debouncedHandleChange}
         spellCheck={false}
       >
         Server name

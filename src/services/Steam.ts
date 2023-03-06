@@ -8,7 +8,7 @@ const openSteamGame = (appId: number, params: string[]): boolean => {
   const connectURI = `steam://run/${appId}//${finalParams}/`;
 
   try {
-    window.open(connectURI, '_blank');
+    window?.open(connectURI, '_blank');
     return true;
   } catch (err) {
     console.error(err);
@@ -28,7 +28,7 @@ export const openSteamConnect = (ip: string, port: number) => {
   const connectURI = getSteamConnectURI(ip, port);
 
   try {
-    window.location.assign(connectURI);
+    window?.location?.assign(connectURI);
     return true;
   } catch (err) {
     console.error(err);

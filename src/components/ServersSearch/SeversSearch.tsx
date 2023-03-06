@@ -1,20 +1,21 @@
-import React, { useState } from 'react';
-import { AutoComplete } from '@geist-ui/core';
+import React, { useCallback, useState } from 'react';
+import { AutoComplete, AutoCompleteProps } from '@geist-ui/core';
 import ServerOption from './ServerOption';
-import useDebounce from '../../hooks/useDebounce';
 import useSearchServers from '../../hooks/data/useSearchServers';
+import debounce from 'lodash/debounce';
 
 const ELEMENT_ID = 'servers-search';
 
 const ServersSearch: React.FC = () => {
   const [searchValue, setSearchValue] = useState<string>('');
-  const debouncedSearchValue: string = useDebounce(searchValue, 500);
 
-  const { data, isFetching } = useSearchServers(debouncedSearchValue);
+  const handleChange: AutoCompleteProps['onSearch'] = (val) => {
+    setSearchValue(val);
+  };
 
-  function searchHandler(value: string) {
-    setSearchValue(value);
-  }
+  const handleChangeDebounced = useCallback(debounce(handleChange, 500), []);
+
+  const { data, isFetching } = useSearchServers(searchValue);
 
   function handleOptionClick() {
     // A little delay is required because the AutoComplete component
@@ -39,7 +40,7 @@ const ServersSearch: React.FC = () => {
           )) ?? []
         }
         value={searchValue}
-        onSearch={searchHandler}
+        onSearch={handleChangeDebounced}
         scale={4 / 3}
         width="100%"
         searching={isFetching}
