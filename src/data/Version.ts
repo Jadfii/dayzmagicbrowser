@@ -10,7 +10,7 @@ export const getGameVersion = async () => {
 
   try {
     const res = await http<MagicLauncher_Version_Response>('https://dayzmagiclauncher.com/version', { signal: controller.signal }).then((data) =>
-      data
+      data?.version
         ? {
             stable: data?.version,
             exp: data?.version_exp,

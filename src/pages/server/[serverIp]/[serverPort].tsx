@@ -163,6 +163,7 @@ const ServerPage: React.FC = () => {
                   ) : (
                     <ServerFeatureBadge type="error" label="Unprotected (BattlEye)" icon={<ShieldOff />} />
                   )}
+                  {server.isSpoofed && <ServerFeatureBadge type="error" label="Potentially fake player count" icon={<AlertTriangle />} />}
                 </div>
               </Grid>
             </Grid.Container>

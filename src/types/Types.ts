@@ -39,6 +39,7 @@ export interface Server {
   isPublicHive: boolean;
   isMonetised: boolean;
   isOffline: boolean;
+  isSpoofed: boolean;
 }
 
 export interface ServerMod {

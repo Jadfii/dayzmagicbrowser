@@ -41,13 +41,14 @@ model Server {
   island                 String
   relatedIslandTerrainId String?
   relatedIsland          Island?  @relation(fields: [relatedIslandTerrainId], references: [terrainId])
-  isFirstPerson          Boolean
-  isPassword             Boolean
-  isBattleEye            Boolean
-  isVAC                  Boolean
-  isPublicHive           Boolean
-  isMonetised            Boolean
-  isOffline              Boolean
+  isFirstPerson          Boolean  @default(false)
+  isPassword             Boolean  @default(false)
+  isBattleEye            Boolean  @default(false)
+  isVAC                  Boolean  @default(false)
+  isPublicHive           Boolean  @default(false)
+  isMonetised            Boolean  @default(false)
+  isOffline              Boolean  @default(false)
+  isSpoofed              Boolean  @default(false)
 
   @@unique([ipAddress, queryPort])
   @@index([relatedIslandTerrainId])
