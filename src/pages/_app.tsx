@@ -10,6 +10,7 @@ import { IMAGE_BUCKET } from '../constants/links.constant';
 import { Hydrate, QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { fetcher } from '../data/fetcher';
+import { Analytics } from '@vercel/analytics/react';
 
 const App = ({ Component, pageProps }: AppProps) => {
   const [queryClient] = React.useState(
@@ -52,6 +53,7 @@ const App = ({ Component, pageProps }: AppProps) => {
             <CssBaseline />
             <AppLayout>
               <Component {...pageProps} />
+              <Analytics />
             </AppLayout>
           </GeistProvider>
 
