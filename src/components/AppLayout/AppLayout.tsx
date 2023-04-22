@@ -4,7 +4,7 @@ import Masthead from '../Masthead/Masthead';
 import Footer from '../Footer/Footer';
 import { Inter } from 'next/font/google';
 
-const font = Inter();
+const font = Inter({ subsets: ['latin'] });
 
 const AppLayout: React.FC<PropsWithChildren<unknown>> = ({ children }) => {
   const theme = useTheme();
