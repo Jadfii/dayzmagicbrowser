@@ -30,9 +30,6 @@ const handler = nextConnect();
 handler.use(rateLimit());
 
 handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
-  // Caching
-  res.setHeader('Cache-Control', `s-maxage=30, stale-while-revalidate`);
-
   // Get query params
   const { serverIp, serverPort } = req.query;
 
