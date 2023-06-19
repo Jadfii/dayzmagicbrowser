@@ -64,8 +64,6 @@ handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res:
     `https://hqheiqz4rcgfkil6a556zpw2tq0nggni.lambda-url.eu-west-2.on.aws/${queryParams}`
   ).then((res) => res.data);
 
-  console.log(serverUpdateRes);
-
   // Update server in DB
   const updatedServer = await updateServerData({ ...serverUpdateRes, id: server.id });
 
