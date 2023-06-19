@@ -8,7 +8,7 @@ export default function useUpdateServer() {
 
   const query = useMutation<unknown, unknown, { ipAddress?: Server['ipAddress']; gamePort?: Server['gamePort'] }>({
     mutationFn: async (variables) => {
-      return await fetcher(`${Endpoint.SERVERS}/${variables.ipAddress}/${variables.gamePort}/update`);
+      return await fetcher(`${Endpoint.SERVERS}/${variables.ipAddress}/${variables.gamePort}/update`, { method: 'PATCH' });
     },
     onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: [`${Endpoint.SERVERS}/${variables?.ipAddress}/${variables?.gamePort}`] });
