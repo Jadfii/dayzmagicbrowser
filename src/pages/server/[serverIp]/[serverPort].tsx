@@ -1,6 +1,21 @@
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { Badge, Button, Grid, Loading, Spacer, Text, Tooltip, useTheme } from '@geist-ui/core';
-import { Check, Lock, Map, Shield, ShieldOff, User, Users, Tag, Play, Tool, DollarSign, AlertTriangle, ExternalLink } from '@geist-ui/react-icons';
+import {
+  Check,
+  Lock,
+  Map,
+  Shield,
+  ShieldOff,
+  User,
+  Users,
+  Tag,
+  Play,
+  Tool,
+  DollarSign,
+  AlertTriangle,
+  ExternalLink,
+  RefreshCcw,
+} from '@geist-ui/react-icons';
 import { NextSeo } from 'next-seo';
 import BackgroundImage from '../../../components/BackgroundImage/BackgroundImage';
 import PlayerCount from '../../../components/PlayerCount/PlayerCount';
@@ -24,6 +39,7 @@ import { getServerDiscord, getServerWebsite } from '../../../utils/server.util';
 import { useMemo } from 'react';
 import { DiscordIcon } from '../../../components/Icons/DiscordIcon';
 import Link from 'next/link';
+import useUpdateServer from '../../../hooks/data/useUpdateServer';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get all servers that are not empty
@@ -103,6 +119,7 @@ const ServerPage: React.FC = () => {
   const { data: server, isFetching: isLoadingServer } = useCurrentServer();
   const { data: dayzVersion } = useDayzVersion();
   const { data: workshopMods, isInitialLoading: isLoadingMods } = useWorkshopMods(server?.modIds?.map(String) || []);
+  const { mutate: updateServer, isLoading: isUpdatingServer } = useUpdateServer();
 
   const { connectToServer } = useConnectServer(server);
 
@@ -118,6 +135,10 @@ const ServerPage: React.FC = () => {
 
   function onPlayClick() {
     connectToServer();
+  }
+
+  function onUpdateClick() {
+    updateServer({ ipAddress: server?.ipAddress, gamePort: server?.gamePort });
   }
 
   return (
@@ -174,6 +195,10 @@ const ServerPage: React.FC = () => {
               <div className="flex items-start space-x-4">
                 <Button onClick={onPlayClick} type="success-light" icon={<Play />} scale={4 / 3}>
                   Play
+                </Button>
+
+                <Button onClick={onUpdateClick} type="secondary-light" loading={isUpdatingServer} auto icon={<RefreshCcw />} scale={4 / 3}>
+                  Update information
                 </Button>
 
                 {websiteUrl && (

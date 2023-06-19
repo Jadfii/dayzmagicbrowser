@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma, { serialiseServer } from '../../../../lib/prisma';
+import prisma, { serialiseServer } from '../../../../../lib/prisma';
 import nextConnect from 'next-connect';
-import rateLimit from '../../../../middleware/rateLimit';
-import validation, { Joi } from '../../../../middleware/validation';
+import rateLimit from '../../../../../middleware/rateLimit';
+import validation, { Joi } from '../../../../../middleware/validation';
 
 export const getServerPageData = async (ipAddress: string, gamePort: number) => {
   const server = await prisma.server.findFirst({
