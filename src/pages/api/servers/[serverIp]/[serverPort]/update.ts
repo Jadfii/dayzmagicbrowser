@@ -7,7 +7,11 @@ import http from '../../../../../services/HTTP';
 import { Server } from '../../../../../types/Types';
 import { omit } from 'lodash';
 
-export const updateServerData = async (serverInfo: Server) => {
+interface ServerUpdate extends Server {
+  relatedIslandTerrainId?: string | null;
+}
+
+export const updateServerData = async (serverInfo: ServerUpdate) => {
   const server = await prisma.server.update({
     data: {
       ...omit(serverInfo, ['id', 'modIds', 'timeAcceleration', 'relatedIsland']),
@@ -61,8 +65,12 @@ handler.patch(validation({ query: querySchema }), async (req: NextApiRequest, re
     `https://hqheiqz4rcgfkil6a556zpw2tq0nggni.lambda-url.eu-west-2.on.aws/${queryParams}`
   ).then((res) => res.data);
 
+  // Get all islands
+  const islands = await prisma.island.findMany();
+  const serverIsland = islands.find((island) => serverUpdateRes?.island?.toLowerCase()?.includes(island?.terrainId?.toLowerCase()));
+
   // Update server in DB
-  const updatedServer = await updateServerData({ ...serverUpdateRes, id: server.id });
+  const updatedServer = await updateServerData({ ...serverUpdateRes, id: server.id, relatedIslandTerrainId: serverIsland?.terrainId || null });
 
   if (!updatedServer?.ipAddress) {
     return res.status(404).json({ message: 'Server not found' });
