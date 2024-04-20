@@ -1,34 +1,34 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma, { serialiseServer } from '../../../../../lib/prisma';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../../../middleware/rateLimit';
 import validation, { Joi } from '../../../../../middleware/validation';
 import http from '../../../../../services/HTTP';
 import { Server } from '../../../../../types/Types';
 import { omit } from 'lodash';
+import { serialiseServer, server } from '../../../../../../drizzle/schema/server';
+import { db } from '../../../../../lib/drizzle';
+import { eq } from 'drizzle-orm';
 
 interface ServerUpdate extends Server {
   relatedIslandTerrainId?: string | null;
 }
 
 export const updateServerData = async (serverInfo: ServerUpdate) => {
-  const server = await prisma.server.update({
-    data: {
-      ...omit(serverInfo, ['id', 'modIds', 'timeAcceleration', 'relatedIsland']),
+  const updatedServers = await db
+    .update(server)
+    .set({
+      ...omit(serverInfo, ['id', 'modIds', 'timeAcceleration', 'relatedIsland', 'createdAt', 'updatedAt']),
+      updatedAt: new Date(),
       modIds: Array.isArray(serverInfo?.modIds) ? serverInfo.modIds.map((modId) => Number(modId)) : [],
       timeAcceleration: serverInfo.timeAcceleration.join(', '),
-    },
-    where: {
-      id: serverInfo.id,
-    },
-    include: {
-      relatedIsland: true,
-    },
-  });
+    })
+    .where(eq(server.id, serverInfo.id))
+    .returning();
 
-  if (!server?.ipAddress) return undefined;
+  const updatedServer = updatedServers[0];
+  if (!updatedServer?.ipAddress) return undefined;
 
-  return serialiseServer(server);
+  return serialiseServer(updatedServer);
 };
 
 const querySchema = Joi.object({
@@ -44,21 +44,18 @@ handler.patch(validation({ query: querySchema }), async (req: NextApiRequest, re
   // Get query params
   const { serverIp, serverPort } = req.query;
 
-  const server = await prisma.server.findFirst({
-    where: {
-      ipAddress: serverIp as string,
-      gamePort: Number(serverPort),
-    },
-    include: {
+  const origServer = await db.query.server.findFirst({
+    where: (servers, { eq, and }) => and(eq(servers.ipAddress, String(serverIp)), eq(servers.gamePort, Number(serverPort))),
+    with: {
       relatedIsland: true,
     },
   });
 
-  if (!server?.ipAddress) {
+  if (!origServer?.ipAddress) {
     return res.status(404).json({ message: 'Server not found' });
   }
 
-  const queryParams = `?serverIp=${server.ipAddress}&serverPort=${server.queryPort}`;
+  const queryParams = `?serverIp=${origServer.ipAddress}&serverPort=${origServer.queryPort}`;
 
   // Update server info via query worker lambda
   const serverUpdateRes = await http<{ data: Omit<Server, 'relatedIsland'>; message: string }>(
@@ -66,11 +63,11 @@ handler.patch(validation({ query: querySchema }), async (req: NextApiRequest, re
   ).then((res) => res.data);
 
   // Get all islands
-  const islands = await prisma.island.findMany();
+  const islands = await db.query.island.findMany();
   const serverIsland = islands.find((island) => serverUpdateRes?.island?.toLowerCase()?.includes(island?.terrainId?.toLowerCase()));
 
   // Update server in DB
-  const updatedServer = await updateServerData({ ...serverUpdateRes, id: server.id, relatedIslandTerrainId: serverIsland?.terrainId || null });
+  const updatedServer = await updateServerData({ ...serverUpdateRes, id: origServer.id, relatedIslandTerrainId: serverIsland?.terrainId || null });
 
   if (!updatedServer?.ipAddress) {
     return res.status(404).json({ message: 'Server not found' });
