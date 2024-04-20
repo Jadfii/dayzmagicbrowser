@@ -1,5 +1,4 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma, { serialiseServer } from '../../../lib/prisma';
 import { SERVER_FILTERS } from '../../../types/Types';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
@@ -8,51 +7,47 @@ import { sortServersByPlayerCount } from '../../../utils/server.util';
 import { SERVERS_PAGE_SERVERS_COUNT } from '../../../constants/layout.constant';
 import validation, { Joi } from '../../../middleware/validation';
 import { getEnumValues } from '../../../utils/enum.util';
+import { db } from '../../../lib/drizzle';
+import { serialiseServer, server } from '../../../../drizzle/schema/server';
+import { sql, and, eq } from 'drizzle-orm';
 
 export const getServersPageData = async (queryParams: NextApiRequest['query'] = {}) => {
   // Get query params
   const { name, island, version, mods, firstperson, official, experimental, noqueue } = queryParams;
 
-  const filters: NonNullable<Parameters<typeof prisma.server.findMany>[0]>['where'] = {
-    ...(typeof name === 'string' ? { name: { contains: name } } : {}),
-    ...(typeof island === 'string' ? { island: { contains: island } } : {}),
-    ...(typeof version === 'string' ? { version } : {}),
-    ...(typeof mods === 'string'
-      ? {
-          modIds: {
-            array_contains: mods.split(',').map((modId) => Number(modId.trim())),
-          },
-        }
-      : {}),
-    ...(typeof firstperson === 'string' ? { isFirstPerson: true } : {}),
-    ...(typeof official === 'string' ? { isPublicHive: true } : {}),
-    ...(typeof experimental === 'string' ? { appId: DAYZ_EXP_APPID } : {}),
-    ...(typeof noqueue === 'string' ? { queueCount: 0 } : {}),
-  };
+  const filters = and(
+    ...[
+      ...(typeof name === 'string' ? [sql`lower(${server.name}) LIKE ${`%${name.toLowerCase()}%`}`] : []),
+      ...(typeof island === 'string' ? [sql`lower(${server.island}) LIKE ${`%${island.toLowerCase()}%`}`] : []),
+      ...(typeof version === 'string' ? [eq(server.version, version)] : []),
+      ...(typeof firstperson === 'string' ? [eq(server.isFirstPerson, true)] : []),
+      ...(typeof official === 'string' ? [eq(server.isPublicHive, true)] : []),
+      ...(typeof experimental === 'string' ? [eq(server.appId, DAYZ_EXP_APPID)] : []),
+      ...(typeof noqueue === 'string' ? [eq(server.queueCount, 0)] : []),
+      ...(typeof mods === 'string' ? [and(...mods.split(',').map((modId) => sql`(${server.modIds})::jsonb @> ${modId}`))] : []),
+    ]
+  );
 
   // Get servers
-  const serversQuery = prisma.server.findMany({
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    take: SERVERS_PAGE_SERVERS_COUNT,
+  const serversQuery = db.query.server.findMany({
+    orderBy: (servers, { desc }) => [desc(servers.playerCount), desc(servers.queueCount)],
+    limit: SERVERS_PAGE_SERVERS_COUNT,
     where: filters,
-    include: {
+    with: {
       relatedIsland: true,
     },
   });
 
-  const serversCountQuery = prisma.server.count({ where: filters });
+  const serversCountQuery = db
+    .select({ count: sql<number>`count(${server.id})`.mapWith(Number) })
+    .from(server)
+    .where(filters)
+    .limit(1);
 
   const [servers, serversCount] = await Promise.all([serversQuery, serversCountQuery]);
 
   // Serialise servers so they can be passed to component
-  return { servers: sortServersByPlayerCount(servers.map(serialiseServer)), count: serversCount };
+  return { servers: sortServersByPlayerCount(servers.map(serialiseServer)), count: serversCount.map((res) => res.count)[0] };
 };
 
 const querySchema = Joi.object(Object.fromEntries(getEnumValues(SERVER_FILTERS).map((key) => [key, Joi.string()])));

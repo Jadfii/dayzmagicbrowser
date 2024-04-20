@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma, { serialiseServer } from '../../../lib/prisma';
-import { Server } from '../../../types/Types';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import validation, { Joi } from '../../../middleware/validation';
 import { sortServersByPlayerCount } from '../../../utils/server.util';
+import { serialiseServer } from '../../../../drizzle/schema/server';
+import { db } from '../../../lib/drizzle';
 
 const MAX_SEARCH_RESULTS = 30;
 
@@ -17,28 +17,27 @@ const handler = nextConnect();
 handler.use(rateLimit());
 
 handler.get(validation({ query: querySchema }), async (req: NextApiRequest, res: NextApiResponse) => {
-  let searchTerm = req?.query?.name;
+  const searchTermParam = req?.query?.name;
+  let searchTerm = '';
 
-  if (Array.isArray(searchTerm)) searchTerm = searchTerm?.[0];
+  if (Array.isArray(searchTermParam)) searchTerm = searchTermParam?.[0];
+  else searchTerm = searchTermParam ?? '';
   // Trim and replace whitespace with underscores
-  searchTerm = (searchTerm || '').trim().replace(/[\s\n\t]/g, '_');
+  searchTerm = searchTerm
+    .trim()
+    .replace(/[\s\n\t]/g, '_')
+    .toLowerCase();
 
-  const servers = await prisma.server.findMany({
-    where: { OR: [{ name: { search: searchTerm } }, { name: { contains: searchTerm } }, { ipAddress: { contains: searchTerm } }] },
-    orderBy: {
-      _relevance: {
-        fields: ['name'],
-        search: searchTerm,
-        sort: 'desc',
-      },
-    },
-    take: MAX_SEARCH_RESULTS,
-    include: {
+  const servers = await db.query.server.findMany({
+    where: (servers, { sql, or }) =>
+      or(sql`lower(${servers.name}) LIKE ${`%${searchTerm}%`}`, sql`lower(${servers.ipAddress}) LIKE ${`%${searchTerm}%`}`),
+    limit: MAX_SEARCH_RESULTS,
+    with: {
       relatedIsland: true,
     },
   });
 
-  const serialisedServers: Server[] = sortServersByPlayerCount(servers.map(serialiseServer));
+  const serialisedServers = sortServersByPlayerCount(servers.map(serialiseServer));
 
   return res.status(200).json(serialisedServers);
 });

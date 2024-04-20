@@ -1,44 +1,40 @@
 import { SelectOption } from './../../../types/Types';
 import { getGameVersion, isMatchingVersion } from './../../../data/Version';
 import type { NextApiRequest, NextApiResponse } from 'next';
-import prisma, { serialiseIsland } from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { findIsland } from '../../../utils/server.util';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
+import { db } from '../../../lib/drizzle';
+import { serialiseIsland } from '../../../../drizzle/schema/island';
+import { countDistinct, desc } from 'drizzle-orm';
+import { server } from '../../../../drizzle/schema/server';
 
 const INITIAL_MOD_COUNT = 50;
 
 export const getAvailableFiltersData = async () => {
   // Get all islands
-  const islandsQuery = prisma.island.findMany().then((res) => res.map(serialiseIsland));
+  const islandsQuery = db.query.island.findMany().then((res) => res.map(serialiseIsland));
 
   // Get all available islands
-  const groupedIslandsQuery = prisma.server.groupBy({
-    by: ['island'],
-    _count: {
-      island: true,
-    },
-    orderBy: {
-      _count: {
-        island: 'desc',
-      },
-    },
-  });
+  const groupedIslandsQuery = db
+    .select({
+      _count: countDistinct(server.id),
+      island: server.island,
+    })
+    .from(server)
+    .groupBy(server.island)
+    .orderBy((query) => desc(query._count));
 
   // Get all available versions
-  const groupedVersionsQuery = prisma.server.groupBy({
-    by: ['version'],
-    _count: {
-      version: true,
-    },
-    orderBy: {
-      version: 'desc',
-    },
-  });
+  const groupedVersionsQuery = db
+    .select({ _count: countDistinct(server.id).as('count'), version: server.version })
+    .from(server)
+    .groupBy(server.version)
+    .orderBy((query) => desc(query._count));
 
   // Get all available mod Ids
-  const allServers = await prisma.server.findMany();
+  const allServers = await db.query.server.findMany();
   const allModIds = allServers
     .flatMap((server) => (Array.isArray(server?.modIds) ? server.modIds.map(String) : []))
     .reduce<{ [modId: string]: number }>((acc, curr) => {
@@ -71,12 +67,13 @@ export const getAvailableFiltersData = async () => {
   // Match islands to saved islands in DB
   // then map to correct format
   const mappedGroupedIslands = groupedIslands.reduce<SelectOption[]>((acc, curr) => {
-    const foundIsland = findIsland(curr.island, islands);
-    const terrainId = foundIsland?.terrainId || curr?.island;
+    const foundIsland = findIsland(curr.island ?? '', islands);
+    const terrainId = foundIsland?.terrainId || curr?.island || '';
+    const name = foundIsland?.name || curr?.island || '';
     const foundIdx = acc.findIndex((filter) => filter?.value === terrainId);
 
-    if (foundIdx === -1) {
-      acc.push({ label: foundIsland?.name || curr?.island, value: terrainId, count: curr?._count?.island });
+    if (foundIdx === -1 && name && terrainId) {
+      acc.push({ label: name, value: terrainId, count: curr?._count });
     }
 
     return acc;
@@ -90,7 +87,7 @@ export const getAvailableFiltersData = async () => {
     acc.push({
       label: curr?.version,
       value: curr?.version,
-      count: curr?._count?.version,
+      count: curr?._count,
       highlighted: isLatestStableVersion,
       highlightedSecondary: isLatestExpVersion,
     });

@@ -1,0 +1,40 @@
+CREATE TABLE IF NOT EXISTS "Island" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"terrainId" varchar(64) NOT NULL,
+	"name" varchar(128) NOT NULL,
+	"description" text,
+	"workshopId" varchar(128),
+	"isOfficial" boolean NOT NULL,
+	CONSTRAINT "Island_terrainId_unique" UNIQUE("terrainId")
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "Server" (
+	"id" varchar(128) PRIMARY KEY NOT NULL,
+	"createdAt" timestamp DEFAULT now() NOT NULL,
+	"updatedAt" timestamp DEFAULT now() NOT NULL,
+	"modIds" json,
+	"queryPort" integer NOT NULL,
+	"gamePort" integer NOT NULL,
+	"appId" integer NOT NULL,
+	"playerCount" integer DEFAULT 0 NOT NULL,
+	"maxPlayerCount" integer DEFAULT 0 NOT NULL,
+	"queueCount" integer DEFAULT 0 NOT NULL,
+	"timeAcceleration" varchar(16) NOT NULL,
+	"ipAddress" varchar(48) NOT NULL,
+	"name" varchar(512) NOT NULL,
+	"version" varchar(48) NOT NULL,
+	"clockTime" varchar(48) NOT NULL,
+	"island" varchar(64) NOT NULL,
+	"relatedIslandTerrainId" varchar(64),
+	"isFirstPerson" boolean DEFAULT false NOT NULL,
+	"isPassword" boolean DEFAULT false NOT NULL,
+	"isBattleEye" boolean DEFAULT false NOT NULL,
+	"isVAC" boolean DEFAULT false NOT NULL,
+	"isPublicHive" boolean DEFAULT false NOT NULL,
+	"isMonetised" boolean DEFAULT false NOT NULL,
+	"isOffline" boolean DEFAULT false NOT NULL,
+	"isSpoofed" boolean DEFAULT false NOT NULL,
+	CONSTRAINT "Server_ipAddress_queryPort_unique" UNIQUE("ipAddress","queryPort")
+);
