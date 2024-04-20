@@ -64,8 +64,6 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
 
   const server = await getServerPageData(String(params?.serverIp), Number(params?.serverPort));
 
-  console.log(server);
-
   if (!server?.ipAddress) {
     return {
       notFound: true,
