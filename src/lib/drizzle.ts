@@ -5,6 +5,6 @@ import * as islandSchema from '../../drizzle/schema/island';
 
 const connection = neon(process.env.DATABASE_URL as string);
 
-const db = drizzle(connection, { schema: { ...serverSchema, ...islandSchema }, logger: process.env.NODE_ENV === 'development' });
+const db = drizzle(connection, { schema: { ...serverSchema, ...islandSchema } });
 
 export { db };

@@ -6,7 +6,7 @@ import { config } from 'dotenv';
 config({ path: '.env' });
 
 const connection = postgres(process.env.DATABASE_URL as string, { max: 1 });
-const db = drizzle(connection, { logger: true });
+const db = drizzle(connection);
 
 const main = async () => {
   try {
