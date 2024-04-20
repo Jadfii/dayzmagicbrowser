@@ -54,7 +54,7 @@ const Servers: React.FC = () => {
             </div>
 
             <Text p margin={0}>
-              Showing {data?.servers.length ?? 0} of {data?.count ?? 0} servers
+              Showing {data?.servers?.length ?? 0} of {data?.count ?? 0} servers
             </Text>
           </div>
 

@@ -1,0 +1,265 @@
+{
+  "id": "f8053b1a-b3ab-4c3a-aaf7-ea54a9f447a8",
+  "prevId": "00000000-0000-0000-0000-000000000000",
+  "version": "5",
+  "dialect": "pg",
+  "tables": {
+    "Island": {
+      "name": "Island",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "terrainId": {
+          "name": "terrainId",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "description": {
+          "name": "description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "workshopId": {
+          "name": "workshopId",
+          "type": "varchar(128)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isOfficial": {
+          "name": "isOfficial",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "Island_terrainId_unique": {
+          "name": "Island_terrainId_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "terrainId"
+          ]
+        }
+      }
+    },
+    "Server": {
+      "name": "Server",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "varchar(128)",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "createdAt": {
+          "name": "createdAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "updatedAt": {
+          "name": "updatedAt",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        },
+        "modIds": {
+          "name": "modIds",
+          "type": "json",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "queryPort": {
+          "name": "queryPort",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gamePort": {
+          "name": "gamePort",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "appId": {
+          "name": "appId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "playerCount": {
+          "name": "playerCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "maxPlayerCount": {
+          "name": "maxPlayerCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "queueCount": {
+          "name": "queueCount",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 0
+        },
+        "timeAcceleration": {
+          "name": "timeAcceleration",
+          "type": "varchar(16)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ipAddress": {
+          "name": "ipAddress",
+          "type": "varchar(48)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "varchar(512)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
+          "type": "varchar(48)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "clockTime": {
+          "name": "clockTime",
+          "type": "varchar(48)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "island": {
+          "name": "island",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "relatedIslandTerrainId": {
+          "name": "relatedIslandTerrainId",
+          "type": "varchar(64)",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "isFirstPerson": {
+          "name": "isFirstPerson",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isPassword": {
+          "name": "isPassword",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isBattleEye": {
+          "name": "isBattleEye",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isVAC": {
+          "name": "isVAC",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isPublicHive": {
+          "name": "isPublicHive",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isMonetised": {
+          "name": "isMonetised",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isOffline": {
+          "name": "isOffline",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "isSpoofed": {
+          "name": "isSpoofed",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "Server_ipAddress_queryPort_unique": {
+          "name": "Server_ipAddress_queryPort_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "ipAddress",
+            "queryPort"
+          ]
+        }
+      }
+    }
+  },
+  "enums": {},
+  "schemas": {},
+  "_meta": {
+    "columns": {},
+    "schemas": {},
+    "tables": {}
+  }
+}

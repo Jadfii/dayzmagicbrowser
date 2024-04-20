@@ -1,60 +1,35 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { DAYZ_EXP_APPID } from '../../../constants/game.constant';
-import prisma, { serialiseServer } from '../../../lib/prisma';
 import nextConnect from 'next-connect';
 import rateLimit from '../../../middleware/rateLimit';
 import { HOME_SECTION_SERVERS_COUNT } from '../../../constants/layout.constant';
-import { HomeServers } from '../../../types/Types';
 import { sortServersByPlayerCount } from '../../../utils/server.util';
+import { db } from '../../../lib/drizzle';
+import { serialiseServer } from '../../../../drizzle/schema/server';
 
-export const getHomePageData = async (): Promise<HomeServers> => {
-  const popularServers = prisma.server.findMany({
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
+export const getHomePageData = async () => {
+  const popularServers = db.query.server.findMany({
+    limit: HOME_SECTION_SERVERS_COUNT,
+    orderBy: (servers, { desc }) => [desc(servers.playerCount), desc(servers.queueCount)],
+    with: {
       relatedIsland: true,
     },
   });
 
-  const officialServers = prisma.server.findMany({
-    where: {
-      isPublicHive: true,
-    },
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
+  const officialServers = db.query.server.findMany({
+    where: (servers, { eq }) => eq(servers.isPublicHive, true),
+    limit: HOME_SECTION_SERVERS_COUNT,
+    orderBy: (servers, { desc }) => [desc(servers.playerCount), desc(servers.queueCount)],
+    with: {
       relatedIsland: true,
     },
   });
 
-  const experimentalServers = prisma.server.findMany({
-    where: {
-      appId: DAYZ_EXP_APPID,
-    },
-    take: HOME_SECTION_SERVERS_COUNT,
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    include: {
+  const experimentalServers = db.query.server.findMany({
+    where: (servers, { eq }) => eq(servers.appId, DAYZ_EXP_APPID),
+    limit: HOME_SECTION_SERVERS_COUNT,
+    orderBy: (servers, { desc }) => [desc(servers.playerCount), desc(servers.queueCount)],
+    with: {
       relatedIsland: true,
     },
   });

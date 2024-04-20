@@ -33,42 +33,21 @@ import useCurrentServer from '../../../hooks/data/useCurrentServer';
 import { dehydrate, QueryClient } from '@tanstack/react-query';
 import { Endpoint } from '../../../types/Endpoints';
 import { getServerPageData } from '../../api/servers/[serverIp]/[serverPort]';
-import prisma from '../../../lib/prisma';
 import { getWorkshopMods } from '../../../data/SteamApi';
 import { getServerDiscord, getServerWebsite } from '../../../utils/server.util';
 import { useMemo } from 'react';
 import { DiscordIcon } from '../../../components/Icons/DiscordIcon';
 import Link from 'next/link';
 import useUpdateServer from '../../../hooks/data/useUpdateServer';
+import { db } from '../../../lib/drizzle';
 
 export const getStaticPaths: GetStaticPaths = async () => {
   // Get all servers that are not empty
   // We use fallback for every other server
-  const servers = await prisma.server.findMany({
-    select: { ipAddress: true, gamePort: true },
-    where: {
-      OR: [
-        {
-          playerCount: {
-            gt: 0,
-          },
-        },
-        {
-          queueCount: {
-            gt: 0,
-          },
-        },
-      ],
-    },
-    orderBy: [
-      {
-        playerCount: 'desc',
-      },
-      {
-        queueCount: 'desc',
-      },
-    ],
-    take: 750,
+  const servers = await db.query.server.findMany({
+    where: (servers, { or, gt }) => or(gt(servers.playerCount, 0), gt(servers.queueCount, 0)),
+    orderBy: (servers, { desc }) => [desc(servers.playerCount), desc(servers.queueCount)],
+    limit: 750,
   });
 
   const paths = servers.map((server) => ({ params: { serverIp: server.ipAddress, serverPort: server.gamePort.toString() } }));
@@ -84,6 +63,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   }
 
   const server = await getServerPageData(String(params?.serverIp), Number(params?.serverPort));
+
+  console.log(server);
 
   if (!server?.ipAddress) {
     return {
