@@ -55,8 +55,8 @@ export const getAvailableFiltersData = async () => {
   ]);
 
   // Map to enriched data (to get mod name/label)
-  const mappedGroupedMods = limitedModIds.map((modId, i) => {
-    const matchedMod = enrichedGroupedMods?.[i];
+  const mappedGroupedMods = limitedModIds.map((modId) => {
+    const matchedMod = enrichedGroupedMods?.find((m) => modId === m.id);
 
     return {
       value: modId,
